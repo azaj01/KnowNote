@@ -74,7 +74,10 @@ interface ChatStore {
   /** Answer the same question again, as a sibling of an answer that stopped (#151). */
   retryMessage: (notebookId: string, messageId: string) => Promise<void>
   /** Continue an answer that stopped, into the same message (#151). */
-  continueMessage: (notebookId: string, messageId: string) => Promise<void>
+  continueMessage: (
+    notebookId: string,
+    messageId: string
+  ) => Promise<{ started: boolean; reason?: 'continuation-limit' }>
 }
 
 /**
@@ -101,6 +104,58 @@ interface TurnAssembler {
  * every event notify every subscriber with a new object.
  */
 const assemblers = new Map<string, TurnAssembler>()
+
+/**
+ * Snapshot coalescing (#177).
+ *
+ * The assembler emits one snapshot per chunk — a reasoning model can produce
+ * hundreds per second — and each one used to be its own store commit and its own
+ * full-transcript render. The latest snapshot per message is held here and applied
+ * on a short timer, so the commit rate is bounded while no snapshot is ever
+ * dropped: a later one replaces the pending one for the same message.
+ */
+const SNAPSHOT_FLUSH_MS = 40
+const pendingSnapshots = new Map<string, UIMessage>()
+let snapshotTimer: ReturnType<typeof setTimeout> | null = null
+
+/**
+ * The last sequence number per message, kept out of the store (#177).
+ *
+ * Writing it on every chunk was a store commit per chunk — the very cadence the
+ * snapshot throttle exists to remove. It is only observable state when there is a
+ * gap, so that is the only time it reaches the store.
+ */
+const lastSequences = new Map<string, number>()
+
+/** Apply every held snapshot in one commit. Terminal paths call this first. */
+function flushPendingSnapshots(): void {
+  if (snapshotTimer !== null) {
+    clearTimeout(snapshotTimer)
+    snapshotTimer = null
+  }
+  if (pendingSnapshots.size === 0) return
+
+  const pending = new Map(pendingSnapshots)
+  pendingSnapshots.clear()
+
+  useChatStore.setState((state) => {
+    const turns = { ...state.turns }
+    for (const [messageId, message] of pending) {
+      const turn = turns[messageId]
+      if (!turn) continue
+      turns[messageId] = { ...turn, message, reasoningLive: isReasoningLive(message) }
+    }
+    return { turns }
+  })
+}
+
+function scheduleSnapshotFlush(): void {
+  if (snapshotTimer !== null) return
+  snapshotTimer = setTimeout(() => {
+    snapshotTimer = null
+    flushPendingSnapshots()
+  }, SNAPSHOT_FLUSH_MS)
+}
 
 /**
  * What the overlay knows before the first event of a turn arrives.
@@ -183,6 +238,10 @@ function feedAssembler(messageId: string, chunk: UIMessageChunk): void {
  * is supposed to keep.
  */
 function applyOutcome(event: Extract<ChatTurnEvent, { type: 'outcome' }>): void {
+  // Terminal state is applied now, not on the next turn of the throttle: the last
+  // snapshot is what the turn's content must settle on.
+  flushPendingSnapshots()
+
   const state = useChatStore.getState()
   const turn = state.turns[event.messageId]
 
@@ -213,29 +272,15 @@ function applyOutcome(event: Extract<ChatTurnEvent, { type: 'outcome' }>): void 
 
   if (turn) state.setStreamingMessage(turn.notebookId, null)
   assemblers.delete(event.messageId)
+  lastSequences.delete(event.messageId)
 }
 
 function applySnapshot(messageId: string, message: UIMessage): void {
-  const text = messageText(message)
-  const reasoningContent = messageReasoning(message)
-  const reasoningLive = isReasoningLive(message)
-
-  useChatStore.setState((state) => {
-    const turn = state.turns[messageId]
-    const turns = turn
-      ? { ...state.turns, [messageId]: { ...turn, message, reasoningLive } }
-      : state.turns
-
-    // Only touch the visible list when this is the message the reader is looking at;
-    // a turn in another notebook still assembles so switching back is instant.
-    const messages = state.messages.some((item) => item.id === messageId)
-      ? state.messages.map((item) =>
-          item.id === messageId ? { ...item, content: text, reasoningContent } : item
-        )
-      : state.messages
-
-    return { turns, messages }
-  })
+  // Hold the latest snapshot; the timer commits it together with any other live
+  // turn. This is the whole point of #177: one chunk must not be one store write
+  // and one render of every historical message.
+  pendingSnapshots.set(messageId, message)
+  scheduleSnapshotFlush()
 }
 
 export const useChatStore = create<ChatStore>()((set, get) => ({
@@ -442,7 +487,7 @@ export const useChatStore = create<ChatStore>()((set, get) => ({
 
   continueMessage: async (notebookId, messageId) => {
     const message = get().messages.find((item) => item.id === messageId)
-    if (!message) return
+    if (!message) return { started: false }
 
     // Register the turn with the answer as its seed, and hand the message back to the
     // live state: what comes next is appended to it, not written elsewhere.
@@ -460,8 +505,12 @@ export const useChatStore = create<ChatStore>()((set, get) => ({
     const result = await window.api.continueMessage(messageId)
     if (!result.success) {
       console.error('[ChatStore] Failed to continue the answer:', result.error)
-      return
+      // The caller owns the wording (#179): the store does not import i18n, so the
+      // reason is handed back rather than translated here.
+      return { started: false, reason: result.reason }
     }
+
+    return { started: true }
   },
 
   abortMessage: async (notebookId: string) => {
@@ -513,35 +562,49 @@ export function setupChatListeners(): () => void {
         const turn = state.turns[event.messageId]
 
         // A gap means content was lost on the way. Nothing replays yet, so say so
-        // rather than showing an answer that is quietly short.
-        if (turn && !isSequenceContinuing(turn.lastSeq, event.seq)) {
-          console.warn(
-            `[ChatStore] missing events for ${event.messageId}: expected ${(turn.lastSeq ?? 0) + 1}, got ${event.seq}`
-          )
-          useChatStore.setState((current) => ({
-            turns: {
-              ...current.turns,
-              [event.messageId]: { ...turn, lastSeq: event.seq, sequenceGap: true }
-            }
-          }))
-        } else if (turn) {
-          useChatStore.setState((current) => ({
-            turns: { ...current.turns, [event.messageId]: { ...turn, lastSeq: event.seq } }
-          }))
+        // rather than showing an answer that is quietly short. The running sequence
+        // stays out of the store (#177): writing it per chunk was a commit per
+        // chunk, which is exactly the cadence the snapshot throttle removes.
+        if (turn) {
+          const previous = lastSequences.get(event.messageId)
+          if (!isSequenceContinuing(previous, event.seq)) {
+            console.warn(
+              `[ChatStore] missing events for ${event.messageId}: expected ${(previous ?? 0) + 1}, got ${event.seq}`
+            )
+            useChatStore.setState((current) => ({
+              turns: {
+                ...current.turns,
+                [event.messageId]: {
+                  ...(current.turns[event.messageId] ?? turn),
+                  lastSeq: event.seq,
+                  sequenceGap: true
+                }
+              }
+            }))
+          }
+          lastSequences.set(event.messageId, event.seq)
         }
 
         feedAssembler(event.messageId, event.event)
 
         // The first event of a turn is what turns "waiting" into "streaming", the
-        // same transition the execution makes in Main.
+        // same transition the execution makes in Main. Guarded so a chunk that
+        // changes nothing does not commit: returning the current state is a no-op
+        // for zustand, and a per-chunk commit is what #177 removes.
         if (event.event.type !== 'start') {
-          useChatStore.setState((current) => ({
-            messages: current.messages.map((message) =>
-              message.id === event.messageId && message.status === 'pending'
-                ? { ...message, status: 'streaming' }
-                : message
+          useChatStore.setState((current) => {
+            const transition = current.messages.some(
+              (message) => message.id === event.messageId && message.status === 'pending'
             )
-          }))
+            if (!transition) return current
+            return {
+              messages: current.messages.map((message) =>
+                message.id === event.messageId && message.status === 'pending'
+                  ? { ...message, status: 'streaming' }
+                  : message
+              )
+            }
+          })
         }
         break
       }
