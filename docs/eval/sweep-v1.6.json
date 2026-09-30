@@ -13,7 +13,7 @@
       "noResultRate": 0,
       "meanContextChars": 2078.9333333333334,
       "chunkCount": 19,
-      "latencyP95Ms": 88.15
+      "latencyP95Ms": 13.28
     },
     {
       "strategy": "dense",
@@ -27,21 +27,7 @@
       "noResultRate": 0,
       "meanContextChars": 3326.8333333333335,
       "chunkCount": 19,
-      "latencyP95Ms": 89.14
-    },
-    {
-      "strategy": "dense",
-      "candidateK": 5,
-      "contextK": 8,
-      "recallAt5": 1,
-      "ndcgAt10": 0.94375,
-      "mapAt10": 0.922222,
-      "contextPrecision": 0.213333,
-      "contextRecall": 1,
-      "noResultRate": 0,
-      "meanContextChars": 3326.8333333333335,
-      "chunkCount": 19,
-      "latencyP95Ms": 98.4
+      "latencyP95Ms": 13.14
     },
     {
       "strategy": "dense",
@@ -55,7 +41,7 @@
       "noResultRate": 0,
       "meanContextChars": 2078.9333333333334,
       "chunkCount": 19,
-      "latencyP95Ms": 107.2
+      "latencyP95Ms": 13.97
     },
     {
       "strategy": "dense",
@@ -69,7 +55,7 @@
       "noResultRate": 0,
       "meanContextChars": 3326.8333333333335,
       "chunkCount": 19,
-      "latencyP95Ms": 77.76
+      "latencyP95Ms": 14.81
     },
     {
       "strategy": "dense",
@@ -83,7 +69,7 @@
       "noResultRate": 0,
       "meanContextChars": 5311.633333333333,
       "chunkCount": 19,
-      "latencyP95Ms": 91.92
+      "latencyP95Ms": 15.14
     },
     {
       "strategy": "dense",
@@ -97,7 +83,7 @@
       "noResultRate": 0,
       "meanContextChars": 2078.9333333333334,
       "chunkCount": 19,
-      "latencyP95Ms": 94.88
+      "latencyP95Ms": 16.19
     },
     {
       "strategy": "dense",
@@ -111,7 +97,7 @@
       "noResultRate": 0,
       "meanContextChars": 3326.8333333333335,
       "chunkCount": 19,
-      "latencyP95Ms": 85.49
+      "latencyP95Ms": 18.66
     },
     {
       "strategy": "dense",
@@ -125,7 +111,7 @@
       "noResultRate": 0,
       "meanContextChars": 5311.633333333333,
       "chunkCount": 19,
-      "latencyP95Ms": 84.23
+      "latencyP95Ms": 14.61
     },
     {
       "strategy": "dense",
@@ -139,7 +125,7 @@
       "noResultRate": 0,
       "meanContextChars": 2078.9333333333334,
       "chunkCount": 19,
-      "latencyP95Ms": 91.85
+      "latencyP95Ms": 17.65
     },
     {
       "strategy": "dense",
@@ -153,7 +139,7 @@
       "noResultRate": 0,
       "meanContextChars": 3326.8333333333335,
       "chunkCount": 19,
-      "latencyP95Ms": 86.76
+      "latencyP95Ms": 19.74
     },
     {
       "strategy": "dense",
@@ -167,7 +153,7 @@
       "noResultRate": 0,
       "meanContextChars": 5311.633333333333,
       "chunkCount": 19,
-      "latencyP95Ms": 89.21
+      "latencyP95Ms": 17.64
     },
     {
       "strategy": "hybrid",
@@ -181,7 +167,7 @@
       "noResultRate": 0,
       "meanContextChars": 2044.1333333333334,
       "chunkCount": 19,
-      "latencyP95Ms": 81.29
+      "latencyP95Ms": 13.37
     },
     {
       "strategy": "hybrid",
@@ -195,21 +181,7 @@
       "noResultRate": 0,
       "meanContextChars": 3361.6,
       "chunkCount": 19,
-      "latencyP95Ms": 79.52
-    },
-    {
-      "strategy": "hybrid",
-      "candidateK": 5,
-      "contextK": 8,
-      "recallAt5": 1,
-      "ndcgAt10": 0.956053,
-      "mapAt10": 0.938889,
-      "contextPrecision": 0.213333,
-      "contextRecall": 1,
-      "noResultRate": 0,
-      "meanContextChars": 3361.6,
-      "chunkCount": 19,
-      "latencyP95Ms": 85.98
+      "latencyP95Ms": 14.7
     },
     {
       "strategy": "hybrid",
@@ -223,7 +195,7 @@
       "noResultRate": 0,
       "meanContextChars": 2062.733333333333,
       "chunkCount": 19,
-      "latencyP95Ms": 86.15
+      "latencyP95Ms": 22.31
     },
     {
       "strategy": "hybrid",
@@ -237,7 +209,7 @@
       "noResultRate": 0,
       "meanContextChars": 3525.633333333333,
       "chunkCount": 19,
-      "latencyP95Ms": 92.74
+      "latencyP95Ms": 18.66
     },
     {
       "strategy": "hybrid",
@@ -251,7 +223,7 @@
       "noResultRate": 0,
       "meanContextChars": 5509.8,
       "chunkCount": 19,
-      "latencyP95Ms": 89.97
+      "latencyP95Ms": 15.84
     },
     {
       "strategy": "hybrid",
@@ -265,7 +237,7 @@
       "noResultRate": 0,
       "meanContextChars": 2056.9333333333334,
       "chunkCount": 19,
-      "latencyP95Ms": 59.56
+      "latencyP95Ms": 20.78
     },
     {
       "strategy": "hybrid",
@@ -279,7 +251,7 @@
       "noResultRate": 0,
       "meanContextChars": 3445.866666666667,
       "chunkCount": 19,
-      "latencyP95Ms": 77.17
+      "latencyP95Ms": 23.35
     },
     {
       "strategy": "hybrid",
@@ -293,7 +265,7 @@
       "noResultRate": 0,
       "meanContextChars": 5572.6,
       "chunkCount": 19,
-      "latencyP95Ms": 91.41
+      "latencyP95Ms": 22.32
     },
     {
       "strategy": "hybrid",
@@ -307,7 +279,7 @@
       "noResultRate": 0,
       "meanContextChars": 2056.9333333333334,
       "chunkCount": 19,
-      "latencyP95Ms": 89.62
+      "latencyP95Ms": 23.47
     },
     {
       "strategy": "hybrid",
@@ -321,7 +293,7 @@
       "noResultRate": 0,
       "meanContextChars": 3445.866666666667,
       "chunkCount": 19,
-      "latencyP95Ms": 66.45
+      "latencyP95Ms": 21.71
     },
     {
       "strategy": "hybrid",
@@ -335,7 +307,7 @@
       "noResultRate": 0,
       "meanContextChars": 5572.6,
       "chunkCount": 19,
-      "latencyP95Ms": 76.65
+      "latencyP95Ms": 21.68
     }
   ]
 }

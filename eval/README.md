@@ -45,6 +45,13 @@ writes one dashboard with quality, context precision/recall, prompt size, index 
 and latency side by side. Its grid maximum is labelled as **not** a recommendation:
 selecting on the same questions is how a benchmark becomes a lookup table.
 
+`contextK > candidateK` is not a cell in that grid. The harness fetches `candidateK`
+passages, so a wider window can never be filled; the sweep skips those combinations
+and names them in the report, and the harness refuses the same combination from the
+command line. Before this was enforced, `contextK=8` at `candidateK=5` was reported as
+identical to `contextK=5` — not because 8 assessed the same as 5, but because
+passages 6–8 did not exist.
+
 `eval:prepare` downloads the pinned `multilingual-e5-small` revision into the app's model
 cache and verifies it. `eval` never touches the network: if the model is missing it stops
 with

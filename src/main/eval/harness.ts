@@ -217,6 +217,20 @@ export async function runEvalHarness(
   knowledgeService: KnowledgeService,
   options: EvalHarnessOptions
 ): Promise<EvalReport> {
+  // A context window wider than the retrieval depth can never be filled: the harness
+  // fetches `candidateK` passages and the context metrics look at `contextK` of them.
+  //
+  // Without this check the sweep silently produced rows where `contextK=5` and
+  // `contextK=8` at `candidateK=5` were **identical**, not because 8 assessed the same
+  // as 5 but because passages 6-8 did not exist (#192 review). A wrong number that
+  // looks like a measurement is worse than a failure.
+  if (options.contextK > options.candidateK) {
+    throw new Error(
+      `contextK (${options.contextK}) cannot exceed candidateK (${options.candidateK}): ` +
+        'the harness retrieves candidateK passages, so a wider context window can never be filled.'
+    )
+  }
+
   const { documentIds, chunkCount, indexingMs } = await indexCorpus(
     db,
     knowledgeService,
