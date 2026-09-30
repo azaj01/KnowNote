@@ -13,6 +13,7 @@ npm run eval:retrieval  # strategy comparison (#77); validation selects, test re
 npm run eval:threshold  # derive the similarity threshold on validation, report on test
 npm run eval:sweep      # bounded grid over strategy × candidateK × contextK, one dashboard
 npm run eval:scores     # dense score distribution: can one threshold separate relevant from not?
+npm run eval:paired     # per-question dense ↔ hybrid deltas, by query type
 npm run eval:blocks eval/corpus/foo.md   # print the block ordinals ground truth must use
 ```
 

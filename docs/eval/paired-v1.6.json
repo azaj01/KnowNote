@@ -1,0 +1,1254 @@
+{
+  "baseline": "v1.6",
+  "strategies": [
+    "dense",
+    "hybrid"
+  ],
+  "splits": {
+    "validation": {
+      "questions": 19,
+      "meanDelta": {
+        "rank": 0,
+        "recallAt5": 0,
+        "ndcgAt10": 0.004654087156011809
+      },
+      "byType": [
+        {
+          "type": "cross-lingual",
+          "questions": 4,
+          "improved": 0,
+          "tied": 4,
+          "regressed": 0,
+          "meanDeltaNdcg10": 0,
+          "meanDeltaRank": 0
+        },
+        {
+          "type": "exact",
+          "questions": 4,
+          "improved": 2,
+          "tied": 2,
+          "regressed": 0,
+          "meanDeltaNdcg10": 0.05006329887451612,
+          "meanDeltaRank": 0.5
+        },
+        {
+          "type": "hard-negative",
+          "questions": 2,
+          "improved": 0,
+          "tied": 2,
+          "regressed": 0,
+          "meanDeltaNdcg10": 0,
+          "meanDeltaRank": 0
+        },
+        {
+          "type": "multi-hop",
+          "questions": 2,
+          "improved": 0,
+          "tied": 2,
+          "regressed": 0,
+          "meanDeltaNdcg10": 0.08861964339202388,
+          "meanDeltaRank": 0
+        },
+        {
+          "type": "semantic",
+          "questions": 6,
+          "improved": 0,
+          "tied": 5,
+          "regressed": 1,
+          "meanDeltaNdcg10": -0.04817747105298131,
+          "meanDeltaRank": -0.3333333333333333
+        },
+        {
+          "type": "zh",
+          "questions": 1,
+          "improved": 0,
+          "tied": 1,
+          "regressed": 0,
+          "meanDeltaNdcg10": 0,
+          "meanDeltaRank": 0
+        }
+      ],
+      "pairs": [
+        {
+          "id": "q002",
+          "type": "exact",
+          "question": "How many replicate samples are collected at each river station?",
+          "dense": {
+            "firstRelevantRank": 3,
+            "recallAt5": 1,
+            "ndcgAt10": 0.5
+          },
+          "hybrid": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "delta": {
+            "rank": 1,
+            "recallAt5": 0,
+            "ndcgAt10": 0.13092975357145753
+          },
+          "classification": "improved"
+        },
+        {
+          "id": "q004",
+          "type": "semantic",
+          "question": "Why do nickel-rich battery packs need more aggressive thermal management?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q009",
+          "type": "semantic",
+          "question": "Why are trees with aggressive surface roots unsuitable for narrow verges?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q011",
+          "type": "exact",
+          "question": "Is the salt percentage in fermentation based on vegetable weight or water weight?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q015",
+          "type": "semantic",
+          "question": "Why does deep-water oxygen fall while a lake remains stratified?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q018",
+          "type": "semantic",
+          "question": "Why is one continuous planted roof layer better than several isolated planted beds?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q021",
+          "type": "semantic",
+          "question": "Why is wave energy harder to schedule ahead than tidal energy?",
+          "dense": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "hybrid": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q023",
+          "type": "multi-hop",
+          "question": "How does the river sampling protocol differ from the lake sampling protocol?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 0.5,
+            "ndcgAt10": 0.6131471927654584
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 0.5,
+            "ndcgAt10": 0.7903864795495061
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0.17723928678404777
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q028",
+          "type": "zh",
+          "question": "茶叶储存的相对湿度上限是多少？",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q030",
+          "type": "cross-lingual",
+          "question": "为什么潮汐能比风能和太阳能更容易提前安排发电？",
+          "dense": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "hybrid": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q037",
+          "type": "cross-lingual",
+          "question": "推移质为什么比悬移质更难测？",
+          "dense": {
+            "firstRelevantRank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "hybrid": {
+            "firstRelevantRank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "delta": {
+            "rank": null,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q040",
+          "type": "cross-lingual",
+          "question": "富镍电池为什么对散热要求更高？",
+          "dense": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "hybrid": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q043",
+          "type": "cross-lingual",
+          "question": "花期遭遇晚霜，主要受损的是什么？",
+          "dense": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "hybrid": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q045",
+          "type": "exact",
+          "question": "What is the default retry count in Gateway API v2?",
+          "dense": {
+            "firstRelevantRank": 4,
+            "recallAt5": 1,
+            "ndcgAt10": 0.43067655807339306
+          },
+          "hybrid": {
+            "firstRelevantRank": 3,
+            "recallAt5": 1,
+            "ndcgAt10": 0.5
+          },
+          "delta": {
+            "rank": 1,
+            "recallAt5": 0,
+            "ndcgAt10": 0.06932344192660694
+          },
+          "classification": "improved"
+        },
+        {
+          "id": "q047",
+          "type": "hard-negative",
+          "question": "What is the context window of Gateway API v3, in tokens?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q050",
+          "type": "semantic",
+          "question": "Which Gateway API version waits longest between retries after a failed request?",
+          "dense": {
+            "firstRelevantRank": 10,
+            "recallAt5": 0,
+            "ndcgAt10": 0.2890648263178879
+          },
+          "hybrid": {
+            "firstRelevantRank": 12,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "delta": {
+            "rank": -2,
+            "recallAt5": 0,
+            "ndcgAt10": -0.2890648263178879
+          },
+          "classification": "regressed"
+        },
+        {
+          "id": "q055",
+          "type": "exact",
+          "question": "How many replicate samples are collected at each reservoir monitoring station?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q057",
+          "type": "hard-negative",
+          "question": "At what depth below the surface does the coastal programme place its shore-station sensor?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q060",
+          "type": "multi-hop",
+          "question": "Compare the sampling interval and replicate count of the reservoir and groundwater programmes.",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        }
+      ]
+    },
+    "test": {
+      "questions": 34,
+      "meanDelta": {
+        "rank": 0.3939393939393939,
+        "recallAt5": 0.029411764705882353,
+        "ndcgAt10": 0.04318215877040841
+      },
+      "byType": [
+        {
+          "type": "cross-lingual",
+          "questions": 5,
+          "improved": 0,
+          "tied": 5,
+          "regressed": 0,
+          "meanDeltaNdcg10": 0,
+          "meanDeltaRank": 0
+        },
+        {
+          "type": "exact",
+          "questions": 4,
+          "improved": 0,
+          "tied": 4,
+          "regressed": 0,
+          "meanDeltaNdcg10": 0,
+          "meanDeltaRank": 0
+        },
+        {
+          "type": "hard-negative",
+          "questions": 5,
+          "improved": 1,
+          "tied": 4,
+          "regressed": 0,
+          "meanDeltaNdcg10": 0.026185950714291507,
+          "meanDeltaRank": 0.2
+        },
+        {
+          "type": "multi-hop",
+          "questions": 3,
+          "improved": 1,
+          "tied": 2,
+          "regressed": 0,
+          "meanDeltaNdcg10": 0.09781329792785898,
+          "meanDeltaRank": 0.3333333333333333
+        },
+        {
+          "type": "semantic",
+          "questions": 15,
+          "improved": 3,
+          "tied": 12,
+          "regressed": 0,
+          "meanDeltaNdcg10": 0.06958825005592344,
+          "meanDeltaRank": 0.7333333333333333
+        },
+        {
+          "type": "zh",
+          "questions": 2,
+          "improved": 0,
+          "tied": 2,
+          "regressed": 0,
+          "meanDeltaNdcg10": 0,
+          "meanDeltaRank": 0
+        }
+      ],
+      "pairs": [
+        {
+          "id": "q001",
+          "type": "semantic",
+          "question": "Why is bedload harder to measure than suspended sediment?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q003",
+          "type": "semantic",
+          "question": "What is the central trade-off in lithium-ion cell design?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q005",
+          "type": "semantic",
+          "question": "What happens once the separator in a battery cell melts?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q006",
+          "type": "exact",
+          "question": "At what temperature do honeybees begin to forage?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q007",
+          "type": "semantic",
+          "question": "What does a late frost damage during full bloom?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q008",
+          "type": "semantic",
+          "question": "Why is a continuous tree canopy more effective at cooling than isolated trees?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q010",
+          "type": "exact",
+          "question": "At what temperature is lactic acid fermentation fastest?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q012",
+          "type": "semantic",
+          "question": "Why must tidal turbines be sited in places with very fast currents?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q013",
+          "type": "semantic",
+          "question": "What is the main environmental concern for tidal energy installations?",
+          "dense": {
+            "firstRelevantRank": 11,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "hybrid": {
+            "firstRelevantRank": 4,
+            "recallAt5": 1,
+            "ndcgAt10": 0.43067655807339306
+          },
+          "delta": {
+            "rank": 7,
+            "recallAt5": 1,
+            "ndcgAt10": 0.43067655807339306
+          },
+          "classification": "improved"
+        },
+        {
+          "id": "q014",
+          "type": "exact",
+          "question": "In lake monitoring, how is the sampling depth actually recorded?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q016",
+          "type": "semantic",
+          "question": "How do supercapacitors hold their charge?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q017",
+          "type": "semantic",
+          "question": "Why can solitary bees pollinate a bloom week that is too cold for honeybee hives?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q019",
+          "type": "semantic",
+          "question": "Where do acetic acid bacteria sit in a vinegar culture?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q020",
+          "type": "semantic",
+          "question": "What happens if a vinegar culture is sealed airtight?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q022",
+          "type": "exact",
+          "question": "Where does siting for wave energy devices concentrate, and where does it not?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q024",
+          "type": "multi-hop",
+          "question": "A street canopy and a green roof are both said to cool; what surface does each one shade?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q025",
+          "type": "semantic",
+          "question": "Which preservation method depends on keeping air away from the food?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q026",
+          "type": "semantic",
+          "question": "Why can one cold morning cost a grower the whole crop even when colonies are brought in?",
+          "dense": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 1,
+            "recallAt5": 0,
+            "ndcgAt10": 0.36907024642854247
+          },
+          "classification": "improved"
+        },
+        {
+          "id": "q027",
+          "type": "zh",
+          "question": "绿茶应该怎样保存才能减缓氧化？",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q029",
+          "type": "zh",
+          "question": "为什么冷冻保存的茶叶取出后不能立刻打开包装？",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q038",
+          "type": "cross-lingual",
+          "question": "河流监测中，每个站点要采几份平行样？",
+          "dense": {
+            "firstRelevantRank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "hybrid": {
+            "firstRelevantRank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "delta": {
+            "rank": null,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q039",
+          "type": "cross-lingual",
+          "question": "设计锂离子电芯时最核心的取舍是什么？",
+          "dense": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "hybrid": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q041",
+          "type": "cross-lingual",
+          "question": "电芯隔膜一旦熔化会导致什么后果？",
+          "dense": {
+            "firstRelevantRank": 4,
+            "recallAt5": 1,
+            "ndcgAt10": 0.43067655807339306
+          },
+          "hybrid": {
+            "firstRelevantRank": 4,
+            "recallAt5": 1,
+            "ndcgAt10": 0.43067655807339306
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q042",
+          "type": "cross-lingual",
+          "question": "蜜蜂大致从什么温度开始出巢觅食？",
+          "dense": {
+            "firstRelevantRank": 3,
+            "recallAt5": 1,
+            "ndcgAt10": 0.5
+          },
+          "hybrid": {
+            "firstRelevantRank": 3,
+            "recallAt5": 1,
+            "ndcgAt10": 0.5
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q044",
+          "type": "cross-lingual",
+          "question": "为什么成片的树冠比孤立的树降温效果更好？",
+          "dense": {
+            "firstRelevantRank": 9,
+            "recallAt5": 0,
+            "ndcgAt10": 0.3010299956639812
+          },
+          "hybrid": {
+            "firstRelevantRank": 9,
+            "recallAt5": 0,
+            "ndcgAt10": 0.3010299956639812
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q046",
+          "type": "hard-negative",
+          "question": "What is the default request timeout of Gateway API v1?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q048",
+          "type": "hard-negative",
+          "question": "What is the default rate limit of Gateway API v2?",
+          "dense": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "hybrid": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q049",
+          "type": "hard-negative",
+          "question": "What is the default request timeout of Gateway API v3?",
+          "dense": {
+            "firstRelevantRank": 3,
+            "recallAt5": 1,
+            "ndcgAt10": 0.5
+          },
+          "hybrid": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "delta": {
+            "rank": 1,
+            "recallAt5": 0,
+            "ndcgAt10": 0.13092975357145753
+          },
+          "classification": "improved"
+        },
+        {
+          "id": "q051",
+          "type": "multi-hop",
+          "question": "Compare the default timeouts and rate limits of Gateway API v1 and v3.",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 0.75,
+            "ndcgAt10": 0.6366824387328317
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 0.75,
+            "ndcgAt10": 0.6366824387328317
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q052",
+          "type": "multi-hop",
+          "question": "Compare the retry count and context window of Gateway API v2 and v3.",
+          "dense": {
+            "firstRelevantRank": 2,
+            "recallAt5": 0.25,
+            "ndcgAt10": 0.35914753008966527
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 0.25,
+            "ndcgAt10": 0.6525874238732422
+          },
+          "delta": {
+            "rank": 1,
+            "recallAt5": 0,
+            "ndcgAt10": 0.29343989378357693
+          },
+          "classification": "improved"
+        },
+        {
+          "id": "q056",
+          "type": "hard-negative",
+          "question": "How many replicate samples are collected at each estuary transect station?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q058",
+          "type": "hard-negative",
+          "question": "At what depth below the water table do groundwater boreholes carry their pressure transducer?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        },
+        {
+          "id": "q059",
+          "type": "semantic",
+          "question": "Which monitoring programme samples most frequently?",
+          "dense": {
+            "firstRelevantRank": 5,
+            "recallAt5": 1,
+            "ndcgAt10": 0.38685280723454163
+          },
+          "hybrid": {
+            "firstRelevantRank": 2,
+            "recallAt5": 1,
+            "ndcgAt10": 0.6309297535714575
+          },
+          "delta": {
+            "rank": 3,
+            "recallAt5": 0,
+            "ndcgAt10": 0.2440769463369159
+          },
+          "classification": "improved"
+        },
+        {
+          "id": "q061",
+          "type": "semantic",
+          "question": "Why does the estuary programme take more replicate samples than the other monitoring programmes?",
+          "dense": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "hybrid": {
+            "firstRelevantRank": 1,
+            "recallAt5": 1,
+            "ndcgAt10": 1
+          },
+          "delta": {
+            "rank": 0,
+            "recallAt5": 0,
+            "ndcgAt10": 0
+          },
+          "classification": "tied"
+        }
+      ]
+    }
+  }
+}

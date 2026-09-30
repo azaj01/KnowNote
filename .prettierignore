@@ -33,6 +33,10 @@ docs/eval/sweep-*.md
 docs/eval/scores-*.json
 docs/eval/scores-*.md
 
+# And by `scripts/eval-paired.mjs`. Regenerate with `npm run eval:paired`.
+docs/eval/paired-*.json
+docs/eval/paired-*.md
+
 # And the same again for `scripts/eval-retrieval.mjs` (#77).
 docs/eval/retrieval-*.json
 docs/eval/retrieval-*.md
