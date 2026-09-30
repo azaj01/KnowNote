@@ -99,9 +99,14 @@ export function registerChatHandlers(
 
       // 直接走 `retrieve()` 而不是 `search()`：trace（#157）只有它有，用它再映射出
       // SearchResult，不必为了记录参数多检索一次。
+      //
+      // 生产配置就是这两个 K：先取宽（candidateK，每通道 20），融合后只把 3 条送进
+      // prompt。这个组合被 eval harness 的默认运行原样量到 —— 否则 benchmark 测的是
+      // 一个用户永远不会跑的检索器。
       const { evidence, trace } = await knowledgeService.retrieve({
         notebookId,
         query,
+        candidateK: 20,
         topK: 3,
         threshold: 0.5,
         filter: documentIds ? { documentIds } : undefined

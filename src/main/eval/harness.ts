@@ -47,8 +47,16 @@ export interface EvalHarnessOptions {
   corpusLabel: string
   questionsPath: string
   baseline: string
-  /** Ranks to compute Recall@k for. */
-  topK: number
+  /**
+   * 第一阶段每个通道的宽度，也是排名指标的评估深度（#77）。
+   *
+   * 与 `contextK` 分开：`candidateK` 决定“找了多宽”（召回），`contextK` 决定“交给
+   * LLM 多少”（预算）。只用一个 K 时两者被绑死，benchmark 也无法在足够深的地方算
+   * Recall@10。
+   */
+  candidateK: number
+  /** 生产 prompt 实际取用的条数（chat 里的 `topK`）。 */
+  contextK: number
   /** Similarity floor; 0 keeps the ranking intact for ranking metrics. */
   threshold: number
   /** How many retrieved passages the evidence-precision metric looks at. */
@@ -190,8 +198,14 @@ export async function runEvalHarness(
     const groundTruthIds = groundTruth.map((entry) => entry.blockId)
 
     const started = performance.now()
+    // 排名指标在完整的候选深度上计算，不先截到 `contextK`：
+    //
+    //   - Recall@10 需要至少 10 条结果，而生产的 `contextK` 是 3；
+    //   - 截断只取候选列表的前缀，前缀的排序与截断前一致，所以用宽的结果算排名不等于
+    //     把两件事混在一个数里。
     const results = await knowledgeService.search(NOTEBOOK_ID, question.question, {
-      topK: options.topK,
+      candidateK: options.candidateK,
+      topK: options.candidateK,
       threshold: options.threshold,
       strategy: options.strategy
     })
@@ -240,7 +254,8 @@ export async function runEvalHarness(
         respectHeadings: chunking.respectHeadings
       },
       retrieval: options.strategy,
-      topK: options.topK,
+      candidateK: options.candidateK,
+      contextK: options.contextK,
       threshold: options.threshold,
       evidenceK: options.evidenceK,
       corpus: options.corpusLabel,

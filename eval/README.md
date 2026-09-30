@@ -1,8 +1,8 @@
 # RAG eval harness
 
 Measures retrieval quality so "did this change make retrieval better?" has an answer.
-The current numbers are frozen in [`docs/eval/baseline-v1.4.md`](../docs/eval/baseline-v1.4.md);
-every v1.5 experiment (#77, #78) is reported as a delta against that file.
+The current numbers are frozen in [`docs/eval/baseline-v1.6.md`](../docs/eval/baseline-v1.6.md);
+every experiment (#77, #78) is reported as a delta against that file.
 
 ## Commands
 
@@ -10,6 +10,24 @@ every v1.5 experiment (#77, #78) is reported as a delta against that file.
 npm run eval:prepare   # one-time, networked: download the pinned embedding model
 npm run eval           # offline and deterministic: run the harness, rewrite the baseline
 ```
+
+### The harness runs the production configuration
+
+From v1.6 the harness defaults to the parameters the app ships, so its numbers describe
+the product rather than a research setup. Two Ks, because they answer different questions:
+
+| Flag | Default | Meaning |
+| --- | --- | --- |
+| `--eval-candidate-k=` | `20` | first-stage width per channel (KNN neighbours, BM25 limit) |
+| `--eval-context-k=` | `3` | passages the chat prompt actually takes (`chatHandlers.ts`) |
+| `--eval-threshold=` | `0.5` | the similarity floor the app ships |
+| `--eval-retrieval=` | `dense` | `dense`, `sparse`, or `hybrid` |
+| `--eval-baseline=` | `v1.6` | name written into `docs/eval/baseline-<name>.{json,md}` |
+
+Ranking metrics are computed at `candidateK` depth, not at `contextK`: `Recall@10` needs
+at least ten results, and truncation only takes a prefix of the candidate list, so the
+truncation cannot change the ranking it is measured on. `contextK` is recorded so the
+report describes the whole online path.
 
 `eval:prepare` downloads the pinned `multilingual-e5-small` revision into the app's model
 cache and verifies it. `eval` never touches the network: if the model is missing it stops
@@ -87,7 +105,9 @@ from unanswerable queries.
 2. Indexes the corpus through the normal ingestion path (`addDocumentFromFile`), so blocks,
    chunking and embeddings are the real ones.
 3. Maps each ground-truth `document`/`block` to the run's runtime ids.
-4. Runs the real `Retriever` (`KnowledgeService.search` → `DenseRetriever`).
+4. Runs the real `Retriever` (`KnowledgeService.search`) at the configured
+   `candidateK` depth; `RetrievalRequest` splits the first-stage width from the final
+   `topK` so the two are not silently the same number.
 5. Writes `docs/eval/baseline-<version>.json` (deterministic) and `.md` (with timing).
 
 ## Metrics

@@ -93,9 +93,14 @@ export const parseRetrievalSnapshot = (metadata: unknown): RetrievalSnapshot | n
   const durationMs = toFiniteNumber(candidate.durationMs)
   if (topK === undefined || durationMs === undefined) return null
 
+  // Snapshots written before #77 had a single K, so the candidate width *was* topK.
+  // Backfilling it states what the old retrieval actually did; it is not a guess.
+  const candidateK = toFiniteNumber(candidate.candidateK) ?? topK
+
   const snapshot: RetrievalSnapshot = {
     strategy: candidate.strategy,
     scope: {},
+    candidateK,
     topK,
     durationMs
   }

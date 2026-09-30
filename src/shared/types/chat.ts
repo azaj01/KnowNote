@@ -154,6 +154,13 @@ export interface RetrievalSnapshot {
   strategy: string
   /** 空对象 = 整个 notebook。 */
   scope: { documentIds?: string[] }
+  /**
+   * 第一阶段每个通道的宽度（#77）。
+   *
+   * 引入两个 K 之前的快照没有这个字段：那时候选宽度就是 `topK`，所以解析时按
+   * `topK` 回填——那是历史事实，不是拿默认值冒充。
+   */
+  candidateK: number
   topK: number
   /** 缺省表示该策略没有阈值，不是「阈值等于 0」。 */
   threshold?: number
@@ -172,7 +179,7 @@ export interface RetrievalSnapshot {
 export interface ChatMessageMetadata {
   sources?: AnswerSource[]
   retrieval?: RetrievalStatus
-  /** 本次检索用了什么参数（#157）：策略、生效范围、topK、耗时。 */
+  /** 本次检索用了什么参数（#157）：策略、生效范围、候选宽度、交付条数、耗时。 */
   retrievalSnapshot?: RetrievalSnapshot
   /**
    * The structured provenance of this answer (#69). `sources` says *what* the

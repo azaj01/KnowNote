@@ -63,15 +63,51 @@ export type RetrievalStrategy = 'dense' | 'sparse' | 'hybrid'
  *
  * 取代旧的 `(notebookId, query, options)` 位置参数：#94 的 scope、#77 的策略参数
  * 与 #157 要快照的 trace 都要挂在这一个对象上，而不是散落在调用点。
+ *
+ * 两个 K 是分开的，它们回答的是不同的问题：
+ *
+ *   candidateK  第一阶段每个通道取多宽（KNN 邻居数 / BM25 limit）—— 偏向召回
+ *   topK        最终交付多少条证据（chat 里就是送进 prompt 的 context 宽度）—— 偏向精度
+ *
+ * 合并成一个 K 会让「向量库直接搜几条」冒充两阶段检索：hybrid 时两个通道各取
+ * `topK` 条，融合池最多只有 `2 * topK`，再截回 `topK`，融合几乎没有发生空间。
  */
 export interface RetrievalRequest {
   notebookId: string
   query: string
+  /**
+   * 第一阶段候选宽度。缺省 `DEFAULT_CANDIDATE_K`。
+   *
+   * 实际生效值不会小于 `topK`（见 `effectiveCandidateK`）：一个 `topK=50` 的调用方
+   * 不该因为没写 `candidateK` 而只拿到 20 条。
+   */
+  candidateK?: number
+  /** 最终证据条数。缺省 `DEFAULT_TOP_K`。 */
   topK?: number
   threshold?: number
   filter?: RetrievalFilter
   /** 缺省时为 `dense`，与引入策略之前的默认一致。 */
   strategy?: RetrievalStrategy
+}
+
+/** 没有显式指定时的第一阶最宽度（#77）。与 chat 的生产配置保持一致。 */
+export const DEFAULT_CANDIDATE_K = 20
+
+/** 没有显式指定时的最终证据条数，与引入 `candidateK` 之前一致。 */
+export const DEFAULT_TOP_K = 5
+
+/**
+ * 第一阶段的真实宽度：`candidateK`，但不小于 `topK`。
+ *
+ * 没有这条不变式，「取出比交付更宽的一池子」只是多数时候成立：任何 `topK > candidateK`
+ * 的调用（搜索面板的 limit、MCP 的 topK）都会静默地少返结果。
+ */
+export function effectiveCandidateK(request: {
+  candidateK?: number
+  topK?: number
+}): number {
+  const topK = request.topK ?? DEFAULT_TOP_K
+  return Math.max(request.candidateK ?? DEFAULT_CANDIDATE_K, topK)
 }
 
 /**
@@ -80,10 +116,16 @@ export interface RetrievalRequest {
  * 它会随回答一起被快照（#157），因此必须由检索层产出、而不是调用方猜：
  * `strategy` 说明用的是哪条检索路径，`scope` 说明结果被限制在哪些来源。
  * `threshold` 缺省表示该策略没有阈值，不是「阈值等于 0」。
+ *
+ * `candidateK` 与 `topK` 是两个不同的量，快照里都必须有：只看 `topK` 无法解释
+ * 「为什么这次只召回三条」，也无法复现 hybrid 的融合池有多宽。
  */
 export interface RetrievalTrace {
   strategy: string
   scope: { documentIds?: string[] }
+  /** 第一阶段每个通道的实际宽度（已应用 `effectiveCandidateK`）。 */
+  candidateK: number
+  /** 最终交付的证据条数。 */
   topK: number
   threshold?: number
   durationMs: number

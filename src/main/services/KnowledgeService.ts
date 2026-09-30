@@ -95,6 +95,11 @@ export interface AddDocumentOptions {
  */
 export interface SearchOptions {
   topK?: number // 返回结果数量，默认 5
+  /**
+   * 第一阶段每个通道的宽度（#77）。缺省 `DEFAULT_CANDIDATE_K`，且不会小于 `topK`。
+   * 搜索面板与 eval harness 用它把「找多宽」和「交多少」分开。
+   */
+  candidateK?: number
   threshold?: number // 相似度阈值，默认 0.5
   includeContent?: boolean // 是否包含 chunk 内容，默认 true
   /** 只在这些来源里检索（#94）；为空/缺省表示整个 notebook。 */
@@ -1237,6 +1242,7 @@ export class KnowledgeService {
     const { evidence } = await this.retrieve({
       notebookId,
       query,
+      candidateK: options.candidateK,
       topK: options.topK,
       threshold: options.threshold,
       strategy: options.strategy,
