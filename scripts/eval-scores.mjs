@@ -101,6 +101,14 @@ function quantile(values, p) {
  */
 const toCosine = (score) => (score === null ? null : 2 * score - 1)
 
+/**
+ * A difference of two scores is not an affine map of a difference of two cosines: the
+ * `+1` cancels, so `Δcosine = 2 * Δscore`. Applying the absolute transform to a margin
+ * would have produced `2Δscore - 1`, which for a near-zero margin reports a cosine margin
+ * near −1 — a sign flip on top of a scale error.
+ */
+const toCosineMargin = (margin) => (margin === null ? null : 2 * margin)
+
 const QUANTILES = [0, 10, 25, 50, 75, 90, 100]
 
 function describe(values) {
@@ -203,10 +211,17 @@ const curve = thresholdGrid.map((threshold) => {
 })
 
 const format4 = (value) => (value === null ? '—' : value.toFixed(4))
-const quantileRow = (label, values) => {
+/**
+ * `transform` maps a value to its cosine counterpart. It defaults to the absolute-score
+ * transform and is overridden for margins, because the two do not share one.
+ */
+const quantileRow = (label, values, transform = toCosine) => {
   const d = describe(values)
   if (!d) return `| ${label} | 0 | ${QUANTILES.map(() => '—').join(' | ')} |`
-  const cells = QUANTILES.map((p) => `${d[`p${p}`].toFixed(4)} (${toCosine(d[`p${p}`]).toFixed(3)})`)
+  const cells = QUANTILES.map((p) => {
+    const value = d[`p${p}`]
+    return `${value.toFixed(4)} (${transform(value).toFixed(3)})`
+  })
   return `| ${label} | ${values.length} | ${cells.join(' | ')} |`
 }
 
@@ -294,12 +309,21 @@ is the lowest one that still has to survive for the question to be fully answere
 \`best non-relevant\` is the highest-scoring passage that covers nothing; \`margin\` is the
 first minus the third.
 
+The margin is an **oracle** quantity: at runtime nothing knows which result is relevant, so
+it describes how much the score separates the two — it is not a signal a product could use.
+Reading it as a candidate mechanism is the mistake the runtime-signal evaluation exists to
+avoid.
+
+Where a row shows a raw cosine in brackets: an **absolute** score maps as
+\`cosine = 2·score − 1\`, while a **margin** maps as \`Δcosine = 2·Δscore\` because the
+\`+1\` cancels. The \`margin\` row uses the latter, the others the former.
+
 | Distribution | n | min | p10 | p25 | p50 | p75 | p90 | max |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${quantileRow('best relevant', relevantBest)}
 ${quantileRow('worst relevant', relevantWorst)}
 ${quantileRow('best non-relevant', nonRelevantBest)}
-${quantileRow('margin (best rel − best non-rel)', margins)}
+${quantileRow('margin (best rel − best non-rel)', margins, toCosineMargin)}
 ${quantileRow('unanswerable max candidate', unanswerableMax)}
 
 ## By query type

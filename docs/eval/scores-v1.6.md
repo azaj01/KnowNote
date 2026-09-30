@@ -46,12 +46,21 @@ is the lowest one that still has to survive for the question to be fully answere
 `best non-relevant` is the highest-scoring passage that covers nothing; `margin` is the
 first minus the third.
 
+The margin is an **oracle** quantity: at runtime nothing knows which result is relevant, so
+it describes how much the score separates the two — it is not a signal a product could use.
+Reading it as a candidate mechanism is the mistake the runtime-signal evaluation exists to
+avoid.
+
+Where a row shows a raw cosine in brackets: an **absolute** score maps as
+`cosine = 2·score − 1`, while a **margin** maps as `Δcosine = 2·Δscore` because the
+`+1` cancels. The `margin` row uses the latter, the others the former.
+
 | Distribution | n | min | p10 | p25 | p50 | p75 | p90 | max |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | best relevant | 19 | 0.8808 (0.762) | 0.8906 (0.781) | 0.9120 (0.824) | 0.9359 (0.872) | 0.9428 (0.886) | 0.9530 (0.906) | 0.9537 (0.907) |
 | worst relevant | 19 | 0.8808 (0.762) | 0.8906 (0.781) | 0.9086 (0.817) | 0.9355 (0.871) | 0.9428 (0.886) | 0.9530 (0.906) | 0.9537 (0.907) |
 | best non-relevant | 19 | 0.8904 (0.781) | 0.9081 (0.816) | 0.9178 (0.836) | 0.9243 (0.849) | 0.9336 (0.867) | 0.9386 (0.877) | 0.9459 (0.892) |
-| margin (best rel − best non-rel) | 19 | -0.0294 (-1.059) | -0.0272 (-1.054) | -0.0092 (-1.018) | 0.0026 (-0.995) | 0.0081 (-0.984) | 0.0329 (-0.934) | 0.0623 (-0.875) |
+| margin (best rel − best non-rel) | 19 | -0.0294 (-0.059) | -0.0272 (-0.054) | -0.0092 (-0.018) | 0.0026 (0.005) | 0.0081 (0.016) | 0.0329 (0.066) | 0.0623 (0.125) |
 | unanswerable max candidate | 5 | 0.8978 (0.796) | 0.8978 (0.796) | 0.9128 (0.826) | 0.9259 (0.852) | 0.9343 (0.869) | 0.9424 (0.885) | 0.9424 (0.885) |
 
 ## By query type
