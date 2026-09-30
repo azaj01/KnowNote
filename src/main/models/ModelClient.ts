@@ -5,7 +5,7 @@
  * 提供对话流式生成与 embedding 能力。业务代码只依赖它，不感知厂商。
  */
 
-import { embed, embedMany, streamText } from 'ai'
+import { embed, embedMany, streamText, toUIMessageStream } from 'ai'
 import type { AsyncIterableStream, LanguageModel, LanguageModelUsage, UIMessageChunk } from 'ai'
 import type { SharedV2ProviderOptions } from '@ai-sdk/provider'
 import type { APIMessage, ChatTokenUsage } from '../../shared/types/chat'
@@ -119,6 +119,12 @@ export class ModelClient {
 
     const result = streamText({
       model: this.getAIModel(),
+      // KnowNote puts the retrieved context (and the title-generation prompt) into
+      // the history as a `system` message. AI SDK 7 rejects those by default, and
+      // it does not throw: the answer comes back empty. Every message here is
+      // built by this app, so the untrusted-injection case the default guards
+      // against does not apply.
+      allowSystemInMessages: true,
       messages: toModelMessages(messages),
       temperature: DEFAULT_TEMPERATURE,
       // Only when the connection asks for a ceiling. Absent means the model's own
@@ -135,7 +141,10 @@ export class ModelClient {
     })
 
     return {
-      events: result.toUIMessageStream({
+      // The stateless helper, not `result.toUIMessageStream`: the result method is
+      // deprecated in v7 and logs a warning on every turn.
+      events: toUIMessageStream({
+        stream: result.stream,
         sendReasoning: true,
         // The SDK replaces a provider error with a generic sentence by default; the
         // reader is owed the real one, which is what the transcript has always shown.
