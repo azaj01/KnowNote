@@ -141,6 +141,7 @@ export async function runEvalCli(argv: readonly string[] = process.argv): Promis
   const prepare = argv.includes(EVAL_PREPARE_FLAG)
   const corpusDir = resolve(readOption(argv, '--eval-corpus=', 'eval/corpus'))
   const questionsPath = resolve(readOption(argv, '--eval-questions=', 'eval/questions.jsonl'))
+  const splitsPath = resolve(readOption(argv, '--eval-splits=', 'eval/splits.json'))
   const outDir = resolve(readOption(argv, '--eval-out=', 'docs/eval'))
 
   // The real profile is captured before redirecting: the model cache lives under
@@ -190,6 +191,7 @@ export async function runEvalCli(argv: readonly string[] = process.argv): Promis
       // committed JSON is identical on every machine and checkout.
       corpusLabel: repoRelative(corpusDir) || 'eval/corpus',
       questionsPath,
+      splitsPath,
       baseline: readOption(argv, '--eval-baseline=', 'v1.6'),
       split: readSplit(argv),
       // 默认就是生产配置（#77）：先取宽，融合，再把 contextK 条送进 prompt。一个不镜像

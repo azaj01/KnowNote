@@ -25,6 +25,14 @@ export interface EvalQuestion {
   relevant: EvalRelevantLocation[]
   goldAnswer?: string
   /**
+   * 这份语料里能不能回答（#192）。缺省 `true`。
+   *
+   * `false` 的问题必须 `relevant: []`：它的正确答案是“资料里没有”，所以既不能拿
+   * Recall 去惩罚它，也不能让它的“命中”看起来像成功。它评的是另一件事：该拒答的
+   * 时候，检索有没有硬找出一堆相似但无关的上下文。
+   */
+  answerable?: boolean
+  /**
    * 查询类别（#192）。自由字符串，因为语料还会长出新类别；报告按出现过的值分组，
    * 缺省归入 `untagged`。
    *
@@ -43,18 +51,78 @@ export interface EvalQuestion {
  */
 export type EvalSplit = 'all' | 'validation' | 'test'
 
-/** id 分桶，0/1/2；只用于切分，不参与检索。 */
-export function splitBucket(id: string): number {
-  let hash = 0
-  for (const character of id) hash = (hash * 31 + character.charCodeAt(0)) >>> 0
-  return hash % 3
+/** 问题 id → 它属于切分的哪一边。 */
+export type SplitAssignment = Record<string, 'validation' | 'test'>
+
+/**
+ * 解析提交在仓库里的切分清单（`eval/splits.json`）。
+ *
+ * 用显式清单而不是 id 哈希（#192 评审）：哈希看着确定，但它的确定是“每次结果一样”，
+ * 不是“每次划分一样”——往 `questions.jsonl` 里加一道题，会把其它题在 validation /
+ * test 之间挪动，而一个稀有类别（multi-hop、cross-lingual）可以在无人选择的情况下整体
+ * 落到某一边。清单让划分是被 review 的，不是被算出来的。
+ */
+export function parseSplitAssignment(raw: unknown, source: string): SplitAssignment {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+    throw new Error(
+      `${source} must be a JSON object mapping a question id to "validation" or "test"`
+    )
+  }
+
+  const assignment: SplitAssignment = {}
+  for (const [id, side] of Object.entries(raw as Record<string, unknown>)) {
+    if (side !== 'validation' && side !== 'test') {
+      throw new Error(
+        `${source}: question ${id} is assigned ${JSON.stringify(side)}; ` +
+          'expected "validation" or "test"'
+      )
+    }
+    assignment[id] = side
+  }
+  return assignment
 }
 
-/** validation 是 bucket 0（约 1/3），test 是其余（约 2/3）。 */
-export function selectSplit(questions: EvalQuestion[], split: EvalSplit): EvalQuestion[] {
-  if (split === 'all') return questions
-  const wantValidation = split === 'validation'
-  return questions.filter((question) => (splitBucket(question.id) === 0) === wantValidation)
+/**
+ * 选出一份切分。`all` 不需要清单；`validation`/`test` **必须**在清单里有条目。
+ *
+ * 缺条目就报错，而不是默认归入某一边：一个刚加进来的问题应当先被人工决定属于哪一边，
+ * 而不是静静泄漏进 test。
+ */
+export function selectSplit(
+  questions: readonly EvalQuestion[],
+  split: EvalSplit,
+  assignment: SplitAssignment
+): EvalQuestion[] {
+  if (split === 'all') return [...questions]
+  return questions.filter((question) => {
+    const side = assignment[question.id]
+    if (side === undefined) {
+      throw new Error(
+        `question ${question.id} has no entry in the split manifest; assign it to ` +
+          '"validation" or "test" deliberately rather than letting it default into a side'
+      )
+    }
+    return side === split
+  })
+}
+
+/**
+ * 数据集自身的契约（#192）：可答的必须有 ground truth，不可答的必须没有。
+ *
+ * 两者搞反时指标不会报错，只会静静地失去意义 —— 一个可答但没有 ground truth 的问题
+ * 会被当成永远漏报，一个不可答却带着 ground truth 的问题会被当成正常命中。
+ */
+export function assertQuestionShape(question: EvalQuestion): void {
+  const answerable = question.answerable ?? true
+  if (answerable && question.relevant.length === 0) {
+    throw new Error(`question ${question.id} is answerable but has no ground truth`)
+  }
+  if (!answerable && question.relevant.length > 0) {
+    throw new Error(
+      `question ${question.id} is unanswerable but carries ${question.relevant.length} ` +
+        'ground-truth location(s)'
+    )
+  }
 }
 
 /** One resolved ground-truth location, after runtime id mapping. */
@@ -109,6 +177,8 @@ export interface QuestionReport {
   question: string
   /** 查询类别，与 `EvalQuestion.type` 一致；缺省为 `untagged`。 */
   type: string
+  /** 与 `EvalQuestion.answerable` 一致（缺省 true）。 */
+  answerable: boolean
   firstRelevantRank: number
   relevantCount: number
   retrievedCount: number
@@ -159,8 +229,21 @@ export interface EvalReport {
     chunkCount: number
   }
   metrics: EvalMetrics
-  /** 每个查询类别一行；类别来自 `questions.jsonl` 的 `type`。 */
+  /** 每个查询类别一行；类别来自 `questions.jsonl` 的 `type`。只含可答的问题。 */
   byType: EvalTypeBreakdown[]
+  /**
+   * 不可答问题的单独一组（#192）。
+   *
+   * 它们不进 `metrics`/`byType`：没有 ground truth，Recall 对它们是 0/0 而不是 0。
+   * 它们评的是“该拒答时有没有硬找”——`noResultRate` 越接近 1 越好（在真的没有相关
+   * 资料时返回空），`meanRetrieved` 则是“硬找了多少条相似但无关的上下文”。
+   */
+  unanswerable: {
+    questions: number
+    noResultCount: number
+    noResultRate: number
+    meanRetrieved: number
+  }
   /** `indexingMs` 只用于 #78 的吞吐比较；它不在确定报告里，也不该成为差异原因。 */
   timing: { latencyP50Ms: number; latencyP95Ms: number; indexingMs: number }
   perQuestion: QuestionReport[]
@@ -177,5 +260,6 @@ export interface EvalDeterministicReport {
   config: EvalReport['config']
   metrics: EvalMetrics
   byType: EvalTypeBreakdown[]
+  unanswerable: EvalReport['unanswerable']
   perQuestion: QuestionReport[]
 }

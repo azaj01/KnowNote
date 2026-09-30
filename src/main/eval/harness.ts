@@ -12,7 +12,7 @@
  */
 
 import { readdir, readFile } from 'fs/promises'
-import { join, posix } from 'path'
+import { join, posix, relative } from 'path'
 import { and, eq } from 'drizzle-orm'
 import { documentBlocks, notebooks, chunks } from '../db/schema'
 import type { getDatabase } from '../db'
@@ -40,9 +40,10 @@ import type {
   EvalSplit,
   EvalTypeBreakdown,
   QuestionReport,
-  ResolvedGroundTruth
+  ResolvedGroundTruth,
+  SplitAssignment
 } from './types'
-import { selectSplit } from './types'
+import { assertQuestionShape, parseSplitAssignment, selectSplit } from './types'
 
 type Db = ReturnType<typeof getDatabase>
 
@@ -52,6 +53,8 @@ export interface EvalHarnessOptions {
   /** Repo-relative label recorded in the report, so the JSON is machine-independent. */
   corpusLabel: string
   questionsPath: string
+  /** 切分清单（`eval/splits.json`）。`split: 'all'` 时不读。 */
+  splitsPath: string
   baseline: string
   /** 本次只评这一份切分（#192）；缺省 `all`。 */
   split: EvalSplit
@@ -212,6 +215,24 @@ async function indexCorpus(
   return { documentIds, chunkCount, indexingMs: performance.now() - indexingStarted }
 }
 
+/**
+ * 读切分清单。`all` 不需要清单，所以 `all` 的运行不会因为缺清单而失败。
+ *
+ * JSON 解析错误会把文件路径带上：清单是提交在仓库里的，一份写坏的清单应该指向它自己。
+ */
+async function loadSplitAssignment(options: EvalHarnessOptions): Promise<SplitAssignment> {
+  if (options.split === 'all') return {}
+
+  const label = relative(process.cwd(), options.splitsPath).split(/[\\/]/).join('/')
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(await readFile(options.splitsPath, 'utf-8'))
+  } catch (error) {
+    throw new Error(`${label} could not be read as JSON: ${String(error)}`)
+  }
+  return parseSplitAssignment(parsed, label)
+}
+
 export async function runEvalHarness(
   db: Db,
   knowledgeService: KnowledgeService,
@@ -238,7 +259,12 @@ export async function runEvalHarness(
     options.chunkOptions
   )
   const allQuestions = parseQuestions(await readFile(options.questionsPath, 'utf-8'))
-  const questions = selectSplit(allQuestions, options.split)
+  // 数据集自身的契约先校验：可答必须有 ground truth，不可答必须没有。搞反时指标不会
+  // 报错，只会静静地失去意义。
+  for (const question of allQuestions) assertQuestionShape(question)
+
+  const assignment = await loadSplitAssignment(options)
+  const questions = selectSplit(allQuestions, options.split, assignment)
   if (questions.length === 0) {
     throw new Error(`eval split "${options.split}" selected no questions from ${options.questionsPath}`)
   }
@@ -276,6 +302,7 @@ export async function runEvalHarness(
       id: question.id,
       question: question.question,
       type: question.type ?? UNTAGGED,
+      answerable: question.answerable ?? true,
       firstRelevantRank: firstRelevantRank(matchesByRank),
       relevantCount: groundTruth.length,
       retrievedCount: results.length,
@@ -286,15 +313,30 @@ export async function runEvalHarness(
     })
   }
 
-  const metrics = summarize(perQuestion, options.contextK)
+  // 不可答的问题不进排名指标：它们没有 ground truth，`recallAtK` 对它们返回的是 0/0
+  // 而不是 0，把“该拒答”算成“漏报”会让整张表失真。它们自成一组。
+  const answerable = perQuestion.filter((q) => q.answerable)
+  const unanswerableQuestions = perQuestion.filter((q) => !q.answerable)
+
+  const metrics = summarize(answerable, options.contextK)
 
   // 每个类别一行，按类别名排序，所以同一个 JSON 在两次运行之间可 diff。
-  const byType: EvalTypeBreakdown[] = [...new Set(perQuestion.map((q) => q.type))]
+  const byType: EvalTypeBreakdown[] = [...new Set(answerable.map((q) => q.type))]
     .sort()
     .map((type) => {
-      const group = perQuestion.filter((q) => q.type === type)
+      const group = answerable.filter((q) => q.type === type)
       return { type, questions: group.length, metrics: summarize(group, options.contextK) }
     })
+
+  const unanswerableNoResults = unanswerableQuestions.filter((q) => q.retrievedCount === 0).length
+  const unanswerable = {
+    questions: unanswerableQuestions.length,
+    noResultCount: unanswerableNoResults,
+    // 目标方向与其他指标相反：没有相关资料时，返回空才是对的。
+    noResultRate:
+      unanswerableQuestions.length === 0 ? 0 : unanswerableNoResults / unanswerableQuestions.length,
+    meanRetrieved: mean(unanswerableQuestions.map((q) => q.retrievedCount))
+  }
 
   const chunking = { ...DEFAULT_CHUNK_OPTIONS, ...options.chunkOptions }
   return {
@@ -321,6 +363,7 @@ export async function runEvalHarness(
     },
     metrics,
     byType,
+    unanswerable,
     timing: {
       latencyP50Ms: percentile(latencies, 50),
       latencyP95Ms: percentile(latencies, 95),
@@ -371,6 +414,7 @@ export function toDeterministicReport(report: EvalReport): EvalDeterministicRepo
     config: report.config,
     metrics: report.metrics,
     byType: report.byType,
+    unanswerable: report.unanswerable,
     perQuestion: report.perQuestion
   }
 }

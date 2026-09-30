@@ -12,6 +12,7 @@ const options = (overrides: Record<string, unknown> = {}): Record<string, unknow
   corpusDir: 'eval/corpus',
   corpusLabel: 'eval/corpus',
   questionsPath: 'eval/questions.jsonl',
+  splitsPath: 'eval/splits.json',
   baseline: 'test',
   split: 'all',
   candidateK: 20,

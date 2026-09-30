@@ -7,175 +7,255 @@
     {
       "threshold": 0,
       "validation": {
-        "questions": 10,
+        "questions": 13,
+        "answerableQuestions": 10,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 19,
+        "unanswerable": {
+          "questions": 3,
+          "noResultCount": 0,
+          "noResultRate": 0,
+          "meanRetrieved": 19
+        },
         "metrics": {
-          "recallAt1": 0.9,
+          "recallAt1": 0.75,
           "recallAt5": 1,
           "recallAt10": 1,
-          "mrr": 0.933333,
-          "ndcgAt10": 0.95,
+          "mrr": 0.9,
+          "ndcgAt10": 0.918158,
           "hitRateAt5": 1,
-          "mapAt10": 0.933333,
-          "evidencePrecisionAt5": 0.2
+          "mapAt10": 0.883333,
+          "contextPrecision": 0.366667,
+          "contextRecall": 1
         }
       },
       "test": {
-        "questions": 20,
+        "questions": 23,
+        "answerableQuestions": 20,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 19,
+        "unanswerable": {
+          "questions": 3,
+          "noResultCount": 0,
+          "noResultRate": 0,
+          "meanRetrieved": 19
+        },
         "metrics": {
-          "recallAt1": 0.8,
+          "recallAt1": 0.875,
           "recallAt5": 1,
           "recallAt10": 1,
-          "mrr": 0.925,
-          "ndcgAt10": 0.940626,
+          "mrr": 0.941667,
+          "ndcgAt10": 0.956546,
           "hitRateAt5": 1,
-          "mapAt10": 0.916667,
-          "evidencePrecisionAt5": 0.22
+          "mapAt10": 0.941667,
+          "contextPrecision": 0.35,
+          "contextRecall": 1
         }
       }
     },
     {
       "threshold": 0.3,
       "validation": {
-        "questions": 10,
+        "questions": 13,
+        "answerableQuestions": 10,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 19,
+        "unanswerable": {
+          "questions": 3,
+          "noResultCount": 0,
+          "noResultRate": 0,
+          "meanRetrieved": 19
+        },
         "metrics": {
-          "recallAt1": 0.9,
+          "recallAt1": 0.75,
           "recallAt5": 1,
           "recallAt10": 1,
-          "mrr": 0.933333,
-          "ndcgAt10": 0.95,
+          "mrr": 0.9,
+          "ndcgAt10": 0.918158,
           "hitRateAt5": 1,
-          "mapAt10": 0.933333,
-          "evidencePrecisionAt5": 0.2
+          "mapAt10": 0.883333,
+          "contextPrecision": 0.366667,
+          "contextRecall": 1
         }
       },
       "test": {
-        "questions": 20,
+        "questions": 23,
+        "answerableQuestions": 20,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 19,
+        "unanswerable": {
+          "questions": 3,
+          "noResultCount": 0,
+          "noResultRate": 0,
+          "meanRetrieved": 19
+        },
         "metrics": {
-          "recallAt1": 0.8,
+          "recallAt1": 0.875,
           "recallAt5": 1,
           "recallAt10": 1,
-          "mrr": 0.925,
-          "ndcgAt10": 0.940626,
+          "mrr": 0.941667,
+          "ndcgAt10": 0.956546,
           "hitRateAt5": 1,
-          "mapAt10": 0.916667,
-          "evidencePrecisionAt5": 0.22
+          "mapAt10": 0.941667,
+          "contextPrecision": 0.35,
+          "contextRecall": 1
         }
       }
     },
     {
       "threshold": 0.4,
       "validation": {
-        "questions": 10,
+        "questions": 13,
+        "answerableQuestions": 10,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 19,
+        "unanswerable": {
+          "questions": 3,
+          "noResultCount": 0,
+          "noResultRate": 0,
+          "meanRetrieved": 19
+        },
         "metrics": {
-          "recallAt1": 0.9,
+          "recallAt1": 0.75,
           "recallAt5": 1,
           "recallAt10": 1,
-          "mrr": 0.933333,
-          "ndcgAt10": 0.95,
+          "mrr": 0.9,
+          "ndcgAt10": 0.918158,
           "hitRateAt5": 1,
-          "mapAt10": 0.933333,
-          "evidencePrecisionAt5": 0.2
+          "mapAt10": 0.883333,
+          "contextPrecision": 0.366667,
+          "contextRecall": 1
         }
       },
       "test": {
-        "questions": 20,
+        "questions": 23,
+        "answerableQuestions": 20,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 19,
+        "unanswerable": {
+          "questions": 3,
+          "noResultCount": 0,
+          "noResultRate": 0,
+          "meanRetrieved": 19
+        },
         "metrics": {
-          "recallAt1": 0.8,
+          "recallAt1": 0.875,
           "recallAt5": 1,
           "recallAt10": 1,
-          "mrr": 0.925,
-          "ndcgAt10": 0.940626,
+          "mrr": 0.941667,
+          "ndcgAt10": 0.956546,
           "hitRateAt5": 1,
-          "mapAt10": 0.916667,
-          "evidencePrecisionAt5": 0.22
+          "mapAt10": 0.941667,
+          "contextPrecision": 0.35,
+          "contextRecall": 1
         }
       }
     },
     {
       "threshold": 0.5,
       "validation": {
-        "questions": 10,
+        "questions": 13,
+        "answerableQuestions": 10,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 19,
+        "unanswerable": {
+          "questions": 3,
+          "noResultCount": 0,
+          "noResultRate": 0,
+          "meanRetrieved": 19
+        },
         "metrics": {
-          "recallAt1": 0.9,
+          "recallAt1": 0.75,
           "recallAt5": 1,
           "recallAt10": 1,
-          "mrr": 0.933333,
-          "ndcgAt10": 0.95,
+          "mrr": 0.9,
+          "ndcgAt10": 0.918158,
           "hitRateAt5": 1,
-          "mapAt10": 0.933333,
-          "evidencePrecisionAt5": 0.2
+          "mapAt10": 0.883333,
+          "contextPrecision": 0.366667,
+          "contextRecall": 1
         }
       },
       "test": {
-        "questions": 20,
+        "questions": 23,
+        "answerableQuestions": 20,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 19,
+        "unanswerable": {
+          "questions": 3,
+          "noResultCount": 0,
+          "noResultRate": 0,
+          "meanRetrieved": 19
+        },
         "metrics": {
-          "recallAt1": 0.8,
+          "recallAt1": 0.875,
           "recallAt5": 1,
           "recallAt10": 1,
-          "mrr": 0.925,
-          "ndcgAt10": 0.940626,
+          "mrr": 0.941667,
+          "ndcgAt10": 0.956546,
           "hitRateAt5": 1,
-          "mapAt10": 0.916667,
-          "evidencePrecisionAt5": 0.22
+          "mapAt10": 0.941667,
+          "contextPrecision": 0.35,
+          "contextRecall": 1
         }
       }
     },
     {
       "threshold": 0.6,
       "validation": {
-        "questions": 10,
+        "questions": 13,
+        "answerableQuestions": 10,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 19,
+        "unanswerable": {
+          "questions": 3,
+          "noResultCount": 0,
+          "noResultRate": 0,
+          "meanRetrieved": 19
+        },
         "metrics": {
-          "recallAt1": 0.9,
+          "recallAt1": 0.75,
           "recallAt5": 1,
           "recallAt10": 1,
-          "mrr": 0.933333,
-          "ndcgAt10": 0.95,
+          "mrr": 0.9,
+          "ndcgAt10": 0.918158,
           "hitRateAt5": 1,
-          "mapAt10": 0.933333,
-          "evidencePrecisionAt5": 0.2
+          "mapAt10": 0.883333,
+          "contextPrecision": 0.366667,
+          "contextRecall": 1
         }
       },
       "test": {
-        "questions": 20,
+        "questions": 23,
+        "answerableQuestions": 20,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 19,
+        "unanswerable": {
+          "questions": 3,
+          "noResultCount": 0,
+          "noResultRate": 0,
+          "meanRetrieved": 19
+        },
         "metrics": {
-          "recallAt1": 0.8,
+          "recallAt1": 0.875,
           "recallAt5": 1,
           "recallAt10": 1,
-          "mrr": 0.925,
-          "ndcgAt10": 0.940626,
+          "mrr": 0.941667,
+          "ndcgAt10": 0.956546,
           "hitRateAt5": 1,
-          "mapAt10": 0.916667,
-          "evidencePrecisionAt5": 0.22
+          "mapAt10": 0.941667,
+          "contextPrecision": 0.35,
+          "contextRecall": 1
         }
       }
     }

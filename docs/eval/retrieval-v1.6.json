@@ -7,6 +7,9 @@
       "label": "dense (vector)",
       "chunking": "1000/100",
       "chunkCount": 19,
+      "split": "all",
+      "questions": 36,
+      "answerableCount": 30,
       "recallAt1": 0.833333,
       "recallAt5": 1,
       "recallAt10": 1,
@@ -16,14 +19,17 @@
       "mapAt10": 0.922222,
       "contextPrecision": 0.355556,
       "contextRecall": 1,
-      "indexingMs": 1548,
-      "latencyP95Ms": 20.51
+      "indexingMs": 1518,
+      "latencyP95Ms": 14.2
     },
     {
       "id": "sparse",
       "label": "sparse (BM25)",
       "chunking": "1000/100",
       "chunkCount": 19,
+      "split": "all",
+      "questions": 36,
+      "answerableCount": 30,
       "recallAt1": 0.733333,
       "recallAt5": 0.866667,
       "recallAt10": 0.866667,
@@ -33,14 +39,17 @@
       "mapAt10": 0.8,
       "contextPrecision": 0.311111,
       "contextRecall": 0.866667,
-      "indexingMs": 1490,
-      "latencyP95Ms": 1.96
+      "indexingMs": 1513,
+      "latencyP95Ms": 2.46
     },
     {
       "id": "hybrid",
       "label": "hybrid (RRF of dense + BM25)",
       "chunking": "1000/100",
       "chunkCount": 19,
+      "split": "all",
+      "questions": 36,
+      "answerableCount": 30,
       "recallAt1": 0.866667,
       "recallAt5": 1,
       "recallAt10": 1,
@@ -50,8 +59,8 @@
       "mapAt10": 0.938889,
       "contextPrecision": 0.355556,
       "contextRecall": 1,
-      "indexingMs": 1507,
-      "latencyP95Ms": 20.66
+      "indexingMs": 1557,
+      "latencyP95Ms": 19.55
     }
   ]
 }

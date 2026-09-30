@@ -141,7 +141,11 @@ try {
     mkdirSync(outDir, { recursive: true })
     const report = await runOne(strategy, candidateK, contextK, outDir)
     const perQuestion = report.perQuestion ?? []
-    const noResult = perQuestion.filter((q) => q.retrievedCount === 0).length
+    // 质量列只看可答的问题，拒答列只看不可答的问题。把两者平均到一起，会给出一个
+    // 看起来很干净的检索分数，即使同一份语料把“谁赢了 2018 世界杯”用 19 条上下文
+    // 回答了（#192 评审）。
+    const answerable = perQuestion.filter((q) => q.answerable)
+    const noResult = answerable.filter((q) => q.retrievedCount === 0).length
 
     rows.push({
       strategy,
@@ -152,8 +156,11 @@ try {
       mapAt10: report.metrics.mapAt10,
       contextPrecision: report.metrics.contextPrecision,
       contextRecall: report.metrics.contextRecall,
-      noResultRate: perQuestion.length === 0 ? 0 : noResult / perQuestion.length,
-      meanContextChars: mean(perQuestion.map((q) => q.contextChars)),
+      noResultRate: answerable.length === 0 ? 0 : noResult / answerable.length,
+      meanContextChars: mean(answerable.map((q) => q.contextChars)),
+      unanswerableQuestions: report.unanswerable.questions,
+      unanswerableNoResultRate: report.unanswerable.noResultRate,
+      unanswerableMeanRetrieved: report.unanswerable.meanRetrieved,
       chunkCount: report.config.chunkCount,
       ...readTiming(join(outDir, 'baseline-v1.6.md'))
     })
@@ -170,7 +177,8 @@ const tableRows = rows
       `| ${row.strategy} | ${row.candidateK} | ${row.contextK} | ${format4(row.recallAt5)} | ` +
       `${format4(row.ndcgAt10)} | ${format4(row.mapAt10)} | ${format4(row.contextPrecision)} | ` +
       `${format4(row.contextRecall)} | ${format4(row.noResultRate)} | ` +
-      `${Math.round(row.meanContextChars)} | ${row.chunkCount} | ${row.latencyP95Ms?.toFixed(2) ?? '—'} ms |`
+      `${Math.round(row.meanContextChars)} | ${format4(row.unanswerableNoResultRate)} | ` +
+      `${row.unanswerableMeanRetrieved.toFixed(1)} | ${row.chunkCount} | ${row.latencyP95Ms?.toFixed(2) ?? '—'} ms |`
   )
   .join('\n')
 
@@ -203,8 +211,8 @@ The real harness, the same corpus, chunking held fixed, over
 ${STRATEGIES.join(' / ')} × candidateK {${CANDIDATE_KS.join(', ')}} × contextK {${CONTEXT_KS.join(', ')}} — ${rows.length} runs.
 Each row differs from its neighbour in one parameter.${skipped.length > 0 ? `\n\n${skipped.length} further cell(s) were **skipped** because \`contextK > candidateK\`; see below.` : ''}
 
-| Strategy | candidateK | contextK | Recall@5 | nDCG@10 | MAP@10 | Context P | Context R | No-result | Context chars | Index | p95 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Strategy | candidateK | contextK | Recall@5 | nDCG@10 | MAP@10 | Context P | Context R | No-result | Context chars | Unans. no-result | Unans. retrieved | Index | p95 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${tableRows}
 ${skippedNote}
 
@@ -218,7 +226,12 @@ ${skippedNote}
   columns are here so it is visible rather than argued about.
 - **Context chars** is a proxy for prompt size, not a token count: the harness pins the
   embedding model, not any generation model's tokenizer.
-- **No-result** is the share of questions whose retrieval returned nothing at all.
+- **No-result** is the share of *answerable* questions whose retrieval returned nothing —
+  a miss, and the lower the better.
+- **Unans. no-result / retrieved** are the same idea for the *unanswerable* questions,
+  where the direction flips: there is no ground truth, so returning nothing is correct and
+  \`retrieved\` is how much irrelevant context was pulled in anyway. These two are the
+  columns a threshold decision should move, and they are kept out of every other column.
 
 Best nDCG@10 in this grid: \`${bestNdcg.strategy}\` candidateK=${bestNdcg.candidateK},
 contextK=${bestNdcg.contextK} (${format4(bestNdcg.ndcgAt10)}).

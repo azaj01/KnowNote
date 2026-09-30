@@ -88,22 +88,29 @@ function runOne(threshold, split, outDir) {
 }
 
 /**
- * The frozen metrics plus the one this experiment needs and the baseline does not
- * carry: how often a threshold turns a question into "no results at all".
+ * The frozen metrics plus the two the experiment exists for: how often the threshold
+ * turns an answerable question into "no results at all", and how often it makes an
+ * unanswerable one return nothing (which is the desired outcome for those).
  *
- * A higher threshold can look better on ranking metrics while quietly making the
- * product answer "not in your sources" more often, and that trade is invisible
- * unless it is counted.
+ * A threshold that scores well on ranking metrics but keeps returning the whole corpus
+ * for a question the sources do not answer is invisible unless the second number is
+ * counted, and the two have to be split: one is a miss, the other is a correct refusal.
  */
 function summarize(report) {
   const perQuestion = report.perQuestion ?? []
-  const noResult = perQuestion.filter((q) => q.retrievedCount === 0).length
-  const retrieved = perQuestion.map((q) => q.retrievedCount)
+  const answerable = perQuestion.filter((q) => q.answerable)
+  const noResult = answerable.filter((q) => q.retrievedCount === 0).length
   return {
     questions: perQuestion.length,
+    answerableQuestions: answerable.length,
     noResultCount: noResult,
-    noResultRate: perQuestion.length === 0 ? 0 : noResult / perQuestion.length,
-    meanRetrieved: retrieved.length === 0 ? 0 : retrieved.reduce((a, b) => a + b, 0) / retrieved.length,
+    noResultRate: answerable.length === 0 ? 0 : noResult / answerable.length,
+    meanRetrieved:
+      answerable.length === 0
+        ? 0
+        : answerable.reduce((a, q) => a + q.retrievedCount, 0) / answerable.length,
+    /** 不可答问题时希望返回空，所以这里的“高”是好事。 */
+    unanswerable: report.unanswerable,
     metrics: report.metrics
   }
 }
@@ -132,42 +139,63 @@ try {
 }
 
 /**
- * Selection rule, stated so it can be argued with: best validation nDCG@10, then
- * fewest validation no-results, then the widest (lowest) threshold — because the
- * first stage is supposed to favour recall and let a later stage filter.
+ * Selection rule, stated so it can be argued with (#192).
+ *
+ * Raising the threshold is only worth it if it refuses more of what the sources do not
+ * answer. So: take the widest threshold that does not regress the answerable quality
+ * metrics (nDCG@10 and context recall on validation) as the reference, then among the
+ * thresholds that hold that line, pick the one that refuses the most unanswerable
+ * questions; break ties on the lowest threshold.
+ *
+ * `threshold = 0` is the reference, because it is the arm that keeps the ranking intact.
  */
-const ranked = [...rows].sort(
+const reference = rows.find((row) => row.threshold === 0) ?? rows[0]
+const EPSILON = 1e-9
+const holdsTheLine = (row) =>
+  row.validation.metrics.ndcgAt10 >= reference.validation.metrics.ndcgAt10 - EPSILON &&
+  row.validation.metrics.contextRecall >= reference.validation.metrics.contextRecall - EPSILON
+
+const eligible = rows.filter(holdsTheLine)
+const ranked = [...eligible].sort(
   (a, b) =>
-    b.validation.metrics.ndcgAt10 - a.validation.metrics.ndcgAt10 ||
-    a.validation.noResultRate - b.validation.noResultRate ||
+    b.validation.unanswerable.noResultRate - a.validation.unanswerable.noResultRate ||
     a.threshold - b.threshold
 )
-const winner = ranked[0]
-const production = rows.find((row) => row.threshold === PRODUCTION_THRESHOLD)
+/**
+ * A flat sweep is not a weak recommendation, it is no recommendation: if no threshold
+ * changes either the answerable quality or the unanswerable refusal, the corpus cannot
+ * tell them apart and moving a product parameter on that evidence would be noise dressed
+ * as a result.
+ */
+const flat = rows.every(
+  (row) =>
+    row.validation.metrics.ndcgAt10 === reference.validation.metrics.ndcgAt10 &&
+    row.validation.unanswerable.noResultRate === reference.validation.unanswerable.noResultRate
+)
 
 /**
- * A flat sweep is not a weak recommendation, it is no recommendation: if every
- * threshold scores the same on both metrics, the corpus cannot tell them apart and
- * moving a product parameter on that evidence would be noise dressed as a result.
+ * Refusals are the point of the second number: `noResultCount` of the unanswerable
+ * questions came back empty, which is the correct outcome. The rest returned passages the
+ * sources cannot support.
  */
-const flat =
-  rows.every(
-    (row) =>
-      row.validation.metrics.ndcgAt10 === rows[0].validation.metrics.ndcgAt10 &&
-      row.validation.noResultRate === rows[0].validation.noResultRate
-  )
+const refusals = (row) => `${row.unanswerable.noResultCount}/${row.unanswerable.questions}`
+const describe = (row) =>
+  `nDCG@10 ${format4(row.metrics.ndcgAt10)}, Recall@5 ${format4(row.metrics.recallAt5)}, ` +
+  `answerable no-result ${format4(row.noResultRate)}, ` +
+  `unanswerable refused ${refusals(row)}`
 
 const outcome = flat
-  ? `The sweep is **flat**: every threshold from ${THRESHOLDS[0]} to ${THRESHOLDS[THRESHOLDS.length - 1]} produces the same validation nDCG@10 (${format4(rows[0].validation.metrics.ndcgAt10)}), the same Recall@5 (${format4(rows[0].validation.metrics.recallAt5)}) and a no-result rate of ${format4(rows[0].validation.noResultRate)}. On this corpus the threshold is simply **non-binding** — E5 never scores these query/chunk pairs below the top of the swept range, so no passage is ever filtered out.\n\n**No evidence to change \`threshold = ${PRODUCTION_THRESHOLD}\`.** The tie-break rule nominates \`${winner.threshold}\` only because it prefers the widest threshold among equals; that is a tie-break, not a finding. What this run establishes is that the current value cannot be validated *or* falsified here, which is a property of the corpus, not of the threshold. Re-run after #192 child 2 grows it.`
-  : `**Recommended: \`threshold = ${winner.threshold}\`.**\n\n- Validation: nDCG@10 ${format4(winner.validation.metrics.ndcgAt10)}, Recall@5 ${format4(winner.validation.metrics.recallAt5)}, no-result rate ${format4(winner.validation.noResultRate)} (${winner.validation.noResultCount}/${winner.validation.questions})\n- Test: nDCG@10 ${format4(winner.test.metrics.ndcgAt10)}, Recall@5 ${format4(winner.test.metrics.recallAt5)}, no-result rate ${format4(winner.test.noResultRate)} (${winner.test.noResultCount}/${winner.test.questions})\n- Mean retrieved per question: ${winner.test.meanRetrieved.toFixed(2)} (validation ${winner.validation.meanRetrieved.toFixed(2)})`
+  ? `The sweep is **flat**: every threshold from ${THRESHOLDS[0]} to ${THRESHOLDS[THRESHOLDS.length - 1]} produces the same validation nDCG@10 (${format4(reference.validation.metrics.ndcgAt10)}), the same Recall@5 (${format4(reference.validation.metrics.recallAt5)}) and the same unanswerable refusal rate (${refusals(reference.validation)}). No passage is ever filtered out, so the threshold is **non-binding** on this corpus — E5 does not score these query/chunk pairs below the top of the swept range.\n\n**No evidence to change \`threshold = ${PRODUCTION_THRESHOLD}\`.** All thresholds hold the line equally; picking one would be arbitrary. The current value can be neither validated nor falsified here, which is a property of the corpus rather than of the threshold.`
+  : `**Recommended: \`threshold = ${winner.threshold}\`.**\n\n- **Validation**: ${describe(winner.validation)}\n- **Test**: ${describe(winner.test)}\n- Production ships \`${PRODUCTION_THRESHOLD}\`: validation ${describe(production.validation)}.\n\nThe rule held answerable quality at the \`threshold = 0\` level (nDCG@10 and context recall must not regress, on the validation split) and then took the threshold that refuses the most unanswerable questions. So this is a refusal gain, not a quality gain — if answerable quality had fallen, the threshold would have been ineligible regardless of how much it refused.`
 
 const tableRows = rows
   .map(
     (row) =>
-      `| ${row.threshold} | ${row.validation.questions} | ${format4(row.validation.metrics.recallAt5)} | ` +
-      `${format4(row.validation.metrics.ndcgAt10)} | ${format4(row.validation.metrics.mapAt10)} | ` +
-      `${format4(row.validation.noResultRate)} | ${format4(row.test.metrics.ndcgAt10)} | ` +
-      `${format4(row.test.noResultRate)} |`
+      `| ${row.threshold} | ${row.validation.answerableQuestions} | ${format4(row.validation.metrics.recallAt5)} | ` +
+      `${format4(row.validation.metrics.ndcgAt10)} | ${format4(row.validation.noResultRate)} | ` +
+      `${format4(row.validation.unanswerable.noResultRate)} | ` +
+      `${row.validation.unanswerable.meanRetrieved.toFixed(1)} | ${format4(row.test.metrics.ndcgAt10)} | ` +
+      `${format4(row.test.unanswerable.noResultRate)} |`
   )
   .join('\n')
 
@@ -179,35 +207,36 @@ Generated by \`node scripts/eval-threshold.mjs\`. Numbers are harness output; do
 
 The real harness, the same corpus and the production retrieval config
 (\`candidateK=20, contextK=3\`), once per candidate threshold. The **validation**
-split selects; the **test** split reports. Both come from the same
-\`--eval-split=\` code path, and the split is a deterministic function of the
-question id, so this is reproducible.
+split selects; the **test** split reports. The split is the committed manifest
+\`eval/splits.json\`, so the same questions are on the same side on every machine.
 
-| Threshold | n (val) | Recall@5 (val) | nDCG@10 (val) | MAP@10 (val) | No-result (val) | nDCG@10 (test) | No-result (test) |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+Quality columns cover the answerable questions only; **Unans.** columns cover the
+unanswerable ones, where returning nothing is the desired outcome and so a *higher*
+no-result rate is better.
+
+| Threshold | n (val) | Recall@5 (val) | nDCG@10 (val) | No-result (val) | Unans. no-result (val) | Unans. retrieved (val) | nDCG@10 (test) | Unans. no-result (test) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${tableRows}
 
 ## Selection rule
 
-Best validation nDCG@10, then fewest validation no-results, then the **lowest**
-threshold — the first stage is supposed to favour recall and let a later stage
-filter, so among equals the wider one is the safer default.
+Hold the answerable quality line — validation nDCG@10 and context recall must not
+regress versus \`threshold = 0\` — then take the threshold that refuses the most
+unanswerable questions. Tie-break on the lowest threshold.
+
+Raising a threshold is only worth anything if it refuses what the sources do not answer;
+the quality gate is there so a refusal gain can never be bought with a retrieval loss.
 
 ## Outcome
 
 ${outcome}
 
-The app currently ships \`threshold = ${PRODUCTION_THRESHOLD}\`: validation nDCG@10
-${format4(production.validation.metrics.ndcgAt10)}, test nDCG@10
-${format4(production.test.metrics.ndcgAt10)}, test no-result rate
-${format4(production.test.noResultRate)}.
-
 ## Caveat on this corpus
 
-The split removes the most obvious form of overfitting, but ${rows[0].validation.questions}
-validation questions is a thin basis for a decision, and the corpus is still small. A
-threshold is a product decision with a **no-result-rate** cost attached, so a
-recommendation here is only as good as the corpus behind it. Re-run this after the
+The split removes the most obvious form of overfitting, but ${reference.validation.answerableQuestions}
+answerable questions on the validation side is a thin basis for a decision, and the corpus
+is still small. A threshold is a product decision with a **refusal-rate** cost attached, so
+a recommendation here is only as good as the corpus behind it. Re-run this after the
 corpus grows (#192 child 2).
 
 ## Reproduce

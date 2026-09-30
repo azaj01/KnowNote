@@ -36,9 +36,14 @@ report describes the whole online path.
 ### Swept parameters are chosen on `validation`, reported on `test`
 
 A parameter picked on the same questions it is scored on is a fitted number, not a
-result. `--eval-split=validation` selects roughly a third of the questions by a
-deterministic hash of the id; `test` is the rest. `npm run eval:threshold` uses this
-to pick a similarity threshold on `validation` and report it on `test`.
+result. `eval/splits.json` is the committed assignment; `--eval-split=validation` selects
+from it and `test` is the rest.
+
+It is an explicit manifest rather than a hash of the question id. A hash is reproducible
+but not *stable*: adding a question moves others between the sides, and a rare query type
+can end up entirely on one side without anyone choosing that. With a manifest, a question
+with no entry is **refused** rather than defaulted, so a new question is assigned
+deliberately instead of leaking into `test`.
 
 `npm run eval:sweep` runs a bounded grid (`strategy × candidateK × contextK`) and
 writes one dashboard with quality, context precision/recall, prompt size, index size
@@ -70,6 +75,7 @@ does not mean "no download". The 134 MB of weights are not committed.
 eval/
   corpus/            first-party documents (markdown today)
   questions.jsonl    one question per line; committed with the corpus
+  splits.json        the committed validation/test assignment
 ```
 
 The corpus is authored for this repository and carries the repository's GPL-3.0 licence,
@@ -83,6 +89,7 @@ dataset needs a new question.
   "id": "q001",
   "question": "Why is bedload harder to measure than suspended sediment?",
   "type": "semantic",
+  "answerable": true,
   "relevant": [
     {
       "document": "river-monitoring.md",
@@ -94,6 +101,11 @@ dataset needs a new question.
   "goldAnswer": "optional"
 }
 ```
+
+An **unanswerable** question is the same shape with `"answerable": false` and `"relevant": []`.
+The harness refuses the reverse combination in either direction — an answerable question
+with no ground truth, or an unanswerable one carrying some — because both are silent: the
+first reads as a permanent miss, the second as a normal hit.
 
 Ground truth uses **corpus identity, never database identity**:
 
@@ -163,6 +175,12 @@ from unanswerable queries.
   `semantic`, `multi-hop`, `cross-lingual`, `zh`). A single average hides a change that
   helps one kind of question and hurts another; the current baseline already shows this,
   with `cross-lingual` at nDCG 0.63 against 0.93–1.00 elsewhere.
+- **Unanswerable questions** — a separate group, never averaged in. They have no ground
+  truth, so `Recall` on them is 0/0 rather than 0, and the correct outcome is that
+  retrieval finds nothing. The reported **no-results** rate is the opposite of a miss:
+higher is better, and `mean passages retrieved` is how much irrelevant context was pulled
+  in anyway. This is the only metric a similarity-threshold decision should move, which is
+  why the threshold sweep reports it separately.
 - **Latency p50/p95** — informational only. Timing is **not** frozen, and the committed
   JSON excludes it so two runs diff cleanly.
 

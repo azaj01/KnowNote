@@ -28,3 +28,9 @@
 {"id":"q028","question":"茶叶储存的相对湿度上限是多少？","relevant":[{"document":"chinese-tea-storage.md","page":null,"block":4,"quote":"相对湿度应保持在百分之五十以下"}],"type":"zh"}
 {"id":"q029","question":"为什么冷冻保存的茶叶取出后不能立刻打开包装？","relevant":[{"document":"chinese-tea-storage.md","page":null,"block":6,"quote":"冷凝水会直接落在茶叶上"}],"type":"zh"}
 {"id":"q030","question":"为什么潮汐能比风能和太阳能更容易提前安排发电？","relevant":[{"document":"tidal-energy.md","page":null,"block":2,"quote":"predictable decades ahead, unlike wind or solar"}],"type":"cross-lingual"}
+{"id":"q031","question":"What is the installed capacity of the tidal energy installation described?","type":"unanswerable","answerable":false,"relevant":[]}
+{"id":"q032","question":"Which laboratory published the river monitoring protocol?","type":"unanswerable","answerable":false,"relevant":[]}
+{"id":"q033","question":"What is the boiling point of mercury?","type":"unanswerable","answerable":false,"relevant":[]}
+{"id":"q034","question":"What is the retail price of the lithium-ion cells discussed?","type":"unanswerable","answerable":false,"relevant":[]}
+{"id":"q035","question":"How many megawatts does the tidal array generate?","type":"unanswerable","answerable":false,"relevant":[]}
+{"id":"q036","question":"Who won the 2018 FIFA World Cup?","type":"unanswerable","answerable":false,"relevant":[]}
