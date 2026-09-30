@@ -12,12 +12,12 @@
       "contextRecall": 0.816038,
       "noResultRate": 0,
       "meanContextChars": 2311.811320754717,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 5,
       "unanswerableContextPassages": 3,
       "chunkCount": 53,
-      "latencyP95Ms": 12.3
+      "latencyP95Ms": 16.18
     },
     {
       "strategy": "dense",
@@ -30,12 +30,12 @@
       "contextRecall": 0.877358,
       "noResultRate": 0,
       "meanContextChars": 4007.0377358490564,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 5,
       "unanswerableContextPassages": 5,
       "chunkCount": 53,
-      "latencyP95Ms": 12.37
+      "latencyP95Ms": 86.91
     },
     {
       "strategy": "dense",
@@ -48,12 +48,12 @@
       "contextRecall": 0.816038,
       "noResultRate": 0,
       "meanContextChars": 2311.811320754717,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 10,
       "unanswerableContextPassages": 3,
       "chunkCount": 53,
-      "latencyP95Ms": 12.66
+      "latencyP95Ms": 100.17
     },
     {
       "strategy": "dense",
@@ -66,12 +66,12 @@
       "contextRecall": 0.877358,
       "noResultRate": 0,
       "meanContextChars": 4007.0377358490564,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 10,
       "unanswerableContextPassages": 5,
       "chunkCount": 53,
-      "latencyP95Ms": 13.42
+      "latencyP95Ms": 81.38
     },
     {
       "strategy": "dense",
@@ -84,12 +84,12 @@
       "contextRecall": 0.877358,
       "noResultRate": 0,
       "meanContextChars": 6658.698113207547,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 10,
       "unanswerableContextPassages": 8,
       "chunkCount": 53,
-      "latencyP95Ms": 12.8
+      "latencyP95Ms": 18.17
     },
     {
       "strategy": "dense",
@@ -102,12 +102,12 @@
       "contextRecall": 0.816038,
       "noResultRate": 0,
       "meanContextChars": 2311.811320754717,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 20,
       "unanswerableContextPassages": 3,
       "chunkCount": 53,
-      "latencyP95Ms": 13.23
+      "latencyP95Ms": 17.01
     },
     {
       "strategy": "dense",
@@ -120,12 +120,12 @@
       "contextRecall": 0.877358,
       "noResultRate": 0,
       "meanContextChars": 4007.0377358490564,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 20,
       "unanswerableContextPassages": 5,
       "chunkCount": 53,
-      "latencyP95Ms": 13.55
+      "latencyP95Ms": 97.74
     },
     {
       "strategy": "dense",
@@ -138,12 +138,12 @@
       "contextRecall": 0.877358,
       "noResultRate": 0,
       "meanContextChars": 6658.698113207547,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 20,
       "unanswerableContextPassages": 8,
       "chunkCount": 53,
-      "latencyP95Ms": 13.75
+      "latencyP95Ms": 85.3
     },
     {
       "strategy": "dense",
@@ -156,12 +156,12 @@
       "contextRecall": 0.816038,
       "noResultRate": 0,
       "meanContextChars": 2311.811320754717,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 40,
       "unanswerableContextPassages": 3,
       "chunkCount": 53,
-      "latencyP95Ms": 15.44
+      "latencyP95Ms": 57.28
     },
     {
       "strategy": "dense",
@@ -174,12 +174,12 @@
       "contextRecall": 0.877358,
       "noResultRate": 0,
       "meanContextChars": 4007.0377358490564,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 40,
       "unanswerableContextPassages": 5,
       "chunkCount": 53,
-      "latencyP95Ms": 14.98
+      "latencyP95Ms": 16.64
     },
     {
       "strategy": "dense",
@@ -192,12 +192,12 @@
       "contextRecall": 0.877358,
       "noResultRate": 0,
       "meanContextChars": 6658.698113207547,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 40,
       "unanswerableContextPassages": 8,
       "chunkCount": 53,
-      "latencyP95Ms": 14.68
+      "latencyP95Ms": 99.32
     },
     {
       "strategy": "hybrid",
@@ -210,12 +210,12 @@
       "contextRecall": 0.853774,
       "noResultRate": 0,
       "meanContextChars": 2307.3207547169814,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 5,
       "unanswerableContextPassages": 3,
       "chunkCount": 53,
-      "latencyP95Ms": 13.45
+      "latencyP95Ms": 90.4
     },
     {
       "strategy": "hybrid",
@@ -228,12 +228,12 @@
       "contextRecall": 0.910377,
       "noResultRate": 0,
       "meanContextChars": 3936.566037735849,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 5,
       "unanswerableContextPassages": 5,
       "chunkCount": 53,
-      "latencyP95Ms": 77.74
+      "latencyP95Ms": 89.63
     },
     {
       "strategy": "hybrid",
@@ -246,12 +246,12 @@
       "contextRecall": 0.853774,
       "noResultRate": 0,
       "meanContextChars": 2321.264150943396,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 10,
       "unanswerableContextPassages": 3,
       "chunkCount": 53,
-      "latencyP95Ms": 14.42
+      "latencyP95Ms": 83.59
     },
     {
       "strategy": "hybrid",
@@ -263,13 +263,13 @@
       "contextPrecision": 0.203774,
       "contextRecall": 0.896226,
       "noResultRate": 0,
-      "meanContextChars": 3994.509433962264,
-      "unanswerableQuestions": 10,
+      "meanContextChars": 3985.811320754717,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 10,
       "unanswerableContextPassages": 5,
       "chunkCount": 53,
-      "latencyP95Ms": 13.8
+      "latencyP95Ms": 89.79
     },
     {
       "strategy": "hybrid",
@@ -282,12 +282,12 @@
       "contextRecall": 0.900943,
       "noResultRate": 0,
       "meanContextChars": 6547.641509433963,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 10,
       "unanswerableContextPassages": 8,
       "chunkCount": 53,
-      "latencyP95Ms": 13.04
+      "latencyP95Ms": 14.96
     },
     {
       "strategy": "hybrid",
@@ -300,12 +300,12 @@
       "contextRecall": 0.853774,
       "noResultRate": 0,
       "meanContextChars": 2322.830188679245,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 20,
       "unanswerableContextPassages": 3,
       "chunkCount": 53,
-      "latencyP95Ms": 15.55
+      "latencyP95Ms": 82.31
     },
     {
       "strategy": "hybrid",
@@ -318,12 +318,12 @@
       "contextRecall": 0.896226,
       "noResultRate": 0,
       "meanContextChars": 4011.377358490566,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 20,
       "unanswerableContextPassages": 5,
       "chunkCount": 53,
-      "latencyP95Ms": 16.36
+      "latencyP95Ms": 18.62
     },
     {
       "strategy": "hybrid",
@@ -336,12 +336,12 @@
       "contextRecall": 0.90566,
       "noResultRate": 0,
       "meanContextChars": 6660.264150943396,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 20,
       "unanswerableContextPassages": 8,
       "chunkCount": 53,
-      "latencyP95Ms": 14.66
+      "latencyP95Ms": 16.13
     },
     {
       "strategy": "hybrid",
@@ -354,12 +354,12 @@
       "contextRecall": 0.853774,
       "noResultRate": 0,
       "meanContextChars": 2322.830188679245,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 40,
       "unanswerableContextPassages": 3,
       "chunkCount": 53,
-      "latencyP95Ms": 14.55
+      "latencyP95Ms": 97.73
     },
     {
       "strategy": "hybrid",
@@ -372,12 +372,12 @@
       "contextRecall": 0.896226,
       "noResultRate": 0,
       "meanContextChars": 3989.735849056604,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 40,
       "unanswerableContextPassages": 5,
       "chunkCount": 53,
-      "latencyP95Ms": 14.41
+      "latencyP95Ms": 100.05
     },
     {
       "strategy": "hybrid",
@@ -390,12 +390,12 @@
       "contextRecall": 0.90566,
       "noResultRate": 0,
       "meanContextChars": 6660.792452830188,
-      "unanswerableQuestions": 10,
+      "unanswerableQuestions": 25,
       "unanswerableAbstentionRate": 0,
       "unanswerableCandidates": 40,
       "unanswerableContextPassages": 8,
       "chunkCount": 53,
-      "latencyP95Ms": 14.47
+      "latencyP95Ms": 16.94
     }
   ]
 }

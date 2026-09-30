@@ -7,13 +7,13 @@
     {
       "threshold": 0,
       "validation": {
-        "questions": 24,
+        "questions": 34,
         "answerableQuestions": 19,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 5,
+          "questions": 15,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
           "meanCandidatesRetrieved": 20,
@@ -32,13 +32,13 @@
         }
       },
       "test": {
-        "questions": 39,
+        "questions": 44,
         "answerableQuestions": 34,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 5,
+          "questions": 10,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
           "meanCandidatesRetrieved": 20,
@@ -60,13 +60,13 @@
     {
       "threshold": 0.3,
       "validation": {
-        "questions": 24,
+        "questions": 34,
         "answerableQuestions": 19,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 5,
+          "questions": 15,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
           "meanCandidatesRetrieved": 20,
@@ -85,13 +85,13 @@
         }
       },
       "test": {
-        "questions": 39,
+        "questions": 44,
         "answerableQuestions": 34,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 5,
+          "questions": 10,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
           "meanCandidatesRetrieved": 20,
@@ -113,13 +113,13 @@
     {
       "threshold": 0.4,
       "validation": {
-        "questions": 24,
+        "questions": 34,
         "answerableQuestions": 19,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 5,
+          "questions": 15,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
           "meanCandidatesRetrieved": 20,
@@ -138,13 +138,13 @@
         }
       },
       "test": {
-        "questions": 39,
+        "questions": 44,
         "answerableQuestions": 34,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 5,
+          "questions": 10,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
           "meanCandidatesRetrieved": 20,
@@ -166,13 +166,13 @@
     {
       "threshold": 0.5,
       "validation": {
-        "questions": 24,
+        "questions": 34,
         "answerableQuestions": 19,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 5,
+          "questions": 15,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
           "meanCandidatesRetrieved": 20,
@@ -191,13 +191,13 @@
         }
       },
       "test": {
-        "questions": 39,
+        "questions": 44,
         "answerableQuestions": 34,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 5,
+          "questions": 10,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
           "meanCandidatesRetrieved": 20,
@@ -219,13 +219,13 @@
     {
       "threshold": 0.6,
       "validation": {
-        "questions": 24,
+        "questions": 34,
         "answerableQuestions": 19,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 5,
+          "questions": 15,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
           "meanCandidatesRetrieved": 20,
@@ -244,13 +244,13 @@
         }
       },
       "test": {
-        "questions": 39,
+        "questions": 44,
         "answerableQuestions": 34,
         "noResultCount": 0,
         "noResultRate": 0,
         "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 5,
+          "questions": 10,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
           "meanCandidatesRetrieved": 20,

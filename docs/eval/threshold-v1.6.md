@@ -34,7 +34,7 @@ retrieval loss.
 
 ## Outcome
 
-The sweep is **flat**: every threshold from 0 to 0.6 produces the same validation nDCG@10 (0.7556), the same Recall@5 (0.8684) and the same retrieval abstention rate on unanswerable questions (0/5). No candidate is ever filtered out, so the threshold is **non-binding** on this corpus.
+The sweep is **flat**: every threshold from 0 to 0.6 produces the same validation nDCG@10 (0.7556), the same Recall@5 (0.8684) and the same retrieval abstention rate on unanswerable questions (0/15). No candidate is ever filtered out, so the threshold is **non-binding** on this corpus.
 
 **No evidence to change `threshold = 0.5`.** All thresholds hold the line equally; picking one would be arbitrary. The current value can be neither validated nor falsified here, which is a property of the corpus rather than of the threshold. Note also what this does *not* establish: abstention is a retrieval-layer statement — whether the model then declines to answer needs a generator eval.
 

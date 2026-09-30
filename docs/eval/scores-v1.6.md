@@ -33,7 +33,7 @@ Dense only, `validation` split only, `threshold = 0`, `candidateK = 500` (above 
 index size, so every chunk is scored for every query), `contextK = 3`.
 
 - answerable questions: 19
-- unanswerable questions: 5
+- unanswerable questions: 15
 - index size: 53 chunks
 
 Hybrid is deliberately excluded: its `score` is an RRF value (`1 / (60 + rank)`) and is not
@@ -61,7 +61,7 @@ Where a row shows a raw cosine in brackets: an **absolute** score maps as
 | worst relevant | 19 | 0.8808 (0.762) | 0.8906 (0.781) | 0.9086 (0.817) | 0.9355 (0.871) | 0.9428 (0.886) | 0.9530 (0.906) | 0.9537 (0.907) |
 | best non-relevant | 19 | 0.8904 (0.781) | 0.9081 (0.816) | 0.9178 (0.836) | 0.9243 (0.849) | 0.9336 (0.867) | 0.9386 (0.877) | 0.9459 (0.892) |
 | margin (best rel − best non-rel) | 19 | -0.0294 (-0.059) | -0.0272 (-0.054) | -0.0092 (-0.018) | 0.0026 (0.005) | 0.0081 (0.016) | 0.0329 (0.066) | 0.0623 (0.125) |
-| unanswerable max candidate | 5 | 0.8978 (0.796) | 0.8978 (0.796) | 0.9128 (0.826) | 0.9259 (0.852) | 0.9343 (0.869) | 0.9424 (0.885) | 0.9424 (0.885) |
+| unanswerable max candidate | 15 | 0.8978 (0.796) | 0.9086 (0.817) | 0.9142 (0.828) | 0.9279 (0.856) | 0.9365 (0.873) | 0.9424 (0.885) | 0.9435 (0.887) |
 
 ## By query type
 
@@ -101,7 +101,7 @@ relevant passage; **full recall** = share whose every ground-truth block is stil
 | 0.825 | 0.650 | 1.0000 | 1.0000 | 0.0000 |
 | 0.850 | 0.700 | 1.0000 | 1.0000 | 0.0000 |
 | 0.875 | 0.750 | 1.0000 | 1.0000 | 0.0000 |
-| 0.900 | 0.800 | 0.8947 | 0.8947 | 0.2000 |
+| 0.900 | 0.800 | 0.8947 | 0.8947 | 0.0667 |
 | 0.925 | 0.850 | 0.6316 | 0.6316 | 0.4000 |
 | 0.950 | 0.900 | 0.1579 | 0.1579 | 1.0000 |
 | 0.975 | 0.950 | 0.0000 | 0.0000 | 1.0000 |
@@ -115,7 +115,7 @@ The threshold decision turns on whether these overlap:
 | --- | --- | --- |
 | worst relevant, p10 | 0.8906 | 0.781 |
 | best non-relevant, p90 | 0.9386 | 0.877 |
-| unanswerable max, p50 | 0.9259 | 0.852 |
+| unanswerable max, p50 | 0.9279 | 0.856 |
 | unanswerable max, p90 | 0.9424 | 0.885 |
 
 **The distributions **overlap**, so a higher threshold buys abstention by giving up required relevant passages. If the curve above shows abstention rising only as full recall falls, then the honest conclusion is that **a single dense similarity threshold cannot carry both recall and abstention** — and the next mechanism to evaluate is not a finer threshold grid but a different signal (reranker score, top1−top2 margin, per-query thresholds, or claim-level answerability).
