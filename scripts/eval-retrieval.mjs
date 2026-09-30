@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 /**
- * Retrieval experiments for #77.
+ * Retrieval experiments for #77, with held-out strategy adoption (#192).
  *
- * Runs the real RAG eval harness once per retrieval strategy against the frozen
- * chunk baseline (`baseline-v1.6.json`, 1000/100), holding chunking fixed, and
- * writes the comparison the issue asks for as a delta against dense.
+ * Runs the real RAG eval harness once per retrieval strategy on the **validation** split,
+ * decides there with the amended adoption rule (#192 child 10), and then re-runs the
+ * shipped strategy and the selected one on the **test** split. Selection never sees
+ * `test`; `test` only reports.
+ *
+ * That split is the whole point. The previous version decided on `split = all`, which
+ * meant the strategy was chosen and scored on the same questions — the same mistake the
+ * threshold experiment had already been fixed for.
  *
  * The harness does the measuring; this script only orchestrates and tabulates.
- *
- * The adoption rule is the amended one from #192 child 10: the deciding metric is the
- * first metric with headroom, not a metric that the corpus has already maxed out.
  *
  * Usage:
  *   node scripts/eval-retrieval.mjs
@@ -37,6 +39,9 @@ const STRATEGIES = [
   { id: 'hybrid', label: 'hybrid (RRF of dense + BM25)' }
 ]
 
+/** The shipped strategy. Everything is reported as a delta against it. */
+const BASELINE_ID = 'dense'
+
 function readArg(prefix, fallback) {
   const arg = process.argv.find((value) => value.startsWith(prefix))
   return arg ? arg.slice(prefix.length) : fallback
@@ -52,13 +57,18 @@ if (!existsSync(executable)) {
   process.exit(1)
 }
 
-function runStrategy(strategy, outDir) {
+// The rule lives in `src/main/eval/adoption.ts` so it can be unit tested; it decides
+// whether a shipped default moves.
+const { ADOPTION_METRICS, decideAdoption } = await import('../src/main/eval/adoption.ts')
+
+function runStrategy(strategy, split, outDir) {
   return new Promise((resolvePromise, reject) => {
     const args = [
       '.',
       '--eval-harness',
       '--eval-baseline=v1.6',
       `--eval-out=${outDir}`,
+      `--eval-split=${split}`,
       `--eval-retrieval=${strategy.id}`
     ]
 
@@ -70,108 +80,128 @@ function runStrategy(strategy, outDir) {
       env: { ...process.env, ELECTRON_DISABLE_SECURITY_WARNINGS: '1' }
     })
 
-    let stdout = ''
-    child.stdout.on('data', (data) => {
-      stdout += data.toString()
-    })
-    child.stderr.on('data', () => {})
-
     child.on('error', reject)
     child.on('exit', (code) => {
       if (code !== 0) {
-        reject(new Error(`strategy ${strategy.id} exited with code ${code}`))
+        reject(new Error(`${strategy.id} (${split}) exited with code ${code}`))
         return
       }
-      const metricsLine = /\[eval\] metrics (\{.*\})/.exec(stdout)
-      if (!metricsLine) {
-        reject(new Error(`strategy ${strategy.id} printed no metrics line`))
+      const reportPath = join(outDir, 'baseline-v1.6.json')
+      if (!existsSync(reportPath)) {
+        reject(new Error(`${strategy.id} (${split}) wrote no report`))
         return
       }
-      try {
-        resolvePromise(JSON.parse(metricsLine[1]))
-      } catch (error) {
-        reject(
-          new Error(`strategy ${strategy.id} printed an unreadable metrics line: ${error.message}`)
-        )
-      }
+      const report = JSON.parse(readFileSync(reportPath, 'utf8'))
+      resolvePromise({
+        id: strategy.id,
+        label: strategy.label,
+        split,
+        questions: report.config.questions,
+        answerableCount: report.byType.reduce((total, entry) => total + entry.questions, 0),
+        chunking: `${report.config.chunking.chunkSize}/${report.config.chunking.chunkOverlap}`,
+        chunkCount: report.config.chunkCount,
+        ...report.metrics,
+        ...readTiming(join(outDir, 'baseline-v1.6.md'))
+      })
     })
   })
 }
 
-/** Throughput and p95 are informational and excluded from the deterministic JSON. */
+/** p95 is informational and excluded from the deterministic JSON. */
 function readTiming(mdPath) {
-  if (!existsSync(mdPath)) return { indexingMs: null, latencyP95Ms: null }
+  if (!existsSync(mdPath)) return { latencyP95Ms: null }
   const text = readFileSync(mdPath, 'utf8')
-  const indexing = /indexing (\d+) ms/.exec(text)
   const p95 = /p95 ([\d.]+) ms/.exec(text)
-  return {
-    indexingMs: indexing ? Number(indexing[1]) : null,
-    latencyP95Ms: p95 ? Number(p95[1]) : null
-  }
+  return { latencyP95Ms: p95 ? Number(p95[1]) : null }
 }
 
+function runInto(workDir, strategy, split) {
+  const outDir = join(workDir, `${split}-${strategy.id}`)
+  mkdirSync(outDir, { recursive: true })
+  return runStrategy(strategy, split, outDir)
+}
+
+const format4 = (value) => value.toFixed(4)
+
 const workDir = mkdtempSync(join(tmpdir(), 'knownote-retrieval-'))
-const results = []
+let validation = []
+let test = []
+let decision = { primary: null, saturated: [], winner: null }
 
 try {
+  // ── Validation: this is the only phase that may choose ────────────────────────
   for (const strategy of STRATEGIES) {
-    const outDir = join(workDir, strategy.id)
-    mkdirSync(outDir, { recursive: true })
-    console.log(`[retrieval] running ${strategy.label}`)
-    const metrics = await runStrategy(strategy, outDir)
+    console.log(`[retrieval] validation: ${strategy.label}`)
+    validation.push(await runInto(workDir, strategy, 'validation'))
+  }
 
-    const report = JSON.parse(readFileSync(join(outDir, 'baseline-v1.6.json'), 'utf8'))
-    results.push({
-      id: strategy.id,
-      label: strategy.label,
-      chunking: `${report.config.chunking.chunkSize}/${report.config.chunking.chunkOverlap}`,
-      chunkCount: report.config.chunkCount,
-      split: report.config.split,
-      questions: report.config.questions,
-      answerableCount: report.byType.reduce((total, entry) => total + entry.questions, 0),
-      ...metrics,
-      ...readTiming(join(outDir, 'baseline-v1.6.md'))
-    })
+  const baselineRow = validation.find((row) => row.id === BASELINE_ID)
+  if (!baselineRow) throw new Error('the dense strategy did not run on validation')
+
+  decision = decideAdoption(baselineRow, validation)
+
+  // ── Test: reports only. Never lets the choice see these questions. ────────────
+  const testIds = [BASELINE_ID]
+  if (decision.winner && decision.winner.id !== BASELINE_ID) testIds.push(decision.winner.id)
+
+  for (const id of testIds) {
+    const strategy = STRATEGIES.find((entry) => entry.id === id)
+    console.log(`[retrieval] test: ${strategy.label}`)
+    test.push(await runInto(workDir, strategy, 'test'))
   }
 } finally {
   rmSync(workDir, { recursive: true, force: true })
 }
 
-const baseline = results.find((result) => result.id === 'dense')
-if (!baseline) throw new Error('the dense strategy did not run')
-
-const format4 = (value) => value.toFixed(4)
-
-const rows = results.map(
-  (result) =>
-    `| ${result.label} | ${format4(result.recallAt1)} | ${format4(result.recallAt5)} | ${format4(result.mrr)} | ${format4(result.ndcgAt10)} | ${format4(result.mapAt10)} | ${format4(result.contextPrecision)} | ${result.latencyP95Ms?.toFixed(2)} ms |`
-)
-
-/**
- * The rule lives in `src/main/eval/adoption.ts` so it can be unit tested: it decides
- * whether a shipped default moves, and testing it by reading the sentence this script
- * prints would be a test of the sentence.
- *
- * Latency stays in the table so a win that costs 5x latency is stated as a trade-off,
- * not hidden.
- */
-const { ADOPTION_METRICS, decideAdoption } = await import('../src/main/eval/adoption.ts')
-const { primary, saturated, winner } = decideAdoption(baseline, results)
-
-const saturationNote = saturated.length
-  ? `Saturated (no headroom, so they cannot decide anything): ${saturated
+const winner = decision.winner
+const saturationNote = decision.saturated.length
+  ? `Saturated on the validation split (no headroom, so they cannot decide): ${decision.saturated
       .map((key) => `\`${key}\``)
       .join(', ')}.`
-  : 'No metric in the rule is saturated on this corpus.'
+  : 'No metric in the rule is saturated on the validation split.'
 
-let outcome
-if (winner) {
-  outcome = `\`${winner.label}\` **clears the rule**: it improves the deciding metric \`${primary}\` (${format4(winner[primary])} vs dense ${format4(baseline[primary])}) and regresses none of ${ADOPTION_METRICS.map((key) => `\`${key}\``).join(', ')}. ${saturationNote}\n\nChanging the shipped default is a separate decision, and this script does not make it — it reports the measurement.`
-} else if (primary === null) {
-  outcome = `Every metric in the rule is already at its maximum on this corpus, so no strategy can clear any of them. **Dense stays the default**; the comparison is inconclusive by construction, not negative.`
-} else {
-  outcome = `No strategy cleared the rule. The deciding metric was \`${primary}\` (dense ${format4(baseline[primary])}); the strategies either failed to improve it or regressed another metric. **Dense stays the default.** A negative result is the point of the experiment: it is the measurement that says the extra machinery is not worth its cost on this corpus, not a failure to deliver. ${saturationNote}`
-}
+const metricColumns = ['recallAt1', 'recallAt5', 'mrr', 'ndcgAt10', 'mapAt10', 'contextPrecision']
+const tableRow = (row) =>
+  `| ${row.label} | ${metricColumns.map((key) => format4(row[key])).join(' | ')} | ${row.questions} | ${
+    row.latencyP95Ms?.toFixed(2) ?? '—'
+  } ms |`
+
+const validationTable = validation.map(tableRow).join('\n')
+const testTable = test.map(tableRow).join('\n')
+
+/** Per-metric delta of the selected strategy against dense, on the test split. */
+const testDense = test.find((row) => row.id === BASELINE_ID)
+const testWinner = winner ? test.find((row) => row.id === winner.id) : null
+
+const deltaRows =
+  testWinner && testDense
+    ? ADOPTION_METRICS.map((key) => {
+        const delta = testWinner[key] - testDense[key]
+        const sign = delta > 0 ? '+' : ''
+        return `| ${key} | ${format4(testDense[key])} | ${format4(testWinner[key])} | ${sign}${format4(delta)} |`
+      }).join('\n')
+    : ''
+
+const outcome = winner
+  ? `**\`${winner.label}\` clears the rule on validation.** The deciding metric was \`${decision.primary}\` (${format4(
+      winner[decision.primary]
+    )} vs dense ${format4(
+      validation.find((row) => row.id === BASELINE_ID)[decision.primary]
+    )}), and it regressed none of ${ADOPTION_METRICS.map((key) => `\`${key}\``).join(', ')}. ${saturationNote}
+
+That decision was made on questions in \`test\` **not** seeing. What follows is the held-out
+result, and it is the only number that should inform shipping it:
+
+| Metric | dense (test) | selected (test) | delta |
+| --- | --- | --- | --- |
+${deltaRows}
+
+Shipping a new default is a product decision this script does not make. It measures.`
+  : `**No strategy cleared the rule on validation**, so there is no adoption candidate and
+\`test\` reports the shipped strategy only. ${saturationNote}
+
+A negative result is the point of the experiment: it is the measurement that says the extra
+machinery is not worth its cost on this corpus, not a failure to deliver.`
 
 const markdown = `# Retrieval experiments — v1.6 (#77, #192)
 
@@ -179,13 +209,25 @@ Generated by \`node scripts/eval-retrieval.mjs\`. Numbers are harness output; do
 
 ## What was measured
 
-Every strategy runs the real RAG eval harness against the same corpus and the same questions
-as \`baseline-v1.6.json\` (split \`${baseline.split}\`, ${baseline.questions} questions of which
-${baseline.answerableCount} are answerable), with chunking held fixed at ${baseline.chunking}. Only the retrieval strategy changes.
+Each strategy runs the real harness on the **validation** split of
+\`eval/splits.json\`, with chunking held fixed at ${validation[0]?.chunking ?? '1000/100'}.
 
-| Strategy | Recall@1 | Recall@5 | MRR | nDCG@10 | MAP@10 | Context P | Query p95 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-${rows.join('\n')}
+The strategy is then chosen **there**, and only the chosen one (plus the shipped default)
+is re-run on **test**. The choice never sees \`test\`; \`test\` only reports. The previous
+version decided on \`split = all\`, which scored the choice on the questions it was fitted
+to.
+
+## Validation — this is where the choice happens
+
+| Strategy | Recall@1 | Recall@5 | MRR | nDCG@10 | MAP@10 | Context P | n | p95 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+${validationTable}
+
+## Test — reported, not selected
+
+| Strategy | Recall@1 | Recall@5 | MRR | nDCG@10 | MAP@10 | Context P | n | p95 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+${testTable}
 
 ## Not evaluated
 
@@ -194,13 +236,6 @@ model is not available offline and inventing its numbers would defeat the point 
 the harness. It stays open until a model can be pinned the way the embedding model
 is.
 
-## Saturation
-
-${saturationNote} The deciding metric on this corpus is ${
-  primary === null ? 'none — every metric in the rule is already maxed out' : `\`${primary}\``
-}. A saturated metric is still reported, because "this corpus cannot move it" is itself
-information; it is just not allowed to decide the comparison.
-
 ## Adoption rule
 
 > Adopt a strategy when it improves the **first metric with headroom** — in the order
@@ -208,8 +243,8 @@ information; it is just not allowed to decide the comparison.
 > already at its maximum has no headroom and cannot decide anything; a rule that depends
 > on one is unsatisfiable, not strict (#192 child 10).
 >
-> A change that trades a large latency increase for a marginal quality gain is a product
-> decision, not an automatic win.
+> The rule is applied on \`validation\`. A change that trades a large latency increase for a
+> marginal quality gain is a product decision, not an automatic win.
 
 ## Outcome
 
@@ -226,11 +261,21 @@ npm run eval:retrieval # offline; runs every strategy and rewrites this file
 mkdirSync(resolve(OUT_MD, '..'), { recursive: true })
 writeFileSync(
   OUT_JSON,
-  `${JSON.stringify({ baseline: baseline.id, chunking: baseline.chunking, strategies: results }, null, 2)}\n`
+  `${JSON.stringify(
+    {
+      baseline: 'v1.6',
+      split: { selects: 'validation', reports: 'test', manifest: 'eval/splits.json' },
+      decision: { primary: decision.primary, saturated: decision.saturated, winner: winner?.id ?? null },
+      validation,
+      test
+    },
+    null,
+    2
+  )}\n`
 )
 writeFileSync(OUT_MD, markdown)
 
-console.log(`[retrieval] wrote ${OUT_JSON} and ${OUT_MD}`)
 console.log(
-  `[retrieval] ${winner ? `best clearing strategy: ${winner.label}` : 'no strategy cleared the rule; keep dense'}`
+  `[retrieval] ${winner ? `validation selected: ${winner.label}` : 'validation selected nothing; test reports dense'}`
 )
+console.log(`[retrieval] wrote ${OUT_JSON} and ${OUT_MD}`)

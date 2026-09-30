@@ -328,14 +328,19 @@ export async function runEvalHarness(
       return { type, questions: group.length, metrics: summarize(group, options.contextK) }
     })
 
-  const unanswerableNoResults = unanswerableQuestions.filter((q) => q.retrievedCount === 0).length
+  const abstentionCount = unanswerableQuestions.filter((q) => q.retrievedCount === 0).length
   const unanswerable = {
     questions: unanswerableQuestions.length,
-    noResultCount: unanswerableNoResults,
-    // 目标方向与其他指标相反：没有相关资料时，返回空才是对的。
-    noResultRate:
-      unanswerableQuestions.length === 0 ? 0 : unanswerableNoResults / unanswerableQuestions.length,
-    meanRetrieved: mean(unanswerableQuestions.map((q) => q.retrievedCount))
+    abstentionCount,
+    // 方向与其它指标相反：没有相关资料时，检索层返回空才是对的。
+    retrievalAbstentionRate:
+      unanswerableQuestions.length === 0 ? 0 : abstentionCount / unanswerableQuestions.length,
+    // 通过 threshold 的候选数，不是送进 prompt 的条数：harness 为了算 Recall@10 取满了
+    // candidateK，把这个数当成 prompt 宽度会把问题说大。
+    meanCandidatesRetrieved: mean(unanswerableQuestions.map((q) => q.retrievedCount)),
+    meanContextPassages: mean(
+      unanswerableQuestions.map((q) => Math.min(q.retrievedCount, options.contextK))
+    )
   }
 
   const chunking = { ...DEFAULT_CHUNK_OPTIONS, ...options.chunkOptions }

@@ -45,20 +45,30 @@ The type comes from `type` in `questions.jsonl`; untagged questions report as
 
 ### Unanswerable questions
 
-These carry no ground truth, so the correct outcome is that retrieval finds nothing. They
+These carry no ground truth, so the correct outcome is that retrieval returns nothing. They
 are excluded from every metric above — a missing ground truth is not a miss — and reported
-here instead. A higher **no-results** rate is better on this row, which is the opposite of
-how it reads everywhere else, and `mean passages retrieved` is how much irrelevant context
-was pulled in anyway. This is the row a threshold decision should move.
+here instead.
+
+**This measures retrieval-level abstention, not the model refusing.** No generator runs in
+this harness, so it can show that no candidate passed the threshold; it cannot show that the
+final answer would say "not in your sources". A true system refusal rate needs a
+generator eval.
+
+A higher abstention rate is better on this row, the opposite of how every other row reads.
+The two sizes are kept apart on purpose: **candidates passing the threshold** can be as high
+as `candidateK` (the harness fetches that many to compute `Recall@10`), while **passages in
+the context window** is what a user's prompt would actually receive. A large first number
+with a small second one means the threshold filters nothing and the window is all noise.
 
 | Metric | Value |
 | --- | --- |
 | Unanswerable questions | 6 |
-| Returned no results | 0.0000 (0/6) |
-| Mean passages retrieved | 19.00 |
+| Retrieval abstained | 0.0000 (0/6) |
+| Mean candidates passing the threshold | 19.00 |
+| Mean passages in the context window | 3.00 |
 
-Timing is informational only and is **not** frozen: indexing 1552 ms, query
-p50 11.82 ms, p95 14.45 ms on the
+Timing is informational only and is **not** frozen: indexing 1583 ms, query
+p50 13.38 ms, p95 16.66 ms on the
 machine that produced this file. Timing and index size depend on hardware and on the
 corpus, so they must never be the reason two runs differ.
 

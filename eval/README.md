@@ -39,11 +39,17 @@ A parameter picked on the same questions it is scored on is a fitted number, not
 result. `eval/splits.json` is the committed assignment; `--eval-split=validation` selects
 from it and `test` is the rest.
 
-It is an explicit manifest rather than a hash of the question id. A hash is reproducible
-but not *stable*: adding a question moves others between the sides, and a rare query type
-can end up entirely on one side without anyone choosing that. With a manifest, a question
-with no entry is **refused** rather than defaulted, so a new question is assigned
-deliberately instead of leaking into `test`.
+It is an explicit manifest rather than a hash of the question id. A hash
+(`hash(id) % 3`) is actually *stable* — it is computed per id, so adding a question does
+not move the existing ones. What it cannot do is express the experimental design:
+
+- it does not stratify a small corpus, so a rare type (`multi-hop`, `cross-lingual`) can
+  end up entirely on one side without anyone choosing that — which is what happened; and
+- a newly added question is assigned silently instead of deliberately, and `test` is the
+  side a choice must not be fitted to.
+
+With a manifest, a question with no entry is **refused** rather than defaulted, so every
+new question is assigned on purpose.
 
 `npm run eval:sweep` runs a bounded grid (`strategy × candidateK × contextK`) and
 writes one dashboard with quality, context precision/recall, prompt size, index size

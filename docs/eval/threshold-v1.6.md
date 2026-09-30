@@ -11,30 +11,32 @@ split selects; the **test** split reports. The split is the committed manifest
 
 Quality columns cover the answerable questions only; **Unans.** columns cover the
 unanswerable ones, where returning nothing is the desired outcome and so a *higher*
-no-result rate is better.
+abstention rate is better. Two sizes are kept apart: **cands** is how many candidates
+passed the threshold (up to `candidateK`), **ctx** is how many reach the context window.
 
-| Threshold | n (val) | Recall@5 (val) | nDCG@10 (val) | No-result (val) | Unans. no-result (val) | Unans. retrieved (val) | nDCG@10 (test) | Unans. no-result (test) |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 0.8581 | 0.0000 |
-| 0.3 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 0.8581 | 0.0000 |
-| 0.4 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 0.8581 | 0.0000 |
-| 0.5 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 0.8581 | 0.0000 |
-| 0.6 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 0.8581 | 0.0000 |
+| Threshold | n (val) | Recall@5 (val) | nDCG@10 (val) | No-result (val) | Unans. abstained (val) | Unans. cands (val) | Unans. ctx (val) | nDCG@10 (test) | Unans. abstained (test) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 0 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 3.0 | 0.8581 | 0.0000 |
+| 0.3 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 3.0 | 0.8581 | 0.0000 |
+| 0.4 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 3.0 | 0.8581 | 0.0000 |
+| 0.5 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 3.0 | 0.8581 | 0.0000 |
+| 0.6 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 3.0 | 0.8581 | 0.0000 |
 
 ## Selection rule
 
 Hold the answerable quality line — validation nDCG@10 and context recall must not
-regress versus `threshold = 0` — then take the threshold that refuses the most
+regress versus `threshold = 0` — then take the threshold that abstains on the most
 unanswerable questions. Tie-break on the lowest threshold.
 
-Raising a threshold is only worth anything if it refuses what the sources do not answer;
-the quality gate is there so a refusal gain can never be bought with a retrieval loss.
+Raising a threshold is only worth anything if it stops unsupported context before the
+prompt; the quality gate is there so an abstention gain can never be bought with a
+retrieval loss.
 
 ## Outcome
 
-The sweep is **flat**: every threshold from 0 to 0.6 produces the same validation nDCG@10 (0.8276), the same Recall@5 (0.9231) and the same unanswerable refusal rate (0/3). No passage is ever filtered out, so the threshold is **non-binding** on this corpus — E5 does not score these query/chunk pairs below the top of the swept range.
+The sweep is **flat**: every threshold from 0 to 0.6 produces the same validation nDCG@10 (0.8276), the same Recall@5 (0.9231) and the same retrieval abstention rate on unanswerable questions (0/3). No candidate is ever filtered out, so the threshold is **non-binding** on this corpus.
 
-**No evidence to change `threshold = 0.5`.** All thresholds hold the line equally; picking one would be arbitrary. The current value can be neither validated nor falsified here, which is a property of the corpus rather than of the threshold.
+**No evidence to change `threshold = 0.5`.** All thresholds hold the line equally; picking one would be arbitrary. The current value can be neither validated nor falsified here, which is a property of the corpus rather than of the threshold. Note also what this does *not* establish: abstention is a retrieval-layer statement — whether the model then declines to answer needs a generator eval.
 
 ## Caveat on this corpus
 

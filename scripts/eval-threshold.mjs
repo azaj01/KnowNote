@@ -158,7 +158,8 @@ const holdsTheLine = (row) =>
 const eligible = rows.filter(holdsTheLine)
 const ranked = [...eligible].sort(
   (a, b) =>
-    b.validation.unanswerable.noResultRate - a.validation.unanswerable.noResultRate ||
+    b.validation.unanswerable.retrievalAbstentionRate -
+      a.validation.unanswerable.retrievalAbstentionRate ||
     a.threshold - b.threshold
 )
 /**
@@ -170,32 +171,35 @@ const ranked = [...eligible].sort(
 const flat = rows.every(
   (row) =>
     row.validation.metrics.ndcgAt10 === reference.validation.metrics.ndcgAt10 &&
-    row.validation.unanswerable.noResultRate === reference.validation.unanswerable.noResultRate
+    row.validation.unanswerable.retrievalAbstentionRate ===
+      reference.validation.unanswerable.retrievalAbstentionRate
 )
 
 /**
- * Refusals are the point of the second number: `noResultCount` of the unanswerable
- * questions came back empty, which is the correct outcome. The rest returned passages the
- * sources cannot support.
+ * Abstention is the point of the second number: `abstentionCount` of the unanswerable
+ * questions returned nothing, which is the correct outcome *at the retrieval layer*. The
+ * rest returned candidates the sources cannot support.
  */
-const refusals = (row) => `${row.unanswerable.noResultCount}/${row.unanswerable.questions}`
+const abstained = (row) => `${row.unanswerable.abstentionCount}/${row.unanswerable.questions}`
 const describe = (row) =>
   `nDCG@10 ${format4(row.metrics.ndcgAt10)}, Recall@5 ${format4(row.metrics.recallAt5)}, ` +
   `answerable no-result ${format4(row.noResultRate)}, ` +
-  `unanswerable refused ${refusals(row)}`
+  `retrieval abstained on unanswerable ${abstained(row)}, ` +
+  `context passages ${row.unanswerable.meanContextPassages.toFixed(1)}`
 
 const outcome = flat
-  ? `The sweep is **flat**: every threshold from ${THRESHOLDS[0]} to ${THRESHOLDS[THRESHOLDS.length - 1]} produces the same validation nDCG@10 (${format4(reference.validation.metrics.ndcgAt10)}), the same Recall@5 (${format4(reference.validation.metrics.recallAt5)}) and the same unanswerable refusal rate (${refusals(reference.validation)}). No passage is ever filtered out, so the threshold is **non-binding** on this corpus — E5 does not score these query/chunk pairs below the top of the swept range.\n\n**No evidence to change \`threshold = ${PRODUCTION_THRESHOLD}\`.** All thresholds hold the line equally; picking one would be arbitrary. The current value can be neither validated nor falsified here, which is a property of the corpus rather than of the threshold.`
-  : `**Recommended: \`threshold = ${winner.threshold}\`.**\n\n- **Validation**: ${describe(winner.validation)}\n- **Test**: ${describe(winner.test)}\n- Production ships \`${PRODUCTION_THRESHOLD}\`: validation ${describe(production.validation)}.\n\nThe rule held answerable quality at the \`threshold = 0\` level (nDCG@10 and context recall must not regress, on the validation split) and then took the threshold that refuses the most unanswerable questions. So this is a refusal gain, not a quality gain — if answerable quality had fallen, the threshold would have been ineligible regardless of how much it refused.`
+  ? `The sweep is **flat**: every threshold from ${THRESHOLDS[0]} to ${THRESHOLDS[THRESHOLDS.length - 1]} produces the same validation nDCG@10 (${format4(reference.validation.metrics.ndcgAt10)}), the same Recall@5 (${format4(reference.validation.metrics.recallAt5)}) and the same retrieval abstention rate on unanswerable questions (${abstained(reference.validation)}). No candidate is ever filtered out, so the threshold is **non-binding** on this corpus.\n\n**No evidence to change \`threshold = ${PRODUCTION_THRESHOLD}\`.** All thresholds hold the line equally; picking one would be arbitrary. The current value can be neither validated nor falsified here, which is a property of the corpus rather than of the threshold. Note also what this does *not* establish: abstention is a retrieval-layer statement — whether the model then declines to answer needs a generator eval.`
+  : `**Recommended: \`threshold = ${winner.threshold}\`.**\n\n- **Validation**: ${describe(winner.validation)}\n- **Test**: ${describe(winner.test)}\n- Production ships \`${PRODUCTION_THRESHOLD}\`: validation ${describe(production.validation)}.\n\nThe rule held answerable quality at the \`threshold = 0\` level (nDCG@10 and context recall must not regress, on the validation split) and then took the threshold that abstains on the most unanswerable questions. So this is an abstention gain, not a quality gain — if answerable quality had fallen, the threshold would have been ineligible regardless of how much it abstained.`
 
 const tableRows = rows
   .map(
     (row) =>
       `| ${row.threshold} | ${row.validation.answerableQuestions} | ${format4(row.validation.metrics.recallAt5)} | ` +
       `${format4(row.validation.metrics.ndcgAt10)} | ${format4(row.validation.noResultRate)} | ` +
-      `${format4(row.validation.unanswerable.noResultRate)} | ` +
-      `${row.validation.unanswerable.meanRetrieved.toFixed(1)} | ${format4(row.test.metrics.ndcgAt10)} | ` +
-      `${format4(row.test.unanswerable.noResultRate)} |`
+      `${format4(row.validation.unanswerable.retrievalAbstentionRate)} | ` +
+      `${row.validation.unanswerable.meanCandidatesRetrieved.toFixed(1)} | ` +
+      `${row.validation.unanswerable.meanContextPassages.toFixed(1)} | ${format4(row.test.metrics.ndcgAt10)} | ` +
+      `${format4(row.test.unanswerable.retrievalAbstentionRate)} |`
   )
   .join('\n')
 
@@ -212,20 +216,22 @@ split selects; the **test** split reports. The split is the committed manifest
 
 Quality columns cover the answerable questions only; **Unans.** columns cover the
 unanswerable ones, where returning nothing is the desired outcome and so a *higher*
-no-result rate is better.
+abstention rate is better. Two sizes are kept apart: **cands** is how many candidates
+passed the threshold (up to \`candidateK\`), **ctx** is how many reach the context window.
 
-| Threshold | n (val) | Recall@5 (val) | nDCG@10 (val) | No-result (val) | Unans. no-result (val) | Unans. retrieved (val) | nDCG@10 (test) | Unans. no-result (test) |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Threshold | n (val) | Recall@5 (val) | nDCG@10 (val) | No-result (val) | Unans. abstained (val) | Unans. cands (val) | Unans. ctx (val) | nDCG@10 (test) | Unans. abstained (test) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${tableRows}
 
 ## Selection rule
 
 Hold the answerable quality line — validation nDCG@10 and context recall must not
-regress versus \`threshold = 0\` — then take the threshold that refuses the most
+regress versus \`threshold = 0\` — then take the threshold that abstains on the most
 unanswerable questions. Tie-break on the lowest threshold.
 
-Raising a threshold is only worth anything if it refuses what the sources do not answer;
-the quality gate is there so a refusal gain can never be bought with a retrieval loss.
+Raising a threshold is only worth anything if it stops unsupported context before the
+prompt; the quality gate is there so an abstention gain can never be bought with a
+retrieval loss.
 
 ## Outcome
 

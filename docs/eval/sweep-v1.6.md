@@ -10,30 +10,30 @@ Each row differs from its neighbour in one parameter.
 
 2 further cell(s) were **skipped** because `contextK > candidateK`; see below.
 
-| Strategy | candidateK | contextK | Recall@5 | nDCG@10 | MAP@10 | Context P | Context R | No-result | Context chars | Unans. no-result | Unans. retrieved | Index | p95 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| dense | 5 | 3 | 0.9211 | 0.8212 | 0.7851 | 0.3246 | 0.9211 | 0.0000 | 1976 | 0.0000 | 5.0 | 19 | 13.57 ms |
-| dense | 5 | 5 | 0.9211 | 0.8212 | 0.7851 | 0.1947 | 0.9211 | 0.0000 | 3188 | 0.0000 | 5.0 | 19 | 14.14 ms |
-| dense | 10 | 3 | 0.9211 | 0.8476 | 0.7965 | 0.3246 | 0.9211 | 0.0000 | 1976 | 0.0000 | 10.0 | 19 | 13.30 ms |
-| dense | 10 | 5 | 0.9211 | 0.8476 | 0.7965 | 0.1947 | 0.9211 | 0.0000 | 3188 | 0.0000 | 10.0 | 19 | 12.61 ms |
-| dense | 10 | 8 | 0.9211 | 0.8476 | 0.7965 | 0.1316 | 1.0000 | 0.0000 | 5151 | 0.0000 | 10.0 | 19 | 13.99 ms |
-| dense | 20 | 3 | 0.9211 | 0.8476 | 0.7965 | 0.3246 | 0.9211 | 0.0000 | 1976 | 0.0000 | 19.0 | 19 | 13.61 ms |
-| dense | 20 | 5 | 0.9211 | 0.8476 | 0.7965 | 0.1947 | 0.9211 | 0.0000 | 3188 | 0.0000 | 19.0 | 19 | 14.62 ms |
-| dense | 20 | 8 | 0.9211 | 0.8476 | 0.7965 | 0.1316 | 1.0000 | 0.0000 | 5151 | 0.0000 | 19.0 | 19 | 15.20 ms |
-| dense | 40 | 3 | 0.9211 | 0.8476 | 0.7965 | 0.3246 | 0.9211 | 0.0000 | 1976 | 0.0000 | 19.0 | 19 | 13.66 ms |
-| dense | 40 | 5 | 0.9211 | 0.8476 | 0.7965 | 0.1947 | 0.9211 | 0.0000 | 3188 | 0.0000 | 19.0 | 19 | 14.40 ms |
-| dense | 40 | 8 | 0.9211 | 0.8476 | 0.7965 | 0.1316 | 1.0000 | 0.0000 | 5151 | 0.0000 | 19.0 | 19 | 14.39 ms |
-| hybrid | 5 | 3 | 0.9211 | 0.8309 | 0.7982 | 0.3246 | 0.9211 | 0.0000 | 1949 | 0.0000 | 5.0 | 19 | 16.98 ms |
-| hybrid | 5 | 5 | 0.9211 | 0.8309 | 0.7982 | 0.1947 | 0.9211 | 0.0000 | 3216 | 0.0000 | 5.0 | 19 | 16.11 ms |
-| hybrid | 10 | 3 | 0.9211 | 0.8574 | 0.8097 | 0.3246 | 0.9211 | 0.0000 | 1963 | 0.0000 | 10.0 | 19 | 16.46 ms |
-| hybrid | 10 | 5 | 0.9211 | 0.8574 | 0.8097 | 0.1947 | 0.9211 | 0.0000 | 3333 | 0.0000 | 10.0 | 19 | 14.83 ms |
-| hybrid | 10 | 8 | 0.9211 | 0.8574 | 0.8097 | 0.1316 | 1.0000 | 0.0000 | 5320 | 0.0000 | 10.0 | 19 | 17.38 ms |
-| hybrid | 20 | 3 | 0.9211 | 0.8574 | 0.8097 | 0.3246 | 0.9211 | 0.0000 | 1959 | 0.0000 | 19.0 | 19 | 20.14 ms |
-| hybrid | 20 | 5 | 0.9211 | 0.8574 | 0.8097 | 0.1947 | 0.9211 | 0.0000 | 3282 | 0.0000 | 19.0 | 19 | 14.23 ms |
-| hybrid | 20 | 8 | 0.9211 | 0.8574 | 0.8097 | 0.1316 | 1.0000 | 0.0000 | 5357 | 0.0000 | 19.0 | 19 | 14.06 ms |
-| hybrid | 40 | 3 | 0.9211 | 0.8574 | 0.8097 | 0.3246 | 0.9211 | 0.0000 | 1959 | 0.0000 | 19.0 | 19 | 15.39 ms |
-| hybrid | 40 | 5 | 0.9211 | 0.8574 | 0.8097 | 0.1947 | 0.9211 | 0.0000 | 3282 | 0.0000 | 19.0 | 19 | 18.40 ms |
-| hybrid | 40 | 8 | 0.9211 | 0.8574 | 0.8097 | 0.1316 | 1.0000 | 0.0000 | 5357 | 0.0000 | 19.0 | 19 | 18.41 ms |
+| Strategy | candidateK | contextK | Recall@5 | nDCG@10 | MAP@10 | Context P | Context R | No-result | Context chars | Unans. abstained | Unans. cands | Unans. ctx | Index | p95 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| dense | 5 | 3 | 0.9211 | 0.8212 | 0.7851 | 0.3246 | 0.9211 | 0.0000 | 1976 | 0.0000 | 5.0 | 3.0 | 19 | 14.04 ms |
+| dense | 5 | 5 | 0.9211 | 0.8212 | 0.7851 | 0.1947 | 0.9211 | 0.0000 | 3188 | 0.0000 | 5.0 | 5.0 | 19 | 13.63 ms |
+| dense | 10 | 3 | 0.9211 | 0.8476 | 0.7965 | 0.3246 | 0.9211 | 0.0000 | 1976 | 0.0000 | 10.0 | 3.0 | 19 | 13.84 ms |
+| dense | 10 | 5 | 0.9211 | 0.8476 | 0.7965 | 0.1947 | 0.9211 | 0.0000 | 3188 | 0.0000 | 10.0 | 5.0 | 19 | 15.21 ms |
+| dense | 10 | 8 | 0.9211 | 0.8476 | 0.7965 | 0.1316 | 1.0000 | 0.0000 | 5151 | 0.0000 | 10.0 | 8.0 | 19 | 16.35 ms |
+| dense | 20 | 3 | 0.9211 | 0.8476 | 0.7965 | 0.3246 | 0.9211 | 0.0000 | 1976 | 0.0000 | 19.0 | 3.0 | 19 | 16.45 ms |
+| dense | 20 | 5 | 0.9211 | 0.8476 | 0.7965 | 0.1947 | 0.9211 | 0.0000 | 3188 | 0.0000 | 19.0 | 5.0 | 19 | 17.91 ms |
+| dense | 20 | 8 | 0.9211 | 0.8476 | 0.7965 | 0.1316 | 1.0000 | 0.0000 | 5151 | 0.0000 | 19.0 | 8.0 | 19 | 14.13 ms |
+| dense | 40 | 3 | 0.9211 | 0.8476 | 0.7965 | 0.3246 | 0.9211 | 0.0000 | 1976 | 0.0000 | 19.0 | 3.0 | 19 | 13.35 ms |
+| dense | 40 | 5 | 0.9211 | 0.8476 | 0.7965 | 0.1947 | 0.9211 | 0.0000 | 3188 | 0.0000 | 19.0 | 5.0 | 19 | 12.73 ms |
+| dense | 40 | 8 | 0.9211 | 0.8476 | 0.7965 | 0.1316 | 1.0000 | 0.0000 | 5151 | 0.0000 | 19.0 | 8.0 | 19 | 15.12 ms |
+| hybrid | 5 | 3 | 0.9211 | 0.8309 | 0.7982 | 0.3246 | 0.9211 | 0.0000 | 1949 | 0.0000 | 5.0 | 3.0 | 19 | 14.01 ms |
+| hybrid | 5 | 5 | 0.9211 | 0.8309 | 0.7982 | 0.1947 | 0.9211 | 0.0000 | 3216 | 0.0000 | 5.0 | 5.0 | 19 | 15.81 ms |
+| hybrid | 10 | 3 | 0.9211 | 0.8574 | 0.8097 | 0.3246 | 0.9211 | 0.0000 | 1963 | 0.0000 | 10.0 | 3.0 | 19 | 15.74 ms |
+| hybrid | 10 | 5 | 0.9211 | 0.8574 | 0.8097 | 0.1947 | 0.9211 | 0.0000 | 3345 | 0.0000 | 10.0 | 5.0 | 19 | 16.30 ms |
+| hybrid | 10 | 8 | 0.9211 | 0.8574 | 0.8097 | 0.1316 | 1.0000 | 0.0000 | 5320 | 0.0000 | 10.0 | 8.0 | 19 | 16.95 ms |
+| hybrid | 20 | 3 | 0.9211 | 0.8574 | 0.8097 | 0.3246 | 0.9211 | 0.0000 | 1959 | 0.0000 | 19.0 | 3.0 | 19 | 14.32 ms |
+| hybrid | 20 | 5 | 0.9211 | 0.8574 | 0.8097 | 0.1947 | 0.9211 | 0.0000 | 3282 | 0.0000 | 19.0 | 5.0 | 19 | 14.82 ms |
+| hybrid | 20 | 8 | 0.9211 | 0.8574 | 0.8097 | 0.1316 | 1.0000 | 0.0000 | 5357 | 0.0000 | 19.0 | 8.0 | 19 | 13.74 ms |
+| hybrid | 40 | 3 | 0.9211 | 0.8574 | 0.8097 | 0.3246 | 0.9211 | 0.0000 | 1959 | 0.0000 | 19.0 | 3.0 | 19 | 18.46 ms |
+| hybrid | 40 | 5 | 0.9211 | 0.8574 | 0.8097 | 0.1947 | 0.9211 | 0.0000 | 3282 | 0.0000 | 19.0 | 5.0 | 19 | 16.37 ms |
+| hybrid | 40 | 8 | 0.9211 | 0.8574 | 0.8097 | 0.1316 | 1.0000 | 0.0000 | 5357 | 0.0000 | 19.0 | 8.0 | 19 | 20.86 ms |
 
 
 ## Skipped cells
@@ -60,10 +60,14 @@ The harness refuses the same combination at the flag level, so a typo fails loud
   embedding model, not any generation model's tokenizer.
 - **No-result** is the share of *answerable* questions whose retrieval returned nothing —
   a miss, and the lower the better.
-- **Unans. no-result / retrieved** are the same idea for the *unanswerable* questions,
-  where the direction flips: there is no ground truth, so returning nothing is correct and
-  `retrieved` is how much irrelevant context was pulled in anyway. These two are the
-  columns a threshold decision should move, and they are kept out of every other column.
+- **Unans. abstained / cands / ctx** describe the *unanswerable* questions, where the
+  direction flips: there is no ground truth, so abstaining is correct. `abstained` is the
+  share where nothing passed the threshold; `cands` is how many candidates did (up to
+  `candidateK`, since the harness fetches that many for `Recall@10`); `ctx` is how many
+  actually reach the context window, i.e. `min(candidates, contextK)`. A high `cands` with
+  the usual `ctx` means the threshold is filtering nothing and the window is all noise.
+  These are the columns a threshold decision should move, and they stay out of every other
+  column.
 
 Best nDCG@10 in this grid: `hybrid` candidateK=10,
 contextK=3 (0.8574).

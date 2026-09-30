@@ -57,10 +57,16 @@ export type SplitAssignment = Record<string, 'validation' | 'test'>
 /**
  * 解析提交在仓库里的切分清单（`eval/splits.json`）。
  *
- * 用显式清单而不是 id 哈希（#192 评审）：哈希看着确定，但它的确定是“每次结果一样”，
- * 不是“每次划分一样”——往 `questions.jsonl` 里加一道题，会把其它题在 validation /
- * test 之间挪动，而一个稀有类别（multi-hop、cross-lingual）可以在无人选择的情况下整体
- * 落到某一边。清单让划分是被 review 的，不是被算出来的。
+ * 用显式清单而不是按 id 哈希（#192 评审）。先说清楚哈希**不是**哪里坏：
+ * `hash(id) % 3` 是逐 id 独立计算的，所以它是**稳定**的 —— 新增一道题不会挪动已有的题。
+ *
+ * 它真正不能做的是表达实验设计意图：
+ *
+ *   - 它无法保证小样本类别分层，于是 multi-hop / cross-lingual 这类稀有类别可能在无
+ *     人选择的情况下整体落到某一侧；
+ *   - 新增的题会被默默分到一侧，而不是被决定 —— 而 test 正是“选择”不该被拟合的那一侧。
+ *
+ * 清单让“哪道题在哪一侧”成为一个被 review 的声明，而不是一个被算出来的结果。
  */
 export function parseSplitAssignment(raw: unknown, source: string): SplitAssignment {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
@@ -235,14 +241,26 @@ export interface EvalReport {
    * 不可答问题的单独一组（#192）。
    *
    * 它们不进 `metrics`/`byType`：没有 ground truth，Recall 对它们是 0/0 而不是 0。
-   * 它们评的是“该拒答时有没有硬找”——`noResultRate` 越接近 1 越好（在真的没有相关
-   * 资料时返回空），`meanRetrieved` 则是“硬找了多少条相似但无关的上下文”。
+   *
+   * 这一组量的是**检索层弃权**，不是模型拒答：harness 不跑生成模型，所以它只能证明
+   * “没有候选通过 threshold”，不能证明最终回答会说“资料里没有”。真正的 system refusal
+   * 要等 generator eval。
    */
   unanswerable: {
     questions: number
-    noResultCount: number
-    noResultRate: number
-    meanRetrieved: number
+    /** 没有任何候选通过 threshold 的问题数。 */
+    abstentionCount: number
+    /** `abstentionCount / questions`，在检索层含义下越高越好。 */
+    retrievalAbstentionRate: number
+    /**
+     * 通过 threshold 的候选数，**不是**送进 prompt 的条数。
+     *
+     * 上限是 `candidateK`（harness 为了算 Recall@10 故意取满），所以这个数接近
+     * `candidateK` 时说明 threshold 基本没挡掉任何东西。
+     */
+    meanCandidatesRetrieved: number
+    /** 真正进入 context 窗口的条数：`min(retrievedCount, contextK)`。 */
+    meanContextPassages: number
   }
   /** `indexingMs` 只用于 #78 的吞吐比较；它不在确定报告里，也不该成为差异原因。 */
   timing: { latencyP50Ms: number; latencyP95Ms: number; indexingMs: number }

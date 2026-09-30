@@ -11,10 +11,11 @@ import {
  * The eval split (#192). Parameters that get swept have to be chosen on questions that
  * did not take part in the choice.
  *
- * It used to be a hash of the question id. That was reproducible but not *stable*:
- * adding a question moved others between the sides, and a rare query type could end up
- * entirely on one side without anyone choosing that. The split is now an explicit
- * committed manifest, and these pin the properties that make it trustworthy.
+ * It used to be a hash of the question id. That is reproducible and, because it is computed
+ * per id, *stable* when a question is added — but it cannot express the experimental
+ * design: it does not stratify a small corpus, so a rare query type can end up entirely on
+ * one side without anyone choosing that, and a new question is assigned silently rather
+ * than deliberately. The split is now an explicit committed manifest.
  */
 
 const question = (id: string): EvalQuestion => ({

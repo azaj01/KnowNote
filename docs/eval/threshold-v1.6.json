@@ -14,9 +14,10 @@
         "meanRetrieved": 19,
         "unanswerable": {
           "questions": 3,
-          "noResultCount": 0,
-          "noResultRate": 0,
-          "meanRetrieved": 19
+          "abstentionCount": 0,
+          "retrievalAbstentionRate": 0,
+          "meanCandidatesRetrieved": 19,
+          "meanContextPassages": 3
         },
         "metrics": {
           "recallAt1": 0.576923,
@@ -38,9 +39,10 @@
         "meanRetrieved": 19,
         "unanswerable": {
           "questions": 3,
-          "noResultCount": 0,
-          "noResultRate": 0,
-          "meanRetrieved": 19
+          "abstentionCount": 0,
+          "retrievalAbstentionRate": 0,
+          "meanCandidatesRetrieved": 19,
+          "meanContextPassages": 3
         },
         "metrics": {
           "recallAt1": 0.7,
@@ -65,9 +67,10 @@
         "meanRetrieved": 19,
         "unanswerable": {
           "questions": 3,
-          "noResultCount": 0,
-          "noResultRate": 0,
-          "meanRetrieved": 19
+          "abstentionCount": 0,
+          "retrievalAbstentionRate": 0,
+          "meanCandidatesRetrieved": 19,
+          "meanContextPassages": 3
         },
         "metrics": {
           "recallAt1": 0.576923,
@@ -89,9 +92,10 @@
         "meanRetrieved": 19,
         "unanswerable": {
           "questions": 3,
-          "noResultCount": 0,
-          "noResultRate": 0,
-          "meanRetrieved": 19
+          "abstentionCount": 0,
+          "retrievalAbstentionRate": 0,
+          "meanCandidatesRetrieved": 19,
+          "meanContextPassages": 3
         },
         "metrics": {
           "recallAt1": 0.7,
@@ -116,9 +120,10 @@
         "meanRetrieved": 19,
         "unanswerable": {
           "questions": 3,
-          "noResultCount": 0,
-          "noResultRate": 0,
-          "meanRetrieved": 19
+          "abstentionCount": 0,
+          "retrievalAbstentionRate": 0,
+          "meanCandidatesRetrieved": 19,
+          "meanContextPassages": 3
         },
         "metrics": {
           "recallAt1": 0.576923,
@@ -140,9 +145,10 @@
         "meanRetrieved": 19,
         "unanswerable": {
           "questions": 3,
-          "noResultCount": 0,
-          "noResultRate": 0,
-          "meanRetrieved": 19
+          "abstentionCount": 0,
+          "retrievalAbstentionRate": 0,
+          "meanCandidatesRetrieved": 19,
+          "meanContextPassages": 3
         },
         "metrics": {
           "recallAt1": 0.7,
@@ -167,9 +173,10 @@
         "meanRetrieved": 19,
         "unanswerable": {
           "questions": 3,
-          "noResultCount": 0,
-          "noResultRate": 0,
-          "meanRetrieved": 19
+          "abstentionCount": 0,
+          "retrievalAbstentionRate": 0,
+          "meanCandidatesRetrieved": 19,
+          "meanContextPassages": 3
         },
         "metrics": {
           "recallAt1": 0.576923,
@@ -191,9 +198,10 @@
         "meanRetrieved": 19,
         "unanswerable": {
           "questions": 3,
-          "noResultCount": 0,
-          "noResultRate": 0,
-          "meanRetrieved": 19
+          "abstentionCount": 0,
+          "retrievalAbstentionRate": 0,
+          "meanCandidatesRetrieved": 19,
+          "meanContextPassages": 3
         },
         "metrics": {
           "recallAt1": 0.7,
@@ -218,9 +226,10 @@
         "meanRetrieved": 19,
         "unanswerable": {
           "questions": 3,
-          "noResultCount": 0,
-          "noResultRate": 0,
-          "meanRetrieved": 19
+          "abstentionCount": 0,
+          "retrievalAbstentionRate": 0,
+          "meanCandidatesRetrieved": 19,
+          "meanContextPassages": 3
         },
         "metrics": {
           "recallAt1": 0.576923,
@@ -242,9 +251,10 @@
         "meanRetrieved": 19,
         "unanswerable": {
           "questions": 3,
-          "noResultCount": 0,
-          "noResultRate": 0,
-          "meanRetrieved": 19
+          "abstentionCount": 0,
+          "retrievalAbstentionRate": 0,
+          "meanCandidatesRetrieved": 19,
+          "meanContextPassages": 3
         },
         "metrics": {
           "recallAt1": 0.7,

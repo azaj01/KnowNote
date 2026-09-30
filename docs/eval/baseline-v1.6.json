@@ -110,9 +110,10 @@
   ],
   "unanswerable": {
     "questions": 6,
-    "noResultCount": 0,
-    "noResultRate": 0,
-    "meanRetrieved": 19
+    "abstentionCount": 0,
+    "retrievalAbstentionRate": 0,
+    "meanCandidatesRetrieved": 19,
+    "meanContextPassages": 3
   },
   "perQuestion": [
     {

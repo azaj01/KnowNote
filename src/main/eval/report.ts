@@ -29,12 +29,13 @@ export function renderMarkdown(report: EvalReport): string {
   const answerableCount = report.byType.reduce((total, entry) => total + entry.questions, 0)
   const unanswerableNote =
     unanswerable.questions === 0
-      ? 'This corpus carries **no** unanswerable question yet, so refusal is not measured.\n' +
-        'The threshold cannot be tuned against it either: every question is answerable, so\n' +
-        'every threshold returns something.'
+      ? 'This corpus carries **no** unanswerable question yet, so retrieval abstention is not\n' +
+        'measured. The threshold cannot be tuned against it either: every question is answerable,\n' +
+        'so every threshold returns something.'
       : `| Unanswerable questions | ${unanswerable.questions} |\n` +
-        `| Returned no results | ${format(unanswerable.noResultRate)} (${unanswerable.noResultCount}/${unanswerable.questions}) |\n` +
-        `| Mean passages retrieved | ${unanswerable.meanRetrieved.toFixed(2)} |`
+        `| Retrieval abstained | ${format(unanswerable.retrievalAbstentionRate)} (${unanswerable.abstentionCount}/${unanswerable.questions}) |\n` +
+        `| Mean candidates passing the threshold | ${unanswerable.meanCandidatesRetrieved.toFixed(2)} |\n` +
+        `| Mean passages in the context window | ${unanswerable.meanContextPassages.toFixed(2)} |`
 
   return `# RAG eval baseline — ${report.baseline}
 
@@ -79,11 +80,20 @@ ${typeRows}
 
 ### Unanswerable questions
 
-These carry no ground truth, so the correct outcome is that retrieval finds nothing. They
+These carry no ground truth, so the correct outcome is that retrieval returns nothing. They
 are excluded from every metric above — a missing ground truth is not a miss — and reported
-here instead. A higher **no-results** rate is better on this row, which is the opposite of
-how it reads everywhere else, and \`mean passages retrieved\` is how much irrelevant context
-was pulled in anyway. This is the row a threshold decision should move.
+here instead.
+
+**This measures retrieval-level abstention, not the model refusing.** No generator runs in
+this harness, so it can show that no candidate passed the threshold; it cannot show that the
+final answer would say "not in your sources". A true system refusal rate needs a
+generator eval.
+
+A higher abstention rate is better on this row, the opposite of how every other row reads.
+The two sizes are kept apart on purpose: **candidates passing the threshold** can be as high
+as \`candidateK\` (the harness fetches that many to compute \`Recall@10\`), while **passages in
+the context window** is what a user's prompt would actually receive. A large first number
+with a small second one means the threshold filters nothing and the window is all noise.
 
 | Metric | Value |
 | --- | --- |

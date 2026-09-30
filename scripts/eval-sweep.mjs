@@ -159,8 +159,9 @@ try {
       noResultRate: answerable.length === 0 ? 0 : noResult / answerable.length,
       meanContextChars: mean(answerable.map((q) => q.contextChars)),
       unanswerableQuestions: report.unanswerable.questions,
-      unanswerableNoResultRate: report.unanswerable.noResultRate,
-      unanswerableMeanRetrieved: report.unanswerable.meanRetrieved,
+      unanswerableAbstentionRate: report.unanswerable.retrievalAbstentionRate,
+      unanswerableCandidates: report.unanswerable.meanCandidatesRetrieved,
+      unanswerableContextPassages: report.unanswerable.meanContextPassages,
       chunkCount: report.config.chunkCount,
       ...readTiming(join(outDir, 'baseline-v1.6.md'))
     })
@@ -177,8 +178,9 @@ const tableRows = rows
       `| ${row.strategy} | ${row.candidateK} | ${row.contextK} | ${format4(row.recallAt5)} | ` +
       `${format4(row.ndcgAt10)} | ${format4(row.mapAt10)} | ${format4(row.contextPrecision)} | ` +
       `${format4(row.contextRecall)} | ${format4(row.noResultRate)} | ` +
-      `${Math.round(row.meanContextChars)} | ${format4(row.unanswerableNoResultRate)} | ` +
-      `${row.unanswerableMeanRetrieved.toFixed(1)} | ${row.chunkCount} | ${row.latencyP95Ms?.toFixed(2) ?? '—'} ms |`
+      `${Math.round(row.meanContextChars)} | ${format4(row.unanswerableAbstentionRate)} | ` +
+      `${row.unanswerableCandidates.toFixed(1)} | ${row.unanswerableContextPassages.toFixed(1)} | ` +
+      `${row.chunkCount} | ${row.latencyP95Ms?.toFixed(2) ?? '—'} ms |`
   )
   .join('\n')
 
@@ -211,8 +213,8 @@ The real harness, the same corpus, chunking held fixed, over
 ${STRATEGIES.join(' / ')} × candidateK {${CANDIDATE_KS.join(', ')}} × contextK {${CONTEXT_KS.join(', ')}} — ${rows.length} runs.
 Each row differs from its neighbour in one parameter.${skipped.length > 0 ? `\n\n${skipped.length} further cell(s) were **skipped** because \`contextK > candidateK\`; see below.` : ''}
 
-| Strategy | candidateK | contextK | Recall@5 | nDCG@10 | MAP@10 | Context P | Context R | No-result | Context chars | Unans. no-result | Unans. retrieved | Index | p95 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Strategy | candidateK | contextK | Recall@5 | nDCG@10 | MAP@10 | Context P | Context R | No-result | Context chars | Unans. abstained | Unans. cands | Unans. ctx | Index | p95 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${tableRows}
 ${skippedNote}
 
@@ -228,10 +230,14 @@ ${skippedNote}
   embedding model, not any generation model's tokenizer.
 - **No-result** is the share of *answerable* questions whose retrieval returned nothing —
   a miss, and the lower the better.
-- **Unans. no-result / retrieved** are the same idea for the *unanswerable* questions,
-  where the direction flips: there is no ground truth, so returning nothing is correct and
-  \`retrieved\` is how much irrelevant context was pulled in anyway. These two are the
-  columns a threshold decision should move, and they are kept out of every other column.
+- **Unans. abstained / cands / ctx** describe the *unanswerable* questions, where the
+  direction flips: there is no ground truth, so abstaining is correct. \`abstained\` is the
+  share where nothing passed the threshold; \`cands\` is how many candidates did (up to
+  \`candidateK\`, since the harness fetches that many for \`Recall@10\`); \`ctx\` is how many
+  actually reach the context window, i.e. \`min(candidates, contextK)\`. A high \`cands\` with
+  the usual \`ctx\` means the threshold is filtering nothing and the window is all noise.
+  These are the columns a threshold decision should move, and they stay out of every other
+  column.
 
 Best nDCG@10 in this grid: \`${bestNdcg.strategy}\` candidateK=${bestNdcg.candidateK},
 contextK=${bestNdcg.contextK} (${format4(bestNdcg.ndcgAt10)}).
