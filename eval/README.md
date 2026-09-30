@@ -9,9 +9,10 @@ every experiment (#77, #78) is reported as a delta against that file.
 ```bash
 npm run eval:prepare    # one-time, networked: download the pinned embedding model
 npm run eval            # offline and deterministic: run the harness, rewrite the baseline
-npm run eval:retrieval  # strategy comparison (#77)
+npm run eval:retrieval  # strategy comparison (#77); validation selects, test reports
 npm run eval:threshold  # derive the similarity threshold on validation, report on test
 npm run eval:sweep      # bounded grid over strategy × candidateK × contextK, one dashboard
+npm run eval:blocks eval/corpus/foo.md   # print the block ordinals ground truth must use
 ```
 
 ### The harness runs the production configuration
@@ -116,7 +117,10 @@ first reads as a permanent miss, the second as a normal hit.
 Ground truth uses **corpus identity, never database identity**:
 
 - `document` is the corpus-relative path.
-- `block` is the block ordinal inside the document (`document_blocks.order`).
+- `block` is the **`document_blocks.order` the ingestion pipeline produced**, not a line
+  number and not a paragraph index a human counted. Use `npm run eval:blocks <file>` to
+  print the real ordinals through the same loader the harness uses — guessing them is how a
+  dataset drifts.
 - `page` is `null` for unpaginated sources.
 - `quote` is an optional excerpt. The runner fails if the referenced block no longer
   contains it, so a parser change cannot silently move the ground truth.

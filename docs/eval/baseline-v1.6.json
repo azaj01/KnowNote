@@ -16,20 +16,20 @@
     "contextK": 3,
     "threshold": 0.5,
     "corpus": "eval/corpus",
-    "documents": 13,
-    "questions": 44,
-    "chunkCount": 19
+    "documents": 17,
+    "questions": 54,
+    "chunkCount": 35
   },
   "metrics": {
-    "recallAt1": 0.657895,
-    "recallAt5": 0.921053,
-    "recallAt10": 1,
-    "mrr": 0.800909,
-    "ndcgAt10": 0.84764,
-    "hitRateAt5": 0.921053,
-    "mapAt10": 0.796523,
-    "contextPrecision": 0.324561,
-    "contextRecall": 0.921053
+    "recallAt1": 0.592391,
+    "recallAt5": 0.891304,
+    "recallAt10": 0.940217,
+    "mrr": 0.759783,
+    "ndcgAt10": 0.791478,
+    "hitRateAt5": 0.913043,
+    "mapAt10": 0.736051,
+    "contextPrecision": 0.318841,
+    "contextRecall": 0.869565
   },
   "byType": [
     {
@@ -38,58 +38,73 @@
       "metrics": {
         "recallAt1": 0,
         "recallAt5": 0.666667,
-        "recallAt10": 1,
-        "mrr": 0.344577,
-        "ndcgAt10": 0.503192,
+        "recallAt10": 0.777778,
+        "mrr": 0.325926,
+        "ndcgAt10": 0.431103,
         "hitRateAt5": 0.666667,
-        "mapAt10": 0.344577,
+        "mapAt10": 0.314815,
         "contextPrecision": 0.222222,
         "contextRecall": 0.666667
       }
     },
     {
       "type": "exact",
-      "questions": 6,
+      "questions": 7,
       "metrics": {
-        "recallAt1": 1,
+        "recallAt1": 0.857143,
         "recallAt5": 1,
         "recallAt10": 1,
-        "mrr": 1,
-        "ndcgAt10": 1,
+        "mrr": 0.892857,
+        "ndcgAt10": 0.918668,
         "hitRateAt5": 1,
-        "mapAt10": 1,
+        "mapAt10": 0.892857,
+        "contextPrecision": 0.285714,
+        "contextRecall": 0.857143
+      }
+    },
+    {
+      "type": "hard-negative",
+      "questions": 4,
+      "metrics": {
+        "recallAt1": 0.5,
+        "recallAt5": 1,
+        "recallAt10": 1,
+        "mrr": 0.708333,
+        "ndcgAt10": 0.782732,
+        "hitRateAt5": 1,
+        "mapAt10": 0.708333,
         "contextPrecision": 0.333333,
         "contextRecall": 1
       }
     },
     {
       "type": "multi-hop",
-      "questions": 2,
+      "questions": 4,
       "metrics": {
-        "recallAt1": 0.5,
-        "recallAt5": 1,
-        "recallAt10": 1,
-        "mrr": 1,
-        "ndcgAt10": 0.95986,
+        "recallAt1": 0.3125,
+        "recallAt5": 0.75,
+        "recallAt10": 0.8125,
+        "mrr": 0.875,
+        "ndcgAt10": 0.728888,
         "hitRateAt5": 1,
-        "mapAt10": 0.916667,
-        "contextPrecision": 0.666667,
-        "contextRecall": 1
+        "mapAt10": 0.627083,
+        "contextPrecision": 0.583333,
+        "contextRecall": 0.75
       }
     },
     {
       "type": "semantic",
-      "questions": 18,
+      "questions": 19,
       "metrics": {
-        "recallAt1": 0.833333,
-        "recallAt5": 1,
+        "recallAt1": 0.789474,
+        "recallAt5": 0.947368,
         "recallAt10": 1,
-        "mrr": 0.907407,
-        "ndcgAt10": 0.931214,
-        "hitRateAt5": 1,
-        "mapAt10": 0.907407,
-        "contextPrecision": 0.333333,
-        "contextRecall": 1
+        "mrr": 0.864912,
+        "ndcgAt10": 0.897417,
+        "hitRateAt5": 0.947368,
+        "mapAt10": 0.864912,
+        "contextPrecision": 0.315789,
+        "contextRecall": 0.947368
       }
     },
     {
@@ -109,10 +124,10 @@
     }
   ],
   "unanswerable": {
-    "questions": 6,
+    "questions": 8,
     "abstentionCount": 0,
     "retrievalAbstentionRate": 0,
-    "meanCandidatesRetrieved": 19,
+    "meanCandidatesRetrieved": 20,
     "meanContextPassages": 3
   },
   "perQuestion": [
@@ -123,12 +138,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2074,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -156,12 +172,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2257,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -189,12 +206,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
-      "contextChars": 2558,
+      "retrievedCount": 20,
+      "contextChars": 2739,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -222,12 +240,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2113,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -255,12 +274,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2113,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -288,12 +308,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1775,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -321,12 +342,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2091,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -354,12 +376,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1970,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -387,12 +410,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1484,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -420,12 +444,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2682,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -453,12 +478,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2051,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -486,12 +512,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
-      "contextChars": 2007,
+      "retrievedCount": 20,
+      "contextChars": 2605,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -519,7 +546,7 @@
       "answerable": true,
       "firstRelevantRank": 3,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2007,
       "matchesByRank": [
         [],
@@ -527,6 +554,7 @@
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -552,12 +580,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2257,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -585,12 +614,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2621,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -618,12 +648,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
-      "contextChars": 2558,
+      "retrievedCount": 20,
+      "contextChars": 1981,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -651,12 +682,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1773,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -684,12 +716,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1970,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -717,12 +750,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2556,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -750,12 +784,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
-      "contextChars": 2098,
+      "retrievedCount": 20,
+      "contextChars": 2306,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -783,13 +818,14 @@
       "answerable": true,
       "firstRelevantRank": 2,
       "relevantCount": 1,
-      "retrievedCount": 19,
-      "contextChars": 2488,
+      "retrievedCount": 20,
+      "contextChars": 2605,
       "matchesByRank": [
         [],
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -816,12 +852,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2488,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -849,7 +886,7 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 2,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2257,
       "matchesByRank": [
         [
@@ -859,6 +896,7 @@
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -884,7 +922,7 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 2,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1970,
       "matchesByRank": [
         [
@@ -893,6 +931,7 @@
         [
           1
         ],
+        [],
         [],
         [],
         [],
@@ -919,12 +958,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2098,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -952,13 +992,14 @@
       "answerable": true,
       "firstRelevantRank": 2,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1867,
       "matchesByRank": [
         [],
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -985,12 +1026,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1453,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -1018,12 +1060,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1372,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -1051,12 +1094,13 @@
       "answerable": true,
       "firstRelevantRank": 1,
       "relevantCount": 1,
-      "retrievedCount": 19,
-      "contextChars": 1500,
+      "retrievedCount": 20,
+      "contextChars": 1317,
       "matchesByRank": [
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -1084,13 +1128,14 @@
       "answerable": true,
       "firstRelevantRank": 2,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1860,
       "matchesByRank": [
         [],
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -1117,9 +1162,10 @@
       "answerable": false,
       "firstRelevantRank": 0,
       "relevantCount": 0,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2488,
       "matchesByRank": [
+        [],
         [],
         [],
         [],
@@ -1148,9 +1194,10 @@
       "answerable": false,
       "firstRelevantRank": 0,
       "relevantCount": 0,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2257,
       "matchesByRank": [
+        [],
         [],
         [],
         [],
@@ -1179,9 +1226,10 @@
       "answerable": false,
       "firstRelevantRank": 0,
       "relevantCount": 0,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 2043,
       "matchesByRank": [
+        [],
         [],
         [],
         [],
@@ -1210,9 +1258,10 @@
       "answerable": false,
       "firstRelevantRank": 0,
       "relevantCount": 0,
-      "retrievedCount": 19,
-      "contextChars": 2588,
+      "retrievedCount": 20,
+      "contextChars": 2681,
       "matchesByRank": [
+        [],
         [],
         [],
         [],
@@ -1241,9 +1290,10 @@
       "answerable": false,
       "firstRelevantRank": 0,
       "relevantCount": 0,
-      "retrievedCount": 19,
-      "contextChars": 2488,
+      "retrievedCount": 20,
+      "contextChars": 2605,
       "matchesByRank": [
+        [],
         [],
         [],
         [],
@@ -1272,9 +1322,10 @@
       "answerable": false,
       "firstRelevantRank": 0,
       "relevantCount": 0,
-      "retrievedCount": 19,
-      "contextChars": 2071,
+      "retrievedCount": 20,
+      "contextChars": 2762,
       "matchesByRank": [
+        [],
         [],
         [],
         [],
@@ -1301,11 +1352,23 @@
       "question": "推移质为什么比悬移质更难测？",
       "type": "cross-lingual",
       "answerable": true,
-      "firstRelevantRank": 8,
+      "firstRelevantRank": 20,
       "relevantCount": 1,
-      "retrievedCount": 19,
-      "contextChars": 2084,
+      "retrievedCount": 20,
+      "contextChars": 1099,
       "matchesByRank": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
         [],
         [],
         [],
@@ -1315,18 +1378,7 @@
         [],
         [
           0
-        ],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        []
+        ]
       ]
     },
     {
@@ -1334,11 +1386,24 @@
       "question": "河流监测中，每个站点要采几份平行样？",
       "type": "cross-lingual",
       "answerable": true,
-      "firstRelevantRank": 7,
+      "firstRelevantRank": 20,
       "relevantCount": 1,
-      "retrievedCount": 19,
-      "contextChars": 1480,
+      "retrievedCount": 20,
+      "contextChars": 1743,
       "matchesByRank": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
         [],
         [],
         [],
@@ -1347,19 +1412,7 @@
         [],
         [
           0
-        ],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        []
+        ]
       ]
     },
     {
@@ -1369,13 +1422,14 @@
       "answerable": true,
       "firstRelevantRank": 2,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1994,
       "matchesByRank": [
         [],
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -1402,13 +1456,14 @@
       "answerable": true,
       "firstRelevantRank": 2,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1994,
       "matchesByRank": [
         [],
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -1435,7 +1490,7 @@
       "answerable": true,
       "firstRelevantRank": 3,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1449,
       "matchesByRank": [
         [],
@@ -1443,6 +1498,7 @@
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -1468,7 +1524,7 @@
       "answerable": true,
       "firstRelevantRank": 3,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1321,
       "matchesByRank": [
         [],
@@ -1476,6 +1532,7 @@
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -1501,13 +1558,14 @@
       "answerable": true,
       "firstRelevantRank": 2,
       "relevantCount": 1,
-      "retrievedCount": 19,
-      "contextChars": 956,
+      "retrievedCount": 20,
+      "contextChars": 1546,
       "matchesByRank": [
         [],
         [
           0
         ],
+        [],
         [],
         [],
         [],
@@ -1534,7 +1592,7 @@
       "answerable": true,
       "firstRelevantRank": 6,
       "relevantCount": 1,
-      "retrievedCount": 19,
+      "retrievedCount": 20,
       "contextChars": 1447,
       "matchesByRank": [
         [],
@@ -1545,6 +1603,358 @@
         [
           0
         ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q045",
+      "question": "What is the default retry count in Gateway API v2?",
+      "type": "exact",
+      "answerable": true,
+      "firstRelevantRank": 4,
+      "relevantCount": 1,
+      "retrievedCount": 20,
+      "contextChars": 2898,
+      "matchesByRank": [
+        [],
+        [],
+        [],
+        [
+          0
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q046",
+      "question": "What is the default request timeout of Gateway API v1?",
+      "type": "hard-negative",
+      "answerable": true,
+      "firstRelevantRank": 1,
+      "relevantCount": 1,
+      "retrievedCount": 20,
+      "contextChars": 2909,
+      "matchesByRank": [
+        [
+          0
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q047",
+      "question": "What is the context window of Gateway API v3, in tokens?",
+      "type": "hard-negative",
+      "answerable": true,
+      "firstRelevantRank": 1,
+      "relevantCount": 1,
+      "retrievedCount": 20,
+      "contextChars": 2899,
+      "matchesByRank": [
+        [
+          0
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q048",
+      "question": "What is the default rate limit of Gateway API v2?",
+      "type": "hard-negative",
+      "answerable": true,
+      "firstRelevantRank": 2,
+      "relevantCount": 1,
+      "retrievedCount": 20,
+      "contextChars": 2854,
+      "matchesByRank": [
+        [],
+        [
+          0
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q049",
+      "question": "What is the default request timeout of Gateway API v3?",
+      "type": "hard-negative",
+      "answerable": true,
+      "firstRelevantRank": 3,
+      "relevantCount": 1,
+      "retrievedCount": 20,
+      "contextChars": 2921,
+      "matchesByRank": [
+        [],
+        [],
+        [
+          0
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q050",
+      "question": "Which Gateway API version waits longest between retries after a failed request?",
+      "type": "semantic",
+      "answerable": true,
+      "firstRelevantRank": 10,
+      "relevantCount": 1,
+      "retrievedCount": 20,
+      "contextChars": 2910,
+      "matchesByRank": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [
+          0
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q051",
+      "question": "Compare the default timeouts and rate limits of Gateway API v1 and v3.",
+      "type": "multi-hop",
+      "answerable": true,
+      "firstRelevantRank": 1,
+      "relevantCount": 4,
+      "retrievedCount": 20,
+      "contextChars": 2888,
+      "matchesByRank": [
+        [
+          0
+        ],
+        [
+          2,
+          3
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [
+          1
+        ],
+        [
+          3
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q052",
+      "question": "Compare the retry count and context window of Gateway API v2 and v3.",
+      "type": "multi-hop",
+      "answerable": true,
+      "firstRelevantRank": 2,
+      "relevantCount": 4,
+      "retrievedCount": 20,
+      "contextChars": 2899,
+      "matchesByRank": [
+        [],
+        [
+          3
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [
+          1
+        ],
+        [
+          2
+        ],
+        [
+          0
+        ],
+        [],
+        [
+          1
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q053",
+      "question": "How much GPU memory does Gateway API v2 require to serve a request?",
+      "type": "unanswerable",
+      "answerable": false,
+      "firstRelevantRank": 0,
+      "relevantCount": 0,
+      "retrievedCount": 20,
+      "contextChars": 2875,
+      "matchesByRank": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q054",
+      "question": "What is the monthly subscription price of Gateway API v3?",
+      "type": "unanswerable",
+      "answerable": false,
+      "firstRelevantRank": 0,
+      "relevantCount": 0,
+      "retrievedCount": 20,
+      "contextChars": 2908,
+      "matchesByRank": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
         [],
         [],
         [],
