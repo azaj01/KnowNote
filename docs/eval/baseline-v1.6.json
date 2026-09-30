@@ -16,20 +16,20 @@
     "contextK": 3,
     "threshold": 0.5,
     "corpus": "eval/corpus",
-    "documents": 17,
-    "questions": 54,
-    "chunkCount": 35
+    "documents": 21,
+    "questions": 63,
+    "chunkCount": 53
   },
   "metrics": {
-    "recallAt1": 0.592391,
-    "recallAt5": 0.891304,
-    "recallAt10": 0.940217,
-    "mrr": 0.759783,
-    "ndcgAt10": 0.791478,
-    "hitRateAt5": 0.913043,
-    "mapAt10": 0.736051,
-    "contextPrecision": 0.318841,
-    "contextRecall": 0.869565
+    "recallAt1": 0.59434,
+    "recallAt5": 0.877358,
+    "recallAt10": 0.919811,
+    "mrr": 0.754755,
+    "ndcgAt10": 0.780449,
+    "hitRateAt5": 0.90566,
+    "mapAt10": 0.72804,
+    "contextPrecision": 0.308176,
+    "contextRecall": 0.816038
   },
   "byType": [
     {
@@ -39,72 +39,72 @@
         "recallAt1": 0,
         "recallAt5": 0.666667,
         "recallAt10": 0.777778,
-        "mrr": 0.325926,
-        "ndcgAt10": 0.431103,
+        "mrr": 0.299383,
+        "ndcgAt10": 0.41727,
         "hitRateAt5": 0.666667,
-        "mapAt10": 0.314815,
-        "contextPrecision": 0.222222,
-        "contextRecall": 0.666667
+        "mapAt10": 0.299383,
+        "contextPrecision": 0.185185,
+        "contextRecall": 0.555556
       }
     },
     {
       "type": "exact",
-      "questions": 7,
+      "questions": 8,
       "metrics": {
-        "recallAt1": 0.857143,
+        "recallAt1": 0.75,
         "recallAt5": 1,
         "recallAt10": 1,
-        "mrr": 0.892857,
-        "ndcgAt10": 0.918668,
+        "mrr": 0.822917,
+        "ndcgAt10": 0.866335,
         "hitRateAt5": 1,
-        "mapAt10": 0.892857,
-        "contextPrecision": 0.285714,
-        "contextRecall": 0.857143
+        "mapAt10": 0.822917,
+        "contextPrecision": 0.291667,
+        "contextRecall": 0.875
       }
     },
     {
       "type": "hard-negative",
-      "questions": 4,
+      "questions": 7,
       "metrics": {
-        "recallAt1": 0.5,
+        "recallAt1": 0.714286,
         "recallAt5": 1,
         "recallAt10": 1,
-        "mrr": 0.708333,
-        "ndcgAt10": 0.782732,
+        "mrr": 0.833333,
+        "ndcgAt10": 0.875847,
         "hitRateAt5": 1,
-        "mapAt10": 0.708333,
+        "mapAt10": 0.833333,
         "contextPrecision": 0.333333,
         "contextRecall": 1
       }
     },
     {
       "type": "multi-hop",
-      "questions": 4,
+      "questions": 5,
       "metrics": {
-        "recallAt1": 0.3125,
-        "recallAt5": 0.75,
-        "recallAt10": 0.8125,
-        "mrr": 0.875,
-        "ndcgAt10": 0.728888,
+        "recallAt1": 0.3,
+        "recallAt5": 0.7,
+        "recallAt10": 0.75,
+        "mrr": 0.9,
+        "ndcgAt10": 0.721795,
         "hitRateAt5": 1,
-        "mapAt10": 0.627083,
-        "contextPrecision": 0.583333,
-        "contextRecall": 0.75
+        "mapAt10": 0.635,
+        "contextPrecision": 0.6,
+        "contextRecall": 0.65
       }
     },
     {
       "type": "semantic",
-      "questions": 19,
+      "questions": 21,
       "metrics": {
-        "recallAt1": 0.789474,
-        "recallAt5": 0.947368,
-        "recallAt10": 1,
-        "mrr": 0.864912,
-        "ndcgAt10": 0.897417,
-        "hitRateAt5": 0.947368,
-        "mapAt10": 0.864912,
-        "contextPrecision": 0.315789,
-        "contextRecall": 0.947368
+        "recallAt1": 0.761905,
+        "recallAt5": 0.904762,
+        "recallAt10": 0.952381,
+        "mrr": 0.828139,
+        "ndcgAt10": 0.85418,
+        "hitRateAt5": 0.904762,
+        "mapAt10": 0.82381,
+        "contextPrecision": 0.285714,
+        "contextRecall": 0.857143
       }
     },
     {
@@ -124,7 +124,7 @@
     }
   ],
   "unanswerable": {
-    "questions": 8,
+    "questions": 10,
     "abstentionCount": 0,
     "retrievalAbstentionRate": 0,
     "meanCandidatesRetrieved": 20,
@@ -139,7 +139,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2074,
+      "contextChars": 2198,
       "matchesByRank": [
         [
           0
@@ -170,16 +170,16 @@
       "question": "How many replicate samples are collected at each river station?",
       "type": "exact",
       "answerable": true,
-      "firstRelevantRank": 1,
+      "firstRelevantRank": 3,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2257,
+      "contextChars": 2297,
       "matchesByRank": [
+        [],
+        [],
         [
           0
         ],
-        [],
-        [],
         [],
         [],
         [],
@@ -207,7 +207,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2739,
+      "contextChars": 2679,
       "matchesByRank": [
         [
           0
@@ -275,7 +275,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2113,
+      "contextChars": 2157,
       "matchesByRank": [
         [
           0
@@ -309,7 +309,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 1775,
+      "contextChars": 2364,
       "matchesByRank": [
         [
           0
@@ -343,7 +343,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2091,
+      "contextChars": 2047,
       "matchesByRank": [
         [
           0
@@ -377,7 +377,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 1970,
+      "contextChars": 2057,
       "matchesByRank": [
         [
           0
@@ -411,7 +411,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 1484,
+      "contextChars": 2136,
       "matchesByRank": [
         [
           0
@@ -513,7 +513,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2605,
+      "contextChars": 2687,
       "matchesByRank": [
         [
           0
@@ -544,24 +544,24 @@
       "question": "What is the main environmental concern for tidal energy installations?",
       "type": "semantic",
       "answerable": true,
-      "firstRelevantRank": 3,
+      "firstRelevantRank": 11,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2007,
+      "contextChars": 2579,
       "matchesByRank": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
         [],
         [],
         [
           0
         ],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
         [],
         [],
         [],
@@ -581,7 +581,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2257,
+      "contextChars": 2910,
       "matchesByRank": [
         [
           0
@@ -615,7 +615,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2621,
+      "contextChars": 2884,
       "matchesByRank": [
         [
           0
@@ -649,7 +649,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 1981,
+      "contextChars": 2702,
       "matchesByRank": [
         [
           0
@@ -717,7 +717,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 1970,
+      "contextChars": 2561,
       "matchesByRank": [
         [
           0
@@ -751,7 +751,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2556,
+      "contextChars": 2636,
       "matchesByRank": [
         [
           0
@@ -785,7 +785,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2306,
+      "contextChars": 2269,
       "matchesByRank": [
         [
           0
@@ -819,7 +819,7 @@
       "firstRelevantRank": 2,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2605,
+      "contextChars": 2580,
       "matchesByRank": [
         [],
         [
@@ -853,7 +853,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2488,
+      "contextChars": 2580,
       "matchesByRank": [
         [
           0
@@ -887,31 +887,31 @@
       "firstRelevantRank": 1,
       "relevantCount": 2,
       "retrievedCount": 20,
-      "contextChars": 2257,
+      "contextChars": 2912,
       "matchesByRank": [
         [
           1
         ],
         [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
         [
           0
         ],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
-        [],
         []
       ]
     },
@@ -959,7 +959,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 2098,
+      "contextChars": 1373,
       "matchesByRank": [
         [
           0
@@ -1061,7 +1061,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 1372,
+      "contextChars": 1376,
       "matchesByRank": [
         [
           0
@@ -1095,7 +1095,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 1317,
+      "contextChars": 1294,
       "matchesByRank": [
         [
           0
@@ -1129,7 +1129,7 @@
       "firstRelevantRank": 2,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 1860,
+      "contextChars": 1955,
       "matchesByRank": [
         [],
         [
@@ -1163,7 +1163,7 @@
       "firstRelevantRank": 0,
       "relevantCount": 0,
       "retrievedCount": 20,
-      "contextChars": 2488,
+      "contextChars": 2545,
       "matchesByRank": [
         [],
         [],
@@ -1195,7 +1195,7 @@
       "firstRelevantRank": 0,
       "relevantCount": 0,
       "retrievedCount": 20,
-      "contextChars": 2257,
+      "contextChars": 2789,
       "matchesByRank": [
         [],
         [],
@@ -1227,7 +1227,7 @@
       "firstRelevantRank": 0,
       "relevantCount": 0,
       "retrievedCount": 20,
-      "contextChars": 2043,
+      "contextChars": 2755,
       "matchesByRank": [
         [],
         [],
@@ -1259,7 +1259,7 @@
       "firstRelevantRank": 0,
       "relevantCount": 0,
       "retrievedCount": 20,
-      "contextChars": 2681,
+      "contextChars": 2679,
       "matchesByRank": [
         [],
         [],
@@ -1291,7 +1291,7 @@
       "firstRelevantRank": 0,
       "relevantCount": 0,
       "retrievedCount": 20,
-      "contextChars": 2605,
+      "contextChars": 2687,
       "matchesByRank": [
         [],
         [],
@@ -1323,7 +1323,7 @@
       "firstRelevantRank": 0,
       "relevantCount": 0,
       "retrievedCount": 20,
-      "contextChars": 2762,
+      "contextChars": 2819,
       "matchesByRank": [
         [],
         [],
@@ -1352,10 +1352,10 @@
       "question": "推移质为什么比悬移质更难测？",
       "type": "cross-lingual",
       "answerable": true,
-      "firstRelevantRank": 20,
+      "firstRelevantRank": 0,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 1099,
+      "contextChars": 1986,
       "matchesByRank": [
         [],
         [],
@@ -1376,9 +1376,7 @@
         [],
         [],
         [],
-        [
-          0
-        ]
+        []
       ]
     },
     {
@@ -1386,10 +1384,10 @@
       "question": "河流监测中，每个站点要采几份平行样？",
       "type": "cross-lingual",
       "answerable": true,
-      "firstRelevantRank": 20,
+      "firstRelevantRank": 0,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 1743,
+      "contextChars": 1337,
       "matchesByRank": [
         [],
         [],
@@ -1410,9 +1408,7 @@
         [],
         [],
         [],
-        [
-          0
-        ]
+        []
       ]
     },
     {
@@ -1488,17 +1484,17 @@
       "question": "电芯隔膜一旦熔化会导致什么后果？",
       "type": "cross-lingual",
       "answerable": true,
-      "firstRelevantRank": 3,
+      "firstRelevantRank": 4,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 1449,
+      "contextChars": 1294,
       "matchesByRank": [
+        [],
         [],
         [],
         [
           0
         ],
-        [],
         [],
         [],
         [],
@@ -1559,7 +1555,7 @@
       "firstRelevantRank": 2,
       "relevantCount": 1,
       "retrievedCount": 20,
-      "contextChars": 1546,
+      "contextChars": 801,
       "matchesByRank": [
         [],
         [
@@ -1590,7 +1586,7 @@
       "question": "为什么成片的树冠比孤立的树降温效果更好？",
       "type": "cross-lingual",
       "answerable": true,
-      "firstRelevantRank": 6,
+      "firstRelevantRank": 9,
       "relevantCount": 1,
       "retrievedCount": 20,
       "contextChars": 1447,
@@ -1600,12 +1596,12 @@
         [],
         [],
         [],
+        [],
+        [],
+        [],
         [
           0
         ],
-        [],
-        [],
-        [],
         [],
         [],
         [],
@@ -1947,6 +1943,318 @@
       "relevantCount": 0,
       "retrievedCount": 20,
       "contextChars": 2908,
+      "matchesByRank": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q055",
+      "question": "How many replicate samples are collected at each reservoir monitoring station?",
+      "type": "exact",
+      "answerable": true,
+      "firstRelevantRank": 1,
+      "relevantCount": 1,
+      "retrievedCount": 20,
+      "contextChars": 2819,
+      "matchesByRank": [
+        [
+          0
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q056",
+      "question": "How many replicate samples are collected at each estuary transect station?",
+      "type": "hard-negative",
+      "answerable": true,
+      "firstRelevantRank": 1,
+      "relevantCount": 1,
+      "retrievedCount": 20,
+      "contextChars": 2835,
+      "matchesByRank": [
+        [
+          0
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q057",
+      "question": "At what depth below the surface does the coastal programme place its shore-station sensor?",
+      "type": "hard-negative",
+      "answerable": true,
+      "firstRelevantRank": 1,
+      "relevantCount": 1,
+      "retrievedCount": 20,
+      "contextChars": 2859,
+      "matchesByRank": [
+        [
+          0
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q058",
+      "question": "At what depth below the water table do groundwater boreholes carry their pressure transducer?",
+      "type": "hard-negative",
+      "answerable": true,
+      "firstRelevantRank": 1,
+      "relevantCount": 1,
+      "retrievedCount": 20,
+      "contextChars": 2876,
+      "matchesByRank": [
+        [
+          0
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q059",
+      "question": "Which monitoring programme samples most frequently?",
+      "type": "semantic",
+      "answerable": true,
+      "firstRelevantRank": 5,
+      "relevantCount": 1,
+      "retrievedCount": 20,
+      "contextChars": 2933,
+      "matchesByRank": [
+        [],
+        [],
+        [],
+        [],
+        [
+          0
+        ],
+        [
+          0
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q060",
+      "question": "Compare the sampling interval and replicate count of the reservoir and groundwater programmes.",
+      "type": "multi-hop",
+      "answerable": true,
+      "firstRelevantRank": 1,
+      "relevantCount": 4,
+      "retrievedCount": 20,
+      "contextChars": 2879,
+      "matchesByRank": [
+        [
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q061",
+      "question": "Why does the estuary programme take more replicate samples than the other monitoring programmes?",
+      "type": "semantic",
+      "answerable": true,
+      "firstRelevantRank": 1,
+      "relevantCount": 1,
+      "retrievedCount": 20,
+      "contextChars": 2831,
+      "matchesByRank": [
+        [
+          0
+        ],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q062",
+      "question": "What is the annual operating cost of the coastal monitoring buoys?",
+      "type": "unanswerable",
+      "answerable": false,
+      "firstRelevantRank": 0,
+      "relevantCount": 0,
+      "retrievedCount": 20,
+      "contextChars": 2826,
+      "matchesByRank": [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+      ]
+    },
+    {
+      "id": "q063",
+      "question": "How many litres per second does the reservoir release downstream on a typical day?",
+      "type": "unanswerable",
+      "answerable": false,
+      "firstRelevantRank": 0,
+      "relevantCount": 0,
+      "retrievedCount": 20,
+      "contextChars": 2809,
       "matchesByRank": [
         [],
         [],

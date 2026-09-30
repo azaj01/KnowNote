@@ -7,265 +7,265 @@
     {
       "threshold": 0,
       "validation": {
-        "questions": 16,
-        "answerableQuestions": 13,
+        "questions": 24,
+        "answerableQuestions": 19,
         "noResultCount": 0,
         "noResultRate": 0,
-        "meanRetrieved": 19,
+        "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 3,
+          "questions": 5,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
-          "meanCandidatesRetrieved": 19,
+          "meanCandidatesRetrieved": 20,
           "meanContextPassages": 3
         },
         "metrics": {
-          "recallAt1": 0.576923,
-          "recallAt5": 0.923077,
-          "recallAt10": 1,
-          "mrr": 0.778846,
-          "ndcgAt10": 0.827608,
-          "hitRateAt5": 0.923077,
-          "mapAt10": 0.766026,
-          "contextPrecision": 0.333333,
-          "contextRecall": 0.923077
+          "recallAt1": 0.513158,
+          "recallAt5": 0.868421,
+          "recallAt10": 0.921053,
+          "mrr": 0.720175,
+          "ndcgAt10": 0.755611,
+          "hitRateAt5": 0.894737,
+          "mapAt10": 0.69386,
+          "contextPrecision": 0.315789,
+          "contextRecall": 0.802632
         }
       },
       "test": {
-        "questions": 28,
-        "answerableQuestions": 25,
+        "questions": 39,
+        "answerableQuestions": 34,
         "noResultCount": 0,
         "noResultRate": 0,
-        "meanRetrieved": 19,
+        "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 3,
+          "questions": 5,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
-          "meanCandidatesRetrieved": 19,
+          "meanCandidatesRetrieved": 20,
           "meanContextPassages": 3
         },
         "metrics": {
-          "recallAt1": 0.7,
-          "recallAt5": 0.92,
-          "recallAt10": 1,
-          "mrr": 0.812381,
-          "ndcgAt10": 0.858056,
-          "hitRateAt5": 0.92,
-          "mapAt10": 0.812381,
-          "contextPrecision": 0.32,
-          "contextRecall": 0.92
+          "recallAt1": 0.639706,
+          "recallAt5": 0.882353,
+          "recallAt10": 0.919118,
+          "mrr": 0.774079,
+          "ndcgAt10": 0.794329,
+          "hitRateAt5": 0.911765,
+          "mapAt10": 0.747141,
+          "contextPrecision": 0.303922,
+          "contextRecall": 0.823529
         }
       }
     },
     {
       "threshold": 0.3,
       "validation": {
-        "questions": 16,
-        "answerableQuestions": 13,
+        "questions": 24,
+        "answerableQuestions": 19,
         "noResultCount": 0,
         "noResultRate": 0,
-        "meanRetrieved": 19,
+        "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 3,
+          "questions": 5,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
-          "meanCandidatesRetrieved": 19,
+          "meanCandidatesRetrieved": 20,
           "meanContextPassages": 3
         },
         "metrics": {
-          "recallAt1": 0.576923,
-          "recallAt5": 0.923077,
-          "recallAt10": 1,
-          "mrr": 0.778846,
-          "ndcgAt10": 0.827608,
-          "hitRateAt5": 0.923077,
-          "mapAt10": 0.766026,
-          "contextPrecision": 0.333333,
-          "contextRecall": 0.923077
+          "recallAt1": 0.513158,
+          "recallAt5": 0.868421,
+          "recallAt10": 0.921053,
+          "mrr": 0.720175,
+          "ndcgAt10": 0.755611,
+          "hitRateAt5": 0.894737,
+          "mapAt10": 0.69386,
+          "contextPrecision": 0.315789,
+          "contextRecall": 0.802632
         }
       },
       "test": {
-        "questions": 28,
-        "answerableQuestions": 25,
+        "questions": 39,
+        "answerableQuestions": 34,
         "noResultCount": 0,
         "noResultRate": 0,
-        "meanRetrieved": 19,
+        "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 3,
+          "questions": 5,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
-          "meanCandidatesRetrieved": 19,
+          "meanCandidatesRetrieved": 20,
           "meanContextPassages": 3
         },
         "metrics": {
-          "recallAt1": 0.7,
-          "recallAt5": 0.92,
-          "recallAt10": 1,
-          "mrr": 0.812381,
-          "ndcgAt10": 0.858056,
-          "hitRateAt5": 0.92,
-          "mapAt10": 0.812381,
-          "contextPrecision": 0.32,
-          "contextRecall": 0.92
+          "recallAt1": 0.639706,
+          "recallAt5": 0.882353,
+          "recallAt10": 0.919118,
+          "mrr": 0.774079,
+          "ndcgAt10": 0.794329,
+          "hitRateAt5": 0.911765,
+          "mapAt10": 0.747141,
+          "contextPrecision": 0.303922,
+          "contextRecall": 0.823529
         }
       }
     },
     {
       "threshold": 0.4,
       "validation": {
-        "questions": 16,
-        "answerableQuestions": 13,
+        "questions": 24,
+        "answerableQuestions": 19,
         "noResultCount": 0,
         "noResultRate": 0,
-        "meanRetrieved": 19,
+        "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 3,
+          "questions": 5,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
-          "meanCandidatesRetrieved": 19,
+          "meanCandidatesRetrieved": 20,
           "meanContextPassages": 3
         },
         "metrics": {
-          "recallAt1": 0.576923,
-          "recallAt5": 0.923077,
-          "recallAt10": 1,
-          "mrr": 0.778846,
-          "ndcgAt10": 0.827608,
-          "hitRateAt5": 0.923077,
-          "mapAt10": 0.766026,
-          "contextPrecision": 0.333333,
-          "contextRecall": 0.923077
+          "recallAt1": 0.513158,
+          "recallAt5": 0.868421,
+          "recallAt10": 0.921053,
+          "mrr": 0.720175,
+          "ndcgAt10": 0.755611,
+          "hitRateAt5": 0.894737,
+          "mapAt10": 0.69386,
+          "contextPrecision": 0.315789,
+          "contextRecall": 0.802632
         }
       },
       "test": {
-        "questions": 28,
-        "answerableQuestions": 25,
+        "questions": 39,
+        "answerableQuestions": 34,
         "noResultCount": 0,
         "noResultRate": 0,
-        "meanRetrieved": 19,
+        "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 3,
+          "questions": 5,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
-          "meanCandidatesRetrieved": 19,
+          "meanCandidatesRetrieved": 20,
           "meanContextPassages": 3
         },
         "metrics": {
-          "recallAt1": 0.7,
-          "recallAt5": 0.92,
-          "recallAt10": 1,
-          "mrr": 0.812381,
-          "ndcgAt10": 0.858056,
-          "hitRateAt5": 0.92,
-          "mapAt10": 0.812381,
-          "contextPrecision": 0.32,
-          "contextRecall": 0.92
+          "recallAt1": 0.639706,
+          "recallAt5": 0.882353,
+          "recallAt10": 0.919118,
+          "mrr": 0.774079,
+          "ndcgAt10": 0.794329,
+          "hitRateAt5": 0.911765,
+          "mapAt10": 0.747141,
+          "contextPrecision": 0.303922,
+          "contextRecall": 0.823529
         }
       }
     },
     {
       "threshold": 0.5,
       "validation": {
-        "questions": 16,
-        "answerableQuestions": 13,
+        "questions": 24,
+        "answerableQuestions": 19,
         "noResultCount": 0,
         "noResultRate": 0,
-        "meanRetrieved": 19,
+        "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 3,
+          "questions": 5,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
-          "meanCandidatesRetrieved": 19,
+          "meanCandidatesRetrieved": 20,
           "meanContextPassages": 3
         },
         "metrics": {
-          "recallAt1": 0.576923,
-          "recallAt5": 0.923077,
-          "recallAt10": 1,
-          "mrr": 0.778846,
-          "ndcgAt10": 0.827608,
-          "hitRateAt5": 0.923077,
-          "mapAt10": 0.766026,
-          "contextPrecision": 0.333333,
-          "contextRecall": 0.923077
+          "recallAt1": 0.513158,
+          "recallAt5": 0.868421,
+          "recallAt10": 0.921053,
+          "mrr": 0.720175,
+          "ndcgAt10": 0.755611,
+          "hitRateAt5": 0.894737,
+          "mapAt10": 0.69386,
+          "contextPrecision": 0.315789,
+          "contextRecall": 0.802632
         }
       },
       "test": {
-        "questions": 28,
-        "answerableQuestions": 25,
+        "questions": 39,
+        "answerableQuestions": 34,
         "noResultCount": 0,
         "noResultRate": 0,
-        "meanRetrieved": 19,
+        "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 3,
+          "questions": 5,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
-          "meanCandidatesRetrieved": 19,
+          "meanCandidatesRetrieved": 20,
           "meanContextPassages": 3
         },
         "metrics": {
-          "recallAt1": 0.7,
-          "recallAt5": 0.92,
-          "recallAt10": 1,
-          "mrr": 0.812381,
-          "ndcgAt10": 0.858056,
-          "hitRateAt5": 0.92,
-          "mapAt10": 0.812381,
-          "contextPrecision": 0.32,
-          "contextRecall": 0.92
+          "recallAt1": 0.639706,
+          "recallAt5": 0.882353,
+          "recallAt10": 0.919118,
+          "mrr": 0.774079,
+          "ndcgAt10": 0.794329,
+          "hitRateAt5": 0.911765,
+          "mapAt10": 0.747141,
+          "contextPrecision": 0.303922,
+          "contextRecall": 0.823529
         }
       }
     },
     {
       "threshold": 0.6,
       "validation": {
-        "questions": 16,
-        "answerableQuestions": 13,
+        "questions": 24,
+        "answerableQuestions": 19,
         "noResultCount": 0,
         "noResultRate": 0,
-        "meanRetrieved": 19,
+        "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 3,
+          "questions": 5,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
-          "meanCandidatesRetrieved": 19,
+          "meanCandidatesRetrieved": 20,
           "meanContextPassages": 3
         },
         "metrics": {
-          "recallAt1": 0.576923,
-          "recallAt5": 0.923077,
-          "recallAt10": 1,
-          "mrr": 0.778846,
-          "ndcgAt10": 0.827608,
-          "hitRateAt5": 0.923077,
-          "mapAt10": 0.766026,
-          "contextPrecision": 0.333333,
-          "contextRecall": 0.923077
+          "recallAt1": 0.513158,
+          "recallAt5": 0.868421,
+          "recallAt10": 0.921053,
+          "mrr": 0.720175,
+          "ndcgAt10": 0.755611,
+          "hitRateAt5": 0.894737,
+          "mapAt10": 0.69386,
+          "contextPrecision": 0.315789,
+          "contextRecall": 0.802632
         }
       },
       "test": {
-        "questions": 28,
-        "answerableQuestions": 25,
+        "questions": 39,
+        "answerableQuestions": 34,
         "noResultCount": 0,
         "noResultRate": 0,
-        "meanRetrieved": 19,
+        "meanRetrieved": 20,
         "unanswerable": {
-          "questions": 3,
+          "questions": 5,
           "abstentionCount": 0,
           "retrievalAbstentionRate": 0,
-          "meanCandidatesRetrieved": 19,
+          "meanCandidatesRetrieved": 20,
           "meanContextPassages": 3
         },
         "metrics": {
-          "recallAt1": 0.7,
-          "recallAt5": 0.92,
-          "recallAt10": 1,
-          "mrr": 0.812381,
-          "ndcgAt10": 0.858056,
-          "hitRateAt5": 0.92,
-          "mapAt10": 0.812381,
-          "contextPrecision": 0.32,
-          "contextRecall": 0.92
+          "recallAt1": 0.639706,
+          "recallAt5": 0.882353,
+          "recallAt10": 0.919118,
+          "mrr": 0.774079,
+          "ndcgAt10": 0.794329,
+          "hitRateAt5": 0.911765,
+          "mapAt10": 0.747141,
+          "contextPrecision": 0.303922,
+          "contextRecall": 0.823529
         }
       }
     }
