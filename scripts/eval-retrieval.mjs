@@ -3,10 +3,13 @@
  * Retrieval experiments for #77.
  *
  * Runs the real RAG eval harness once per retrieval strategy against the frozen
- * chunk baseline (`baseline-v1.5.json`, 1000/100), holding chunking fixed, and
+ * chunk baseline (`baseline-v1.6.json`, 1000/100), holding chunking fixed, and
  * writes the comparison the issue asks for as a delta against dense.
  *
  * The harness does the measuring; this script only orchestrates and tabulates.
+ *
+ * The adoption rule is the amended one from #192 child 10: the deciding metric is the
+ * first metric with headroom, not a metric that the corpus has already maxed out.
  *
  * Usage:
  *   node scripts/eval-retrieval.mjs
@@ -19,7 +22,7 @@ import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 
-const OUT_MD = resolve(readArg('--out=', 'docs/eval/retrieval-v1.5.md'))
+const OUT_MD = resolve(readArg('--out=', 'docs/eval/retrieval-v1.6.md'))
 const OUT_JSON = OUT_MD.replace(/\.md$/, '.json')
 
 /**
@@ -54,7 +57,7 @@ function runStrategy(strategy, outDir) {
     const args = [
       '.',
       '--eval-harness',
-      '--eval-baseline=v1.5',
+      '--eval-baseline=v1.6',
       `--eval-out=${outDir}`,
       `--eval-retrieval=${strategy.id}`
     ]
@@ -117,14 +120,14 @@ try {
     console.log(`[retrieval] running ${strategy.label}`)
     const metrics = await runStrategy(strategy, outDir)
 
-    const report = JSON.parse(readFileSync(join(outDir, 'baseline-v1.5.json'), 'utf8'))
+    const report = JSON.parse(readFileSync(join(outDir, 'baseline-v1.6.json'), 'utf8'))
     results.push({
       id: strategy.id,
       label: strategy.label,
       chunking: `${report.config.chunking.chunkSize}/${report.config.chunking.chunkOverlap}`,
       chunkCount: report.config.chunkCount,
       ...metrics,
-      ...readTiming(join(outDir, 'baseline-v1.5.md'))
+      ...readTiming(join(outDir, 'baseline-v1.6.md'))
     })
   }
 } finally {
@@ -138,43 +141,46 @@ const format4 = (value) => value.toFixed(4)
 
 const rows = results.map(
   (result) =>
-    `| ${result.label} | ${format4(result.recallAt1)} | ${format4(result.recallAt5)} | ${format4(result.mrr)} | ${format4(result.ndcgAt10)} | ${format4(result.evidencePrecisionAt5)} | ${result.latencyP95Ms?.toFixed(2)} ms |`
+    `| ${result.label} | ${format4(result.recallAt1)} | ${format4(result.recallAt5)} | ${format4(result.mrr)} | ${format4(result.ndcgAt10)} | ${format4(result.mapAt10)} | ${format4(result.evidencePrecisionAt5)} | ${result.latencyP95Ms?.toFixed(2)} ms |`
 )
 
 /**
- * The rule frozen in the baseline report: Recall@5 must improve and nDCG@10 must
- * not regress. Latency is reported so a win that costs 5x latency is stated as a
- * trade-off, not hidden.
+ * The rule lives in `src/main/eval/adoption.ts` so it can be unit tested: it decides
+ * whether a shipped default moves, and testing it by reading the sentence this script
+ * prints would be a test of the sentence.
+ *
+ * Latency stays in the table so a win that costs 5x latency is stated as a trade-off,
+ * not hidden.
  */
-const adopted = results.filter(
-  (result) =>
-    result.id !== 'dense' &&
-    result.recallAt5 > baseline.recallAt5 &&
-    result.ndcgAt10 >= baseline.ndcgAt10
-)
-const winner =
-  adopted.sort((a, b) => b.recallAt5 - a.recallAt5 || b.ndcgAt10 - a.ndcgAt10)[0] ?? null
+const { ADOPTION_METRICS, decideAdoption } = await import('../src/main/eval/adoption.ts')
+const { primary, saturated, winner } = decideAdoption(baseline, results)
+
+const saturationNote = saturated.length
+  ? `Saturated (no headroom, so they cannot decide anything): ${saturated
+      .map((key) => `\`${key}\``)
+      .join(', ')}.`
+  : 'No metric in the rule is saturated on this corpus.'
 
 let outcome
 if (winner) {
-  outcome = `\`${winner.label}\` clears the rule (Recall@5 ${format4(winner.recallAt5)} vs dense ${format4(baseline.recallAt5)}, nDCG@10 ${format4(winner.ndcgAt10)} vs ${format4(baseline.ndcgAt10)}).`
-} else if (baseline.recallAt5 === 1) {
-  outcome = `Recall@5 is saturated at 1.0000, so the rule's first condition cannot be met by any strategy. **Dense stays the default**, and the non-dense strategies are reported as inconclusive rather than adopted or rejected on a metric that cannot move.`
+  outcome = `\`${winner.label}\` **clears the rule**: it improves the deciding metric \`${primary}\` (${format4(winner[primary])} vs dense ${format4(baseline[primary])}) and regresses none of ${ADOPTION_METRICS.map((key) => `\`${key}\``).join(', ')}. ${saturationNote}\n\nChanging the shipped default is a separate decision, and this script does not make it — it reports the measurement.`
+} else if (primary === null) {
+  outcome = `Every metric in the rule is already at its maximum on this corpus, so no strategy can clear any of them. **Dense stays the default**; the comparison is inconclusive by construction, not negative.`
 } else {
-  outcome = `No strategy cleared the rule. **Dense stays the default.** A negative result is the point of the experiment: it is the measurement that says the extra machinery is not worth its cost on this corpus, not a failure to deliver.`
+  outcome = `No strategy cleared the rule. The deciding metric was \`${primary}\` (dense ${format4(baseline[primary])}); the strategies either failed to improve it or regressed another metric. **Dense stays the default.** A negative result is the point of the experiment: it is the measurement that says the extra machinery is not worth its cost on this corpus, not a failure to deliver. ${saturationNote}`
 }
 
-const markdown = `# Retrieval experiments — v1.5 (#77)
+const markdown = `# Retrieval experiments — v1.6 (#77, #192)
 
 Generated by \`node scripts/eval-retrieval.mjs\`. Numbers are harness output; do not edit them by hand.
 
 ## What was measured
 
 Every strategy runs the real RAG eval harness against the same corpus and the same 30
-questions as \`baseline-v1.5.json\`, with chunking held fixed at ${baseline.chunking}. Only the retrieval strategy changes.
+questions as \`baseline-v1.6.json\`, with chunking held fixed at ${baseline.chunking}. Only the retrieval strategy changes.
 
-| Strategy | Recall@1 | Recall@5 | MRR | nDCG@10 | Evidence P@5 | Query p95 |
-| --- | --- | --- | --- | --- | --- | --- |
+| Strategy | Recall@1 | Recall@5 | MRR | nDCG@10 | MAP@10 | Evidence P@5 | Query p95 |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 ${rows.join('\n')}
 
 ## Not evaluated
@@ -184,19 +190,21 @@ model is not available offline and inventing its numbers would defeat the point 
 the harness. It stays open until a model can be pinned the way the embedding model
 is.
 
-## Corpus limitation
+## Saturation
 
-The rule's Recall@5 condition is **saturated** on this corpus: dense already scores
-1.0000, so no strategy can improve it and the rule can therefore never be met here.
-The metrics that still discriminate are Recall@1, MRR and nDCG@10. A hybrid result
-that is better on all three but equal on Recall@5 is therefore *inconclusive*, not a
-negative result, and the default is left unchanged until the comparison can run on a
-corpus where Recall@5 is not already perfect.
+${saturationNote} The deciding metric on this corpus is ${
+  primary === null ? 'none — every metric in the rule is already maxed out' : `\`${primary}\``
+}. A saturated metric is still reported, because "this corpus cannot move it" is itself
+information; it is just not allowed to decide the comparison.
 
 ## Adoption rule
 
-> Adopt a change only if Recall@5 improves and nDCG@10 does not regress. A change
-> that trades a large latency increase for a marginal recall gain is a product
+> Adopt a strategy when it improves the **first metric with headroom** — in the order
+> \`recallAt5\`, \`nDCG@10\`, \`MRR\`, \`MAP@10\` — and regresses none of the others. A metric
+> already at its maximum has no headroom and cannot decide anything; a rule that depends
+> on one is unsatisfiable, not strict (#192 child 10).
+>
+> A change that trades a large latency increase for a marginal quality gain is a product
 > decision, not an automatic win.
 
 ## Outcome

@@ -90,9 +90,13 @@ first-stage width per channel, \`contextK\` is how many passages the chat prompt
 and \`threshold\` is the similarity floor the app ships. A benchmark that does not
 mirror those parameters measures a retriever nobody runs. The adopted-change rule is:
 
-> Adopt a change only if Recall@5 improves and nDCG@10 does not regress. A change
-> that trades a large latency increase for a marginal recall gain is a product
-> decision, not an automatic win, and must be stated as such.
+> Adopt a strategy when it improves the **first metric with headroom** — in the order
+> Recall@5, nDCG@10, MRR, MAP@10 — and regresses none of the others. A metric already
+> at its maximum has no headroom and cannot decide anything; a rule that depends on
+> one is unsatisfiable, not strict (#192 child 10).
+>
+> A change that trades a large latency increase for a marginal quality gain is a
+> product decision, not an automatic win, and must be stated as such.
 
 A changed result must be reproducible with:
 

@@ -43,8 +43,8 @@ The type comes from `type` in `questions.jsonl`; untagged questions report as
 | semantic | 18 | 1.0000 | 0.9312 | 1.0000 | 0.9074 |
 | zh | 3 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
 
-Timing is informational only and is **not** frozen: indexing 1542 ms, query
-p50 15.01 ms, p95 69.16 ms on the
+Timing is informational only and is **not** frozen: indexing 1551 ms, query
+p50 11.73 ms, p95 18.71 ms on the
 machine that produced this file. Timing and index size depend on hardware and on the
 corpus, so they must never be the reason two runs differ.
 
@@ -68,9 +68,13 @@ first-stage width per channel, `contextK` is how many passages the chat prompt t
 and `threshold` is the similarity floor the app ships. A benchmark that does not
 mirror those parameters measures a retriever nobody runs. The adopted-change rule is:
 
-> Adopt a change only if Recall@5 improves and nDCG@10 does not regress. A change
-> that trades a large latency increase for a marginal recall gain is a product
-> decision, not an automatic win, and must be stated as such.
+> Adopt a strategy when it improves the **first metric with headroom** — in the order
+> Recall@5, nDCG@10, MRR, MAP@10 — and regresses none of the others. A metric already
+> at its maximum has no headroom and cannot decide anything; a rule that depends on
+> one is unsatisfiable, not strict (#192 child 10).
+>
+> A change that trades a large latency increase for a marginal quality gain is a
+> product decision, not an automatic win, and must be stated as such.
 
 A changed result must be reproducible with:
 
