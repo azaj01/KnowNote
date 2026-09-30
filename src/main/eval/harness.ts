@@ -37,10 +37,12 @@ import type {
   EvalQuestion,
   EvalReport,
   EvalRelevantLocation,
+  EvalSplit,
   EvalTypeBreakdown,
   QuestionReport,
   ResolvedGroundTruth
 } from './types'
+import { selectSplit } from './types'
 
 type Db = ReturnType<typeof getDatabase>
 
@@ -51,6 +53,8 @@ export interface EvalHarnessOptions {
   corpusLabel: string
   questionsPath: string
   baseline: string
+  /** 本次只评这一份切分（#192）；缺省 `all`。 */
+  split: EvalSplit
   /**
    * 第一阶段每个通道的宽度，也是排名指标的评估深度（#77）。
    *
@@ -216,7 +220,11 @@ export async function runEvalHarness(
     options.corpusDir,
     options.chunkOptions
   )
-  const questions = parseQuestions(await readFile(options.questionsPath, 'utf-8'))
+  const allQuestions = parseQuestions(await readFile(options.questionsPath, 'utf-8'))
+  const questions = selectSplit(allQuestions, options.split)
+  if (questions.length === 0) {
+    throw new Error(`eval split "${options.split}" selected no questions from ${options.questionsPath}`)
+  }
 
   const perQuestion: QuestionReport[] = []
   const latencies: number[] = []
@@ -282,6 +290,7 @@ export async function runEvalHarness(
         respectHeadings: chunking.respectHeadings
       },
       retrieval: options.strategy,
+      split: options.split,
       candidateK: options.candidateK,
       contextK: options.contextK,
       threshold: options.threshold,

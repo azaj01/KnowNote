@@ -7,8 +7,10 @@ every experiment (#77, #78) is reported as a delta against that file.
 ## Commands
 
 ```bash
-npm run eval:prepare   # one-time, networked: download the pinned embedding model
-npm run eval           # offline and deterministic: run the harness, rewrite the baseline
+npm run eval:prepare    # one-time, networked: download the pinned embedding model
+npm run eval            # offline and deterministic: run the harness, rewrite the baseline
+npm run eval:retrieval  # strategy comparison (#77)
+npm run eval:threshold  # derive the similarity threshold on validation, report on test
 ```
 
 ### The harness runs the production configuration
@@ -22,12 +24,20 @@ the product rather than a research setup. Two Ks, because they answer different 
 | `--eval-context-k=` | `3` | passages the chat prompt actually takes (`chatHandlers.ts`) |
 | `--eval-threshold=` | `0.5` | the similarity floor the app ships |
 | `--eval-retrieval=` | `dense` | `dense`, `sparse`, or `hybrid` |
+| `--eval-split=` | `all` | `all`, `validation`, or `test` — a deterministic id-based split |
 | `--eval-baseline=` | `v1.6` | name written into `docs/eval/baseline-<name>.{json,md}` |
 
 Ranking metrics are computed at `candidateK` depth, not at `contextK`: `Recall@10` needs
 at least ten results, and truncation only takes a prefix of the candidate list, so the
 truncation cannot change the ranking it is measured on. `contextK` is recorded so the
 report describes the whole online path.
+
+### Swept parameters are chosen on `validation`, reported on `test`
+
+A parameter picked on the same questions it is scored on is a fitted number, not a
+result. `--eval-split=validation` selects roughly a third of the questions by a
+deterministic hash of the id; `test` is the rest. `npm run eval:threshold` uses this
+to pick a similarity threshold on `validation` and report it on `test`.
 
 `eval:prepare` downloads the pinned `multilingual-e5-small` revision into the app's model
 cache and verifies it. `eval` never touches the network: if the model is missing it stops

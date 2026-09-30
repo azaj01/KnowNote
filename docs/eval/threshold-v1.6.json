@@ -1,0 +1,183 @@
+{
+  "baseline": "v1.6",
+  "productionThreshold": 0.5,
+  "flat": true,
+  "recommended": 0.5,
+  "rows": [
+    {
+      "threshold": 0,
+      "validation": {
+        "questions": 10,
+        "noResultCount": 0,
+        "noResultRate": 0,
+        "meanRetrieved": 19,
+        "metrics": {
+          "recallAt1": 0.9,
+          "recallAt5": 1,
+          "recallAt10": 1,
+          "mrr": 0.933333,
+          "ndcgAt10": 0.95,
+          "hitRateAt5": 1,
+          "mapAt10": 0.933333,
+          "evidencePrecisionAt5": 0.2
+        }
+      },
+      "test": {
+        "questions": 20,
+        "noResultCount": 0,
+        "noResultRate": 0,
+        "meanRetrieved": 19,
+        "metrics": {
+          "recallAt1": 0.8,
+          "recallAt5": 1,
+          "recallAt10": 1,
+          "mrr": 0.925,
+          "ndcgAt10": 0.940626,
+          "hitRateAt5": 1,
+          "mapAt10": 0.916667,
+          "evidencePrecisionAt5": 0.22
+        }
+      }
+    },
+    {
+      "threshold": 0.3,
+      "validation": {
+        "questions": 10,
+        "noResultCount": 0,
+        "noResultRate": 0,
+        "meanRetrieved": 19,
+        "metrics": {
+          "recallAt1": 0.9,
+          "recallAt5": 1,
+          "recallAt10": 1,
+          "mrr": 0.933333,
+          "ndcgAt10": 0.95,
+          "hitRateAt5": 1,
+          "mapAt10": 0.933333,
+          "evidencePrecisionAt5": 0.2
+        }
+      },
+      "test": {
+        "questions": 20,
+        "noResultCount": 0,
+        "noResultRate": 0,
+        "meanRetrieved": 19,
+        "metrics": {
+          "recallAt1": 0.8,
+          "recallAt5": 1,
+          "recallAt10": 1,
+          "mrr": 0.925,
+          "ndcgAt10": 0.940626,
+          "hitRateAt5": 1,
+          "mapAt10": 0.916667,
+          "evidencePrecisionAt5": 0.22
+        }
+      }
+    },
+    {
+      "threshold": 0.4,
+      "validation": {
+        "questions": 10,
+        "noResultCount": 0,
+        "noResultRate": 0,
+        "meanRetrieved": 19,
+        "metrics": {
+          "recallAt1": 0.9,
+          "recallAt5": 1,
+          "recallAt10": 1,
+          "mrr": 0.933333,
+          "ndcgAt10": 0.95,
+          "hitRateAt5": 1,
+          "mapAt10": 0.933333,
+          "evidencePrecisionAt5": 0.2
+        }
+      },
+      "test": {
+        "questions": 20,
+        "noResultCount": 0,
+        "noResultRate": 0,
+        "meanRetrieved": 19,
+        "metrics": {
+          "recallAt1": 0.8,
+          "recallAt5": 1,
+          "recallAt10": 1,
+          "mrr": 0.925,
+          "ndcgAt10": 0.940626,
+          "hitRateAt5": 1,
+          "mapAt10": 0.916667,
+          "evidencePrecisionAt5": 0.22
+        }
+      }
+    },
+    {
+      "threshold": 0.5,
+      "validation": {
+        "questions": 10,
+        "noResultCount": 0,
+        "noResultRate": 0,
+        "meanRetrieved": 19,
+        "metrics": {
+          "recallAt1": 0.9,
+          "recallAt5": 1,
+          "recallAt10": 1,
+          "mrr": 0.933333,
+          "ndcgAt10": 0.95,
+          "hitRateAt5": 1,
+          "mapAt10": 0.933333,
+          "evidencePrecisionAt5": 0.2
+        }
+      },
+      "test": {
+        "questions": 20,
+        "noResultCount": 0,
+        "noResultRate": 0,
+        "meanRetrieved": 19,
+        "metrics": {
+          "recallAt1": 0.8,
+          "recallAt5": 1,
+          "recallAt10": 1,
+          "mrr": 0.925,
+          "ndcgAt10": 0.940626,
+          "hitRateAt5": 1,
+          "mapAt10": 0.916667,
+          "evidencePrecisionAt5": 0.22
+        }
+      }
+    },
+    {
+      "threshold": 0.6,
+      "validation": {
+        "questions": 10,
+        "noResultCount": 0,
+        "noResultRate": 0,
+        "meanRetrieved": 19,
+        "metrics": {
+          "recallAt1": 0.9,
+          "recallAt5": 1,
+          "recallAt10": 1,
+          "mrr": 0.933333,
+          "ndcgAt10": 0.95,
+          "hitRateAt5": 1,
+          "mapAt10": 0.933333,
+          "evidencePrecisionAt5": 0.2
+        }
+      },
+      "test": {
+        "questions": 20,
+        "noResultCount": 0,
+        "noResultRate": 0,
+        "meanRetrieved": 19,
+        "metrics": {
+          "recallAt1": 0.8,
+          "recallAt5": 1,
+          "recallAt10": 1,
+          "mrr": 0.925,
+          "ndcgAt10": 0.940626,
+          "hitRateAt5": 1,
+          "mapAt10": 0.916667,
+          "evidencePrecisionAt5": 0.22
+        }
+      }
+    }
+  ]
+}

@@ -22,6 +22,7 @@ import { KnowledgeService } from '../services/KnowledgeService'
 import { isModelInstalled } from '../embedding/ModelRegistry'
 import { DEFAULT_CHUNK_OPTIONS, type ChunkOptions } from '../services/ChunkingService'
 import type { RetrievalStrategy } from '../services/retrieval'
+import type { EvalSplit } from './types'
 import {
   runEvalHarness,
   stabilize,
@@ -79,6 +80,17 @@ function readRetrievalStrategy(argv: readonly string[]): RetrievalStrategy {
   const raw = readOption(argv, '--eval-retrieval=', 'dense')
   if (raw !== 'dense' && raw !== 'sparse' && raw !== 'hybrid') {
     throw new Error(`--eval-retrieval expects dense, sparse or hybrid, got ${JSON.stringify(raw)}`)
+  }
+  return raw
+}
+
+/**
+ * 本次评估的切分（#192）。默认 `all`；阈值这类扫参要用 `validation` 选、`test` 报。
+ */
+function readSplit(argv: readonly string[]): EvalSplit {
+  const raw = readOption(argv, '--eval-split=', 'all')
+  if (raw !== 'all' && raw !== 'validation' && raw !== 'test') {
+    throw new Error(`--eval-split expects all, validation or test, got ${JSON.stringify(raw)}`)
   }
   return raw
 }
@@ -179,6 +191,7 @@ export async function runEvalCli(argv: readonly string[] = process.argv): Promis
       corpusLabel: repoRelative(corpusDir) || 'eval/corpus',
       questionsPath,
       baseline: readOption(argv, '--eval-baseline=', 'v1.6'),
+      split: readSplit(argv),
       // 默认就是生产配置（#77）：先取宽，融合，再把 contextK 条送进 prompt。一个不镜像
       // 线上参数的 benchmark 量的是用户永远不会跑的检索器。
       candidateK: readNumberOption(argv, '--eval-candidate-k=', 20),

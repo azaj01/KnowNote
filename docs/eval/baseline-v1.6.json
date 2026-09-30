@@ -11,6 +11,7 @@
       "respectHeadings": false
     },
     "retrieval": "dense",
+    "split": "all",
     "candidateK": 20,
     "contextK": 3,
     "threshold": 0.5,

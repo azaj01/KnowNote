@@ -34,6 +34,29 @@ export interface EvalQuestion {
   type?: string
 }
 
+/**
+ * 评估切分（#192）。
+ *
+ * 阈值这类参数必须在**没参与选择**的问题上报数，否则扫参的结果只是把测试集背下来
+ * 了。切分按 question id 确定性计算，所以同一份 `questions.jsonl` 在任何机器上切出
+ * 同一份 validation / test。
+ */
+export type EvalSplit = 'all' | 'validation' | 'test'
+
+/** id 分桶，0/1/2；只用于切分，不参与检索。 */
+export function splitBucket(id: string): number {
+  let hash = 0
+  for (const character of id) hash = (hash * 31 + character.charCodeAt(0)) >>> 0
+  return hash % 3
+}
+
+/** validation 是 bucket 0（约 1/3），test 是其余（约 2/3）。 */
+export function selectSplit(questions: EvalQuestion[], split: EvalSplit): EvalQuestion[] {
+  if (split === 'all') return questions
+  const wantValidation = split === 'validation'
+  return questions.filter((question) => (splitBucket(question.id) === 0) === wantValidation)
+}
+
 /** One resolved ground-truth location, after runtime id mapping. */
 export interface ResolvedGroundTruth {
   document: string
@@ -101,6 +124,8 @@ export interface EvalReport {
       respectHeadings: boolean
     }
     retrieval: string
+    /** 本次评估用了哪一份切分（#192）：`all` / `validation` / `test`。 */
+    split: string
     /**
      * 第一阶段每个通道的宽度（#77）。排名指标（Recall@K / MRR / nDCG@K）在这个深度上
      * 计算，所以它必须 ≥ 指标里最大的 K。

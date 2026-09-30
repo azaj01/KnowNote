@@ -41,7 +41,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "eval:retrieval": "npm run build && node scripts/eval-retrieval.mjs"
+    "eval:retrieval": "npm run build && node scripts/eval-retrieval.mjs",
+    "eval:threshold": "npm run build && node scripts/eval-threshold.mjs"
   },
   "//test": [
     "`node --test` strips TypeScript types rather than compiling them, and strip-only",
