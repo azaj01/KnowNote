@@ -13,7 +13,7 @@
 import { app } from 'electron'
 import { mkdtempSync, rmSync, writeFileSync } from 'fs'
 import { mkdir } from 'fs/promises'
-import { join, relative, resolve } from 'path'
+import { join, relative, resolve, sep } from 'path'
 import { tmpdir } from 'os'
 import { closeDatabase, getDatabase, initDatabase, initVectorStore, runMigrations } from '../db'
 import { ConnectionManager } from '../models/ConnectionManager'
@@ -60,6 +60,18 @@ function readBoolOption(argv: readonly string[], prefix: string, fallback: boole
     throw new Error(`${prefix} expects true or false, got ${JSON.stringify(value)}`)
   }
   return value === 'true'
+}
+
+/**
+ * Repo-relative path with POSIX separators.
+ *
+ * `path.relative` returns backslashes on Windows, and the corpus label is committed
+ * in the baseline. Without this, a Windows run writes `eval\corpus` and the file
+ * stops being identical on every machine — which is the one property the committed
+ * report promises.
+ */
+function repoRelative(absolutePath: string): string {
+  return relative(process.cwd(), absolutePath).split(sep).join('/')
 }
 
 /** 检索策略（#77）。默认 dense，所以不带 flag 的 `npm run eval` 仍量的是生产默认。 */
@@ -162,9 +174,9 @@ export async function runEvalCli(argv: readonly string[] = process.argv): Promis
     const knowledgeService = new KnowledgeService(embeddingService)
     const options: EvalHarnessOptions = {
       corpusDir,
-      // Recorded in the report as a repo-relative path so the committed JSON is
-      // identical on every machine and checkout.
-      corpusLabel: relative(process.cwd(), corpusDir) || 'eval/corpus',
+      // Recorded in the report as a repo-relative, POSIX-separated path so the
+      // committed JSON is identical on every machine and checkout.
+      corpusLabel: repoRelative(corpusDir) || 'eval/corpus',
       questionsPath,
       baseline: readOption(argv, '--eval-baseline=', 'v1.5'),
       topK: 10,

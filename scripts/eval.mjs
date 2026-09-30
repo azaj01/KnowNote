@@ -18,10 +18,12 @@ import { resolve } from 'node:path'
 const prepare = process.argv.includes('--prepare')
 const flag = prepare ? '--eval-prepare' : '--eval-harness'
 
-const executable = resolve(
-  'node_modules/.bin',
-  process.platform === 'win32' ? 'electron.cmd' : 'electron'
-)
+// The `.bin` entry is a shell wrapper (`electron.cmd` on Windows), and Node 24
+// refuses to spawn `.cmd`/`.bat` without `shell: true` — it fails with EINVAL. The
+// `electron` package exports the path to the real executable the wrapper runs, so
+// spawning that directly works on every platform without a shell.
+const { default: electronBinary } = await import('electron')
+const executable = resolve(electronBinary)
 
 if (!existsSync(executable)) {
   console.error('[eval] could not find the electron binary. Run `npm install` first.')
