@@ -6,6 +6,7 @@ import { DenseRetriever } from './DenseRetriever'
 import { hydrateEvidence } from './evidence'
 import { buildRetrievalTrace } from './trace'
 import {
+  denseChannelThreshold,
   effectiveCandidateK,
   DEFAULT_TOP_K,
   type RetrievalRequest,
@@ -44,9 +45,12 @@ export class HybridRetriever implements Retriever {
     const startedAt = performance.now()
 
     let hits: CandidateHit[]
-    // BM25 没有「相似度阈值」这个概念，所以 sparse 的 trace 里 threshold 保持缺省，
-    // 而不是拿 dense 的 0.5 冒充。
-    let threshold: number | undefined
+    // 传给 dense 通道的值和写进 trace 的值是 **同一个** 变量，来自同一个函数。
+    // `hybrid` 也跑 dense 所以也有阈值；`sparse` 没有，于是它是 undefined。
+    //
+    // 分开算两次就是 #192 评审发现的 bug：hybrid 的 dense 腿用着 0.5，而 trace 写
+    // `undefined`，快照于是声称那次 hybrid 没有阈值。
+    const denseThreshold = denseChannelThreshold(strategy, request.threshold)
 
     if (strategy === 'sparse') {
       hits = searchChunksFts(request.notebookId, request.query, {
@@ -54,15 +58,17 @@ export class HybridRetriever implements Retriever {
         documentIds: request.filter?.documentIds
       }).slice(0, topK)
     } else if (strategy === 'hybrid') {
-      const denseHits = await this.dense.candidateHits(request)
+      const denseHits = await this.dense.candidateHits({ ...request, threshold: denseThreshold })
       const sparseHits = searchChunksFts(request.notebookId, request.query, {
         limit: candidateK,
         documentIds: request.filter?.documentIds
       })
       hits = rrfFuse([denseHits, sparseHits]).slice(0, topK)
     } else {
-      threshold = request.threshold ?? 0.5
-      hits = (await this.dense.candidateHits({ ...request, threshold })).slice(0, topK)
+      hits = (await this.dense.candidateHits({ ...request, threshold: denseThreshold })).slice(
+        0,
+        topK
+      )
     }
 
     const evidence = hits.length === 0 ? [] : hydrateEvidence(getDatabase(), hits)
@@ -74,7 +80,7 @@ export class HybridRetriever implements Retriever {
         filter: request.filter,
         candidateK,
         topK,
-        threshold,
+        denseThreshold,
         durationMs: performance.now() - startedAt
       })
     }

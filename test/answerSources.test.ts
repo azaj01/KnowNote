@@ -153,7 +153,7 @@ test('a retrieval snapshot round-trips', () => {
       scope: { documentIds: ['doc_1', 'doc_2'] },
       candidateK: 20,
       topK: 8,
-      threshold: 0.5,
+      denseThreshold: 0.5,
       durationMs: 42.4
     }
   })
@@ -163,7 +163,7 @@ test('a retrieval snapshot round-trips', () => {
     scope: { documentIds: ['doc_1', 'doc_2'] },
     candidateK: 20,
     topK: 8,
-    threshold: 0.5,
+    denseThreshold: 0.5,
     durationMs: 42.4
   })
 })
@@ -174,7 +174,26 @@ test('a snapshot without a scope means the whole notebook', () => {
   })
 
   assert.deepEqual(snapshot?.scope, {})
-  assert.equal(snapshot?.threshold, undefined)
+  assert.equal(snapshot?.denseThreshold, undefined)
+})
+
+/**
+ * Snapshots written before the #192 review called the field `threshold`. The value was
+ * always the dense leg's floor, so it is read as one rather than dropped.
+ */
+test('a snapshot with the legacy `threshold` field reads it as the dense threshold', () => {
+  const snapshot = parseRetrievalSnapshot({
+    retrievalSnapshot: {
+      strategy: 'hybrid',
+      scope: {},
+      topK: 3,
+      threshold: 0.5,
+      durationMs: 7
+    }
+  })
+
+  assert.equal(snapshot?.denseThreshold, 0.5)
+  assert.equal(snapshot?.candidateK, 3)
 })
 
 /**

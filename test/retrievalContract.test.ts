@@ -2,7 +2,9 @@ import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { buildRetrievalTrace } from '../src/main/services/retrieval/trace.ts'
 import {
+  denseChannelThreshold,
   DEFAULT_CANDIDATE_K,
+  DEFAULT_DENSE_THRESHOLD,
   effectiveCandidateK
 } from '../src/main/services/retrieval/types.ts'
 
@@ -20,7 +22,7 @@ test('a trace carries the effective search parameters and no empty fields', () =
     strategy: 'dense',
     candidateK: 20,
     topK: 5,
-    threshold: 0.5,
+    denseThreshold: 0.5,
     durationMs: 12.5
   })
 
@@ -29,14 +31,38 @@ test('a trace carries the effective search parameters and no empty fields', () =
     scope: {},
     candidateK: 20,
     topK: 5,
-    threshold: 0.5,
+    denseThreshold: 0.5,
     durationMs: 12.5
   })
-  // An unset threshold means "no threshold", not "threshold 0".
+  // An absent dense threshold means "no dense leg ran", not "threshold 0".
   assert.equal(
-    'threshold' in buildRetrievalTrace({ strategy: 'dense', candidateK: 20, topK: 5, durationMs: 1 }),
+    'denseThreshold' in
+      buildRetrievalTrace({ strategy: 'sparse', candidateK: 20, topK: 5, durationMs: 1 }),
     false
   )
+})
+
+/**
+ * The bug the #192 review found: `hybrid` runs a dense leg, so it *has* a similarity
+ * floor. The retriever applied 0.5 to that leg while the trace recorded `undefined`, so
+ * the snapshot could not reproduce the retrieval it was describing.
+ */
+test('a strategy traces the threshold its dense leg actually applied', () => {
+  assert.equal(denseChannelThreshold('dense'), DEFAULT_DENSE_THRESHOLD)
+  assert.equal(denseChannelThreshold('hybrid'), DEFAULT_DENSE_THRESHOLD)
+  assert.equal(denseChannelThreshold('hybrid', 0.3), 0.3)
+  assert.equal(denseChannelThreshold('dense', 0), 0)
+  // Only a strategy with no dense leg has no dense threshold.
+  assert.equal(denseChannelThreshold('sparse', 0.3), undefined)
+
+  const hybrid = buildRetrievalTrace({
+    strategy: 'hybrid',
+    candidateK: 20,
+    topK: 3,
+    denseThreshold: denseChannelThreshold('hybrid'),
+    durationMs: 4
+  })
+  assert.equal(hybrid.denseThreshold, DEFAULT_DENSE_THRESHOLD)
 })
 
 test('the trace keeps the first-stage width and the final count apart', () => {
