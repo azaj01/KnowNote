@@ -63,10 +63,10 @@ function readArg(prefix, fallback) {
   return arg ? arg.slice(prefix.length) : fallback
 }
 
-const executable = resolve(
-  'node_modules/.bin',
-  process.platform === 'win32' ? 'electron.cmd' : 'electron'
-)
+// Node 24 refuses to spawn a `.cmd`/`.bat` without `shell: true` (EINVAL), and the
+// `.bin` entry is exactly that on Windows. Use the real binary the wrapper runs.
+const { default: electronBinary } = await import('electron')
+const executable = resolve(electronBinary)
 
 if (!existsSync(executable)) {
   console.error('[chunking] could not find the electron binary. Run `npm install` first.')
