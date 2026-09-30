@@ -93,7 +93,7 @@ jobs:
         if: runner.os != 'Linux'
         run: npm run smoke:packaged
 
-      # The eval baseline (#75) is the reference point every v1.5 experiment is
+      # The eval baseline (#75) is the reference point every experiment is
       # measured against, so CI proves the committed numbers still reproduce. The
       # model cache is keyed on the pinned model file, so the 134 MB download
       # happens once per pin, not once per run. A hit is required for the run to
@@ -110,6 +110,6 @@ jobs:
         run: |
           xvfb-run -a npm run eval:prepare
           xvfb-run -a node scripts/eval.mjs
-          cp docs/eval/baseline-v1.5.json /tmp/eval-a.json
+          cp docs/eval/baseline-v1.6.json /tmp/eval-a.json
           xvfb-run -a node scripts/eval.mjs
-          diff /tmp/eval-a.json docs/eval/baseline-v1.5.json
+          diff /tmp/eval-a.json docs/eval/baseline-v1.6.json

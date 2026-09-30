@@ -75,7 +75,18 @@ export interface EvalReport {
       respectHeadings: boolean
     }
     retrieval: string
-    topK: number
+    /**
+     * 第一阶段每个通道的宽度（#77）。排名指标（Recall@K / MRR / nDCG@K）在这个深度上
+     * 计算，所以它必须 ≥ 指标里最大的 K。
+     */
+    candidateK: number
+    /**
+     * 生产 prompt 实际取用的证据条数（#77）。
+     *
+     * 快照里记它是为了让 benchmark 描述整条线上链路，而不只是检索器；它不影响排名
+     * 指标 —— 截断只是取候选列表的前缀，前缀的排序不变。
+     */
+    contextK: number
     threshold: number
     /** How many retrieved passages the evidence-precision metric looks at. */
     evidenceK: number

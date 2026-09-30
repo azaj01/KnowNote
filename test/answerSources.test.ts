@@ -151,6 +151,7 @@ test('a retrieval snapshot round-trips', () => {
     retrievalSnapshot: {
       strategy: 'dense',
       scope: { documentIds: ['doc_1', 'doc_2'] },
+      candidateK: 20,
       topK: 8,
       threshold: 0.5,
       durationMs: 42.4
@@ -160,6 +161,7 @@ test('a retrieval snapshot round-trips', () => {
   assert.deepEqual(snapshot, {
     strategy: 'dense',
     scope: { documentIds: ['doc_1', 'doc_2'] },
+    candidateK: 20,
     topK: 8,
     threshold: 0.5,
     durationMs: 42.4
@@ -173,6 +175,19 @@ test('a snapshot without a scope means the whole notebook', () => {
 
   assert.deepEqual(snapshot?.scope, {})
   assert.equal(snapshot?.threshold, undefined)
+})
+
+/**
+ * Before #77 there was one K, so the first-stage width *was* topK. Backfilling it
+ * says what that retrieval did; it is not an invented default.
+ */
+test('a snapshot written before the two Ks backfills candidateK from topK', () => {
+  const snapshot = parseRetrievalSnapshot({
+    retrievalSnapshot: { strategy: 'dense', scope: {}, topK: 5, durationMs: 1 }
+  })
+
+  assert.equal(snapshot?.candidateK, 5)
+  assert.equal(snapshot?.topK, 5)
 })
 
 test('a snapshot that cannot be rendered is dropped, not guessed', () => {

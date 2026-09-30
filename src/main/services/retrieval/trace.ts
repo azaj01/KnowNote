@@ -3,6 +3,7 @@ import type { RetrievalFilter, RetrievalTrace } from './types'
 export interface RetrievalTraceInput {
   strategy: string
   filter?: RetrievalFilter
+  candidateK: number
   topK: number
   threshold?: number
   durationMs: number
@@ -24,6 +25,7 @@ export function buildRetrievalTrace(input: RetrievalTraceInput): RetrievalTrace 
   const trace: RetrievalTrace = {
     strategy: input.strategy,
     scope,
+    candidateK: input.candidateK,
     topK: input.topK,
     durationMs: input.durationMs
   }
