@@ -34,3 +34,11 @@
 {"id":"q034","question":"What is the retail price of the lithium-ion cells discussed?","type":"unanswerable","answerable":false,"relevant":[]}
 {"id":"q035","question":"How many megawatts does the tidal array generate?","type":"unanswerable","answerable":false,"relevant":[]}
 {"id":"q036","question":"Who won the 2018 FIFA World Cup?","type":"unanswerable","answerable":false,"relevant":[]}
+{"id":"q037","question":"推移质为什么比悬移质更难测？","type":"cross-lingual","relevant":[{"document":"river-monitoring.md","page":null,"block":4,"quote":"Bedload is the harder fraction to measure"}]}
+{"id":"q038","question":"河流监测中，每个站点要采几份平行样？","type":"cross-lingual","relevant":[{"document":"river-monitoring.md","page":null,"block":6,"quote":"three replicate samples at each station"}]}
+{"id":"q039","question":"设计锂离子电芯时最核心的取舍是什么？","type":"cross-lingual","relevant":[{"document":"battery-chemistry.md","page":null,"block":2,"quote":"trade energy density against thermal stability"}]}
+{"id":"q040","question":"富镍电池为什么对散热要求更高？","type":"cross-lingual","relevant":[{"document":"battery-chemistry.md","page":null,"block":4,"quote":"release oxygen at lower temperatures than iron phosphate"}]}
+{"id":"q041","question":"电芯隔膜一旦熔化会导致什么后果？","type":"cross-lingual","relevant":[{"document":"battery-chemistry.md","page":null,"block":6,"quote":"Once the separator melts, the cell shorts internally"}]}
+{"id":"q042","question":"蜜蜂大致从什么温度开始出巢觅食？","type":"cross-lingual","relevant":[{"document":"orchard-pollination.md","page":null,"block":4,"quote":"above roughly twelve degrees Celsius"}]}
+{"id":"q043","question":"花期遭遇晚霜，主要受损的是什么？","type":"cross-lingual","relevant":[{"document":"orchard-pollination.md","page":null,"block":6,"quote":"destroys the flower's ovary rather than the petals"}]}
+{"id":"q044","question":"为什么成片的树冠比孤立的树降温效果更好？","type":"cross-lingual","relevant":[{"document":"urban-canopy.md","page":null,"block":4,"quote":"asphalt stores far more heat during the day"}]}

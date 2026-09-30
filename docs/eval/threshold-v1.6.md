@@ -15,11 +15,11 @@ no-result rate is better.
 
 | Threshold | n (val) | Recall@5 (val) | nDCG@10 (val) | No-result (val) | Unans. no-result (val) | Unans. retrieved (val) | nDCG@10 (test) | Unans. no-result (test) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 0 | 10 | 1.0000 | 0.9182 | 0.0000 | 0.0000 | 19.0 | 0.9565 | 0.0000 |
-| 0.3 | 10 | 1.0000 | 0.9182 | 0.0000 | 0.0000 | 19.0 | 0.9565 | 0.0000 |
-| 0.4 | 10 | 1.0000 | 0.9182 | 0.0000 | 0.0000 | 19.0 | 0.9565 | 0.0000 |
-| 0.5 | 10 | 1.0000 | 0.9182 | 0.0000 | 0.0000 | 19.0 | 0.9565 | 0.0000 |
-| 0.6 | 10 | 1.0000 | 0.9182 | 0.0000 | 0.0000 | 19.0 | 0.9565 | 0.0000 |
+| 0 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 0.8581 | 0.0000 |
+| 0.3 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 0.8581 | 0.0000 |
+| 0.4 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 0.8581 | 0.0000 |
+| 0.5 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 0.8581 | 0.0000 |
+| 0.6 | 13 | 0.9231 | 0.8276 | 0.0000 | 0.0000 | 19.0 | 0.8581 | 0.0000 |
 
 ## Selection rule
 
@@ -32,13 +32,13 @@ the quality gate is there so a refusal gain can never be bought with a retrieval
 
 ## Outcome
 
-The sweep is **flat**: every threshold from 0 to 0.6 produces the same validation nDCG@10 (0.9182), the same Recall@5 (1.0000) and the same unanswerable refusal rate (0/3). No passage is ever filtered out, so the threshold is **non-binding** on this corpus — E5 does not score these query/chunk pairs below the top of the swept range.
+The sweep is **flat**: every threshold from 0 to 0.6 produces the same validation nDCG@10 (0.8276), the same Recall@5 (0.9231) and the same unanswerable refusal rate (0/3). No passage is ever filtered out, so the threshold is **non-binding** on this corpus — E5 does not score these query/chunk pairs below the top of the swept range.
 
 **No evidence to change `threshold = 0.5`.** All thresholds hold the line equally; picking one would be arbitrary. The current value can be neither validated nor falsified here, which is a property of the corpus rather than of the threshold.
 
 ## Caveat on this corpus
 
-The split removes the most obvious form of overfitting, but 10
+The split removes the most obvious form of overfitting, but 13
 answerable questions on the validation side is a thin basis for a decision, and the corpus
 is still small. A threshold is a product decision with a **refusal-rate** cost attached, so
 a recommendation here is only as good as the corpus behind it. Re-run this after the
