@@ -24,6 +24,14 @@ export interface EvalQuestion {
   question: string
   relevant: EvalRelevantLocation[]
   goldAnswer?: string
+  /**
+   * 查询类别（#192）。自由字符串，因为语料还会长出新类别；报告按出现过的值分组，
+   * 缺省归入 `untagged`。
+   *
+   * 分类的意义是：一个提升实体查询、却弄坏释义查询的策略，不该在总平均上显示成
+   * 「没变化」。
+   */
+  type?: string
 }
 
 /** One resolved ground-truth location, after runtime id mapping. */
@@ -42,6 +50,15 @@ export interface EvalMetrics {
   mrr: number
   ndcgAt10: number
   /**
+   * 前 5 名至少命中一个 ground-truth 块的问题占比。
+   *
+   * 与 Recall@5 并列而不是替代：多块问题只要命中一块，hit rate 就是 1，
+   * 而 Recall@5 只有 0.5。「模型有没有机会」和「材料齐不齐」是两件事。
+   */
+  hitRateAt5: number
+  /** AP@10：把「排序位置」和「覆盖面」合成一个数的那个指标。 */
+  mapAt10: number
+  /**
    * Share of the first `evidenceK` retrieved passages that cover ground truth.
    *
    * This is **retrieval precision**, not answer citation recall: no model runs in
@@ -51,9 +68,18 @@ export interface EvalMetrics {
   evidencePrecisionAt5: number
 }
 
+/** 按查询类别聚合的同一套指标（#192）。总平均会掩盖方向相反的两个变化。 */
+export interface EvalTypeBreakdown {
+  type: string
+  questions: number
+  metrics: EvalMetrics
+}
+
 export interface QuestionReport {
   id: string
   question: string
+  /** 查询类别，与 `EvalQuestion.type` 一致；缺省为 `untagged`。 */
+  type: string
   firstRelevantRank: number
   relevantCount: number
   retrievedCount: number
@@ -97,6 +123,8 @@ export interface EvalReport {
     chunkCount: number
   }
   metrics: EvalMetrics
+  /** 每个查询类别一行；类别来自 `questions.jsonl` 的 `type`。 */
+  byType: EvalTypeBreakdown[]
   /** `indexingMs` 只用于 #78 的吞吐比较；它不在确定报告里，也不该成为差异原因。 */
   timing: { latencyP50Ms: number; latencyP95Ms: number; indexingMs: number }
   perQuestion: QuestionReport[]
@@ -112,5 +140,6 @@ export interface EvalDeterministicReport {
   generatedBy: string
   config: EvalReport['config']
   metrics: EvalMetrics
+  byType: EvalTypeBreakdown[]
   perQuestion: QuestionReport[]
 }

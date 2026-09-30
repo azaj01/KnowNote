@@ -59,6 +59,7 @@ dataset needs a new question.
 {
   "id": "q001",
   "question": "Why is bedload harder to measure than suspended sediment?",
+  "type": "semantic",
   "relevant": [
     {
       "document": "river-monitoring.md",
@@ -78,6 +79,10 @@ Ground truth uses **corpus identity, never database identity**:
 - `page` is `null` for unpaginated sources.
 - `quote` is an optional excerpt. The runner fails if the referenced block no longer
   contains it, so a parser change cannot silently move the ground truth.
+- `type` is an optional query class; the report groups every metric by it. Values in use:
+  `exact` (number/name/detail), `semantic` (why/how), `multi-hop` (two or more blocks),
+  `cross-lingual` (question language differs from the source), `zh` (Chinese over a
+  Chinese source). Untagged questions report as `untagged`.
 
 Runtime `documentId`s are random and `blockId`s embed them, so neither may appear here.
 This is what lets #78 change chunking without invalidating the dataset: the ground truth
@@ -115,11 +120,20 @@ from unanswerable queries.
 - **Recall@1/5/10** — share of ground-truth blocks covered by the first k passages.
 - **MRR** — reciprocal rank of the first relevant passage.
 - **nDCG@10** — binary-gain discounted cumulative gain.
+- **Hit rate@5** — share of questions with at least one relevant passage in the first 5.
+  Deliberately blunt: it says the answer was *reachable*, where Recall@5 says the material
+  was *complete*. A two-passage question that finds one scores 1.0 and 0.5 respectively.
+- **MAP@10** — mean average precision. The one metric here that combines ranking position
+  with coverage, so pulling a second relevant passage from rank 9 to rank 2 moves it.
 - **Evidence precision@5** — of the first 5 retrieved passages, the share that cover a
   ground-truth block. This is **retrieval precision, not answer citation recall**: the
   harness runs no model and produces no answer. Answer-level citation correctness is
   covered by the resolver (#70); a model-driven answer eval would be a separate
   deliverable.
+- **By query type** — the same metrics per `type` in `questions.jsonl` (`exact`,
+  `semantic`, `multi-hop`, `cross-lingual`, `zh`). A single average hides a change that
+  helps one kind of question and hurts another; the current baseline already shows this,
+  with `cross-lingual` at nDCG 0.63 against 0.93–1.00 elsewhere.
 - **Latency p50/p95** — informational only. Timing is **not** frozen, and the committed
   JSON excludes it so two runs diff cleanly.
 

@@ -21,8 +21,10 @@ import { DEFAULT_CHUNK_OPTIONS, type ChunkOptions } from '../services/ChunkingSe
 import type { RetrievalStrategy } from '../services/retrieval'
 import { LOCAL_EMBEDDING_MODEL } from '../embedding/localModel'
 import {
+  averagePrecisionAtK,
   evidencePrecisionAtK,
   firstRelevantRank,
+  hitRateAtK,
   mean,
   ndcgAtK,
   percentile,
@@ -31,9 +33,11 @@ import {
 } from './metrics'
 import type {
   EvalDeterministicReport,
+  EvalMetrics,
   EvalQuestion,
   EvalReport,
   EvalRelevantLocation,
+  EvalTypeBreakdown,
   QuestionReport,
   ResolvedGroundTruth
 } from './types'
@@ -68,6 +72,30 @@ export interface EvalHarnessOptions {
 }
 
 const NOTEBOOK_ID = 'eval-notebook'
+
+/** A question with no `type` is grouped here rather than dropped from the report. */
+const UNTAGGED = 'untagged'
+
+/**
+ * 同一套指标既算总平均，也算每个查询类别（#192）。用一个函数是因为分组平均必须与
+ * 总平均是同一个定义，否则两个数就不可比。
+ */
+function summarize(perQuestion: readonly QuestionReport[], evidenceK: number): EvalMetrics {
+  return {
+    recallAt1: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 1))),
+    recallAt5: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 5))),
+    recallAt10: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 10))),
+    mrr: mean(perQuestion.map((q) => reciprocalRank(q.matchesByRank))),
+    ndcgAt10: mean(perQuestion.map((q) => ndcgAtK(q.matchesByRank, q.relevantCount, 10))),
+    hitRateAt5: mean(perQuestion.map((q) => hitRateAtK(q.matchesByRank, 5))),
+    mapAt10: mean(
+      perQuestion.map((q) => averagePrecisionAtK(q.matchesByRank, q.relevantCount, 10))
+    ),
+    evidencePrecisionAt5: mean(
+      perQuestion.map((q) => evidencePrecisionAtK(q.matchesByRank, evidenceK))
+    )
+  }
+}
 
 /** Normalised comparison for the optional quote drift check. */
 const normalize = (text: string): string => text.toLowerCase().replace(/\s+/g, ' ').trim()
@@ -222,6 +250,7 @@ export async function runEvalHarness(
     perQuestion.push({
       id: question.id,
       question: question.question,
+      type: question.type ?? UNTAGGED,
       firstRelevantRank: firstRelevantRank(matchesByRank),
       relevantCount: groundTruth.length,
       retrievedCount: results.length,
@@ -229,16 +258,15 @@ export async function runEvalHarness(
     })
   }
 
-  const metrics = {
-    recallAt1: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 1))),
-    recallAt5: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 5))),
-    recallAt10: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 10))),
-    mrr: mean(perQuestion.map((q) => reciprocalRank(q.matchesByRank))),
-    ndcgAt10: mean(perQuestion.map((q) => ndcgAtK(q.matchesByRank, q.relevantCount, 10))),
-    evidencePrecisionAt5: mean(
-      perQuestion.map((q) => evidencePrecisionAtK(q.matchesByRank, options.evidenceK))
-    )
-  }
+  const metrics = summarize(perQuestion, options.evidenceK)
+
+  // 每个类别一行，按类别名排序，所以同一个 JSON 在两次运行之间可 diff。
+  const byType: EvalTypeBreakdown[] = [...new Set(perQuestion.map((q) => q.type))]
+    .sort()
+    .map((type) => {
+      const group = perQuestion.filter((q) => q.type === type)
+      return { type, questions: group.length, metrics: summarize(group, options.evidenceK) }
+    })
 
   const chunking = { ...DEFAULT_CHUNK_OPTIONS, ...options.chunkOptions }
   return {
@@ -264,6 +292,7 @@ export async function runEvalHarness(
       chunkCount
     },
     metrics,
+    byType,
     timing: {
       latencyP50Ms: percentile(latencies, 50),
       latencyP95Ms: percentile(latencies, 95),
@@ -274,21 +303,29 @@ export async function runEvalHarness(
 }
 
 /** Round metrics to a stable number of decimals so the JSON diffs cleanly. */
+const roundMetric = (value: number): number => Number(value.toFixed(6))
+
+function roundMetrics(metrics: EvalMetrics): EvalMetrics {
+  return {
+    recallAt1: roundMetric(metrics.recallAt1),
+    recallAt5: roundMetric(metrics.recallAt5),
+    recallAt10: roundMetric(metrics.recallAt10),
+    mrr: roundMetric(metrics.mrr),
+    ndcgAt10: roundMetric(metrics.ndcgAt10),
+    hitRateAt5: roundMetric(metrics.hitRateAt5),
+    mapAt10: roundMetric(metrics.mapAt10),
+    evidencePrecisionAt5: roundMetric(metrics.evidencePrecisionAt5)
+  }
+}
+
 export function stabilize(report: EvalReport): EvalReport {
-  const round = (value: number): number => Number(value.toFixed(6))
   return {
     ...report,
-    metrics: {
-      recallAt1: round(report.metrics.recallAt1),
-      recallAt5: round(report.metrics.recallAt5),
-      recallAt10: round(report.metrics.recallAt10),
-      mrr: round(report.metrics.mrr),
-      ndcgAt10: round(report.metrics.ndcgAt10),
-      evidencePrecisionAt5: round(report.metrics.evidencePrecisionAt5)
-    },
+    metrics: roundMetrics(report.metrics),
+    byType: report.byType.map((entry) => ({ ...entry, metrics: roundMetrics(entry.metrics) })),
     timing: {
-      latencyP50Ms: round(report.timing.latencyP50Ms),
-      latencyP95Ms: round(report.timing.latencyP95Ms),
+      latencyP50Ms: roundMetric(report.timing.latencyP50Ms),
+      latencyP95Ms: roundMetric(report.timing.latencyP95Ms),
       // Throughput is informational and excluded from the deterministic report; the
       // full report keeps it for the #78 comparison.
       indexingMs: Math.round(report.timing.indexingMs)
@@ -304,6 +341,7 @@ export function toDeterministicReport(report: EvalReport): EvalDeterministicRepo
     generatedBy: report.generatedBy,
     config: report.config,
     metrics: report.metrics,
+    byType: report.byType,
     perQuestion: report.perQuestion
   }
 }
