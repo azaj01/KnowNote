@@ -187,7 +187,7 @@ const format4 = (value) => value.toFixed(4)
 
 const rows = results.map((result) => {
   const args = `${result.chunkSize}/${result.chunkOverlap}${result.respectHeadings ? ' + headings' : ''}${result.allowSpanPages ? ' + span' : ''}`
-  return `| ${result.label} | \`${args}\` | ${format4(result.recallAt1)} | ${format4(result.recallAt5)} | ${format4(result.mrr)} | ${format4(result.ndcgAt10)} | ${format4(result.evidencePrecisionAt5)} | ${result.chunkCount} (${formatDelta(delta(result.chunkCount, baseline.chunkCount))}) | ${result.indexingMs} ms | ${result.latencyP95Ms?.toFixed(2)} ms |`
+  return `| ${result.label} | \`${args}\` | ${format4(result.recallAt1)} | ${format4(result.recallAt5)} | ${format4(result.mrr)} | ${format4(result.ndcgAt10)} | ${format4(result.contextPrecision)} | ${result.chunkCount} (${formatDelta(delta(result.chunkCount, baseline.chunkCount))}) | ${result.indexingMs} ms | ${result.latencyP95Ms?.toFixed(2)} ms |`
 })
 
 /**
@@ -215,7 +215,7 @@ questions as \`baseline-v1.4.json\`, with dense retrieval held fixed. Only the c
 configuration changes, so a difference in the metrics is a difference in the input
 distribution retrieval is measured on.
 
-| Variant | size/overlap | Recall@1 | Recall@5 | MRR | nDCG@10 | Evidence P@5 | Index size (Δ) | Indexing | Query p95 |
+| Variant | size/overlap | Recall@1 | Recall@5 | MRR | nDCG@10 | Context P | Index size (Δ) | Indexing | Query p95 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 ${rows.join('\n')}
 

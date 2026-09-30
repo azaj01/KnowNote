@@ -82,13 +82,19 @@ export interface EvalMetrics {
   /** AP@10：把「排序位置」和「覆盖面」合成一个数的那个指标。 */
   mapAt10: number
   /**
-   * Share of the first `evidenceK` retrieved passages that cover ground truth.
+   * 前 `contextK` 条证据里真的命中 ground-truth 的比例（context 条的精确率）。
    *
-   * This is **retrieval precision**, not answer citation recall: no model runs in
-   * this harness and no answer is produced. Answer-level citation correctness is
-   * the resolver's job (#70) and would need a separate, model-driven eval.
+   * 这是**检索精度**，不是回答的引用召回：harness 不跑模型、不产生回答。回答层的引用
+   * 正确性是 resolver 的事（#70），需要一个真正跑模型的 eval。
    */
-  evidencePrecisionAt5: number
+  contextPrecision: number
+  /**
+   * 答案需要的 ground-truth 块有多少进了 `contextK` 宽的窗口。
+   *
+   * 与 Recall@10 的区别在于它量的是**窗口**：证据排在第 4、而 contextK=3 时，模型
+   * 看不到它。这是一个产品指标，不只是检索指标。
+   */
+  contextRecall: number
 }
 
 /** 按查询类别聚合的同一套指标（#192）。总平均会掩盖方向相反的两个变化。 */
@@ -134,13 +140,11 @@ export interface EvalReport {
     /**
      * 生产 prompt 实际取用的证据条数（#77）。
      *
-     * 快照里记它是为了让 benchmark 描述整条线上链路，而不只是检索器；它不影响排名
-     * 指标 —— 截断只是取候选列表的前缀，前缀的排序不变。
+     * 快照里记它是为了让 benchmark 描述整条线上链路，而不只是检索器；它也是两个
+     * context 指标的窗口宽度。
      */
     contextK: number
     threshold: number
-    /** How many retrieved passages the evidence-precision metric looks at. */
-    evidenceK: number
     corpus: string
     documents: number
     questions: number

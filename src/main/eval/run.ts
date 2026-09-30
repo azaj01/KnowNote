@@ -197,7 +197,6 @@ export async function runEvalCli(argv: readonly string[] = process.argv): Promis
       candidateK: readNumberOption(argv, '--eval-candidate-k=', 20),
       contextK: readNumberOption(argv, '--eval-context-k=', 3),
       threshold: readNumberOption(argv, '--eval-threshold=', 0.5),
-      evidenceK: 5,
       chunkOptions: readChunkOptions(argv),
       strategy: readRetrievalStrategy(argv)
     }

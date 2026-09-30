@@ -67,8 +67,6 @@ export interface EvalHarnessOptions {
   contextK: number
   /** Similarity floor; 0 keeps the ranking intact for ranking metrics. */
   threshold: number
-  /** How many retrieved passages the evidence-precision metric looks at. */
-  evidenceK: number
   /** 分块配置（#78）。实验变体通过它选择策略；缺省时用生产默认值。 */
   chunkOptions: ChunkOptions
   /** 检索策略（#77）：dense / sparse(BM25) / hybrid(RRF)。 */
@@ -84,7 +82,7 @@ const UNTAGGED = 'untagged'
  * 同一套指标既算总平均，也算每个查询类别（#192）。用一个函数是因为分组平均必须与
  * 总平均是同一个定义，否则两个数就不可比。
  */
-function summarize(perQuestion: readonly QuestionReport[], evidenceK: number): EvalMetrics {
+function summarize(perQuestion: readonly QuestionReport[], contextK: number): EvalMetrics {
   return {
     recallAt1: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 1))),
     recallAt5: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 5))),
@@ -95,8 +93,13 @@ function summarize(perQuestion: readonly QuestionReport[], evidenceK: number): E
     mapAt10: mean(
       perQuestion.map((q) => averagePrecisionAtK(q.matchesByRank, q.relevantCount, 10))
     ),
-    evidencePrecisionAt5: mean(
-      perQuestion.map((q) => evidencePrecisionAtK(q.matchesByRank, evidenceK))
+    // 两个 context 指标共用同一个窗口，因为它们回答的是同一个问题的两面：送进 prompt
+    // 的那几条里有多少是相关的，以及需要的东西有多少真的进去了。
+    contextPrecision: mean(
+      perQuestion.map((q) => evidencePrecisionAtK(q.matchesByRank, contextK))
+    ),
+    contextRecall: mean(
+      perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, contextK))
     )
   }
 }
@@ -266,14 +269,14 @@ export async function runEvalHarness(
     })
   }
 
-  const metrics = summarize(perQuestion, options.evidenceK)
+  const metrics = summarize(perQuestion, options.contextK)
 
   // 每个类别一行，按类别名排序，所以同一个 JSON 在两次运行之间可 diff。
   const byType: EvalTypeBreakdown[] = [...new Set(perQuestion.map((q) => q.type))]
     .sort()
     .map((type) => {
       const group = perQuestion.filter((q) => q.type === type)
-      return { type, questions: group.length, metrics: summarize(group, options.evidenceK) }
+      return { type, questions: group.length, metrics: summarize(group, options.contextK) }
     })
 
   const chunking = { ...DEFAULT_CHUNK_OPTIONS, ...options.chunkOptions }
@@ -294,7 +297,6 @@ export async function runEvalHarness(
       candidateK: options.candidateK,
       contextK: options.contextK,
       threshold: options.threshold,
-      evidenceK: options.evidenceK,
       corpus: options.corpusLabel,
       documents: documentIds.size,
       questions: questions.length,
@@ -323,7 +325,8 @@ function roundMetrics(metrics: EvalMetrics): EvalMetrics {
     ndcgAt10: roundMetric(metrics.ndcgAt10),
     hitRateAt5: roundMetric(metrics.hitRateAt5),
     mapAt10: roundMetric(metrics.mapAt10),
-    evidencePrecisionAt5: roundMetric(metrics.evidencePrecisionAt5)
+    contextPrecision: roundMetric(metrics.contextPrecision),
+    contextRecall: roundMetric(metrics.contextRecall)
   }
 }
 

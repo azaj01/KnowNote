@@ -135,11 +135,17 @@ from unanswerable queries.
   was *complete*. A two-passage question that finds one scores 1.0 and 0.5 respectively.
 - **MAP@10** — mean average precision. The one metric here that combines ranking position
   with coverage, so pulling a second relevant passage from rank 9 to rank 2 moves it.
-- **Evidence precision@5** — of the first 5 retrieved passages, the share that cover a
-  ground-truth block. This is **retrieval precision, not answer citation recall**: the
-  harness runs no model and produces no answer. Answer-level citation correctness is
-  covered by the resolver (#70); a model-driven answer eval would be a separate
-  deliverable.
+- **Context precision@`contextK`** — of the first `contextK` retrieved passages, the share
+  that cover a ground-truth block. **Context recall@`contextK`** — the share of the needed
+  ground-truth blocks that made it into that same window. Both are deterministic: the
+  dataset says which blocks answer the question, so no model is needed to score the window.
+  Together they are the trade-off a `contextK` decision actually makes — a wider window
+  finds more and carries more noise.
+- This is **retrieval precision/recall, not answer citation recall**: the harness runs no
+  model and produces no answer. Answer-level citation correctness is covered by the
+  resolver (#70). Faithfulness, completeness and answer correctness need a generative model
+  and are **not evaluated here** — the harness runs offline with only the pinned embedding
+  model, the same constraint that keeps the reranker unmeasured (#170).
 - **By query type** — the same metrics per `type` in `questions.jsonl` (`exact`,
   `semantic`, `multi-hop`, `cross-lingual`, `zh`). A single average hides a change that
   helps one kind of question and hurts another; the current baseline already shows this,

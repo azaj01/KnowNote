@@ -14,9 +14,10 @@
       "ndcgAt10": 0.94375,
       "hitRateAt5": 1,
       "mapAt10": 0.922222,
-      "evidencePrecisionAt5": 0.213333,
-      "indexingMs": 1531,
-      "latencyP95Ms": 14.81
+      "contextPrecision": 0.355556,
+      "contextRecall": 1,
+      "indexingMs": 1548,
+      "latencyP95Ms": 20.51
     },
     {
       "id": "sparse",
@@ -30,9 +31,10 @@
       "ndcgAt10": 0.818355,
       "hitRateAt5": 0.866667,
       "mapAt10": 0.8,
-      "evidencePrecisionAt5": 0.186667,
-      "indexingMs": 1503,
-      "latencyP95Ms": 1.89
+      "contextPrecision": 0.311111,
+      "contextRecall": 0.866667,
+      "indexingMs": 1490,
+      "latencyP95Ms": 1.96
     },
     {
       "id": "hybrid",
@@ -46,9 +48,10 @@
       "ndcgAt10": 0.956053,
       "hitRateAt5": 1,
       "mapAt10": 0.938889,
-      "evidencePrecisionAt5": 0.213333,
-      "indexingMs": 1548,
-      "latencyP95Ms": 19.15
+      "contextPrecision": 0.355556,
+      "contextRecall": 1,
+      "indexingMs": 1507,
+      "latencyP95Ms": 20.66
     }
   ]
 }

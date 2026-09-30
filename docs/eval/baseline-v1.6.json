@@ -15,7 +15,6 @@
     "candidateK": 20,
     "contextK": 3,
     "threshold": 0.5,
-    "evidenceK": 5,
     "corpus": "eval/corpus",
     "documents": 13,
     "questions": 30,
@@ -29,7 +28,8 @@
     "ndcgAt10": 0.94375,
     "hitRateAt5": 1,
     "mapAt10": 0.922222,
-    "evidencePrecisionAt5": 0.213333
+    "contextPrecision": 0.355556,
+    "contextRecall": 1
   },
   "byType": [
     {
@@ -43,7 +43,8 @@
         "ndcgAt10": 0.63093,
         "hitRateAt5": 1,
         "mapAt10": 0.5,
-        "evidencePrecisionAt5": 0.2
+        "contextPrecision": 0.333333,
+        "contextRecall": 1
       }
     },
     {
@@ -57,7 +58,8 @@
         "ndcgAt10": 1,
         "hitRateAt5": 1,
         "mapAt10": 1,
-        "evidencePrecisionAt5": 0.2
+        "contextPrecision": 0.333333,
+        "contextRecall": 1
       }
     },
     {
@@ -71,7 +73,8 @@
         "ndcgAt10": 0.95986,
         "hitRateAt5": 1,
         "mapAt10": 0.916667,
-        "evidencePrecisionAt5": 0.4
+        "contextPrecision": 0.666667,
+        "contextRecall": 1
       }
     },
     {
@@ -85,7 +88,8 @@
         "ndcgAt10": 0.931214,
         "hitRateAt5": 1,
         "mapAt10": 0.907407,
-        "evidencePrecisionAt5": 0.2
+        "contextPrecision": 0.333333,
+        "contextRecall": 1
       }
     },
     {
@@ -99,7 +103,8 @@
         "ndcgAt10": 1,
         "hitRateAt5": 1,
         "mapAt10": 1,
-        "evidencePrecisionAt5": 0.2
+        "contextPrecision": 0.333333,
+        "contextRecall": 1
       }
     }
   ],
