@@ -44,7 +44,8 @@
     "eval:retrieval": "npm run build && node --experimental-transform-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/eval-retrieval.mjs",
     "eval:threshold": "npm run build && node scripts/eval-threshold.mjs",
     "eval:sweep": "npm run build && node scripts/eval-sweep.mjs",
-    "eval:blocks": "node --experimental-transform-types --import ./test/ts-resolve.mjs --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/eval-blocks.mjs"
+    "eval:blocks": "node --experimental-transform-types --import ./test/ts-resolve.mjs --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/eval-blocks.mjs",
+    "eval:scores": "npm run build && node scripts/eval-scores.mjs"
   },
   "//test": [
     "`node --test` strips TypeScript types rather than compiling them, and strip-only",

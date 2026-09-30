@@ -197,6 +197,15 @@ export interface QuestionReport {
   contextChars: number
   /** Ground-truth indices matched by each retrieved rank, in rank order. */
   matchesByRank: number[][]
+  /**
+   * 每个 rank 的检索分数，与 `matchesByRank` 同序。
+   *
+   * 只在 `--eval-scores` 时出现：它是 score diagnostics（#192）需要的数据，而基线
+   * JSON 默认不带它——分数序列会让基线膨胀一倍，而基线是 CI 要逐字节 diff 的文件。
+   *
+   * 注意它不是 cosine：见 `SQLiteVectorStore`，`score = (1 + cosine) / 2`。
+   */
+  retrievedScores?: number[]
 }
 
 export interface EvalReport {

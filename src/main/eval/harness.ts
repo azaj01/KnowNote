@@ -72,6 +72,13 @@ export interface EvalHarnessOptions {
   threshold: number
   /** 分块配置（#78）。实验变体通过它选择策略；缺省时用生产默认值。 */
   chunkOptions: ChunkOptions
+  /**
+   * 把每个 rank 的检索分数也写进报告（`--eval-scores`）。
+   *
+   * 缺省关闭：分数序列会让基线膨胀一倍，而基线是 CI 逐字节 diff 的文件。score
+   * diagnostics（#192）需要它，生产基线不需要。
+   */
+  includeScores?: boolean
   /** 检索策略（#77）：dense / sparse(BM25) / hybrid(RRF)。 */
   strategy: RetrievalStrategy
 }
@@ -298,7 +305,7 @@ export async function runEvalHarness(
         .filter((index) => index >= 0)
     })
 
-    perQuestion.push({
+    const questionReport: QuestionReport = {
       id: question.id,
       question: question.question,
       type: question.type ?? UNTAGGED,
@@ -310,7 +317,10 @@ export async function runEvalHarness(
         .slice(0, options.contextK)
         .reduce((total, result) => total + result.content.length, 0),
       matchesByRank
-    })
+    }
+    // Only when asked: the score series doubles the size of the committed baseline.
+    if (options.includeScores) questionReport.retrievedScores = results.map((r) => r.score)
+    perQuestion.push(questionReport)
   }
 
   // 不可答的问题不进排名指标：它们没有 ground truth，`recallAtK` 对它们返回的是 0/0
@@ -396,6 +406,14 @@ function roundMetrics(metrics: EvalMetrics): EvalMetrics {
 }
 
 export function stabilize(report: EvalReport): EvalReport {
+  // Scores are extra data, not metrics; they are rounded the same way so two runs of the
+  // same diagnostic diff cleanly.
+  const perQuestion = report.perQuestion.map((question) =>
+    question.retrievedScores
+      ? { ...question, retrievedScores: question.retrievedScores.map(roundMetric) }
+      : question
+  )
+
   return {
     ...report,
     metrics: roundMetrics(report.metrics),
@@ -407,7 +425,7 @@ export function stabilize(report: EvalReport): EvalReport {
       // full report keeps it for the #78 comparison.
       indexingMs: Math.round(report.timing.indexingMs)
     },
-    perQuestion: report.perQuestion
+    perQuestion
   }
 }
 

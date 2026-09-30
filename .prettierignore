@@ -29,6 +29,10 @@ docs/eval/threshold-*.md
 docs/eval/sweep-*.json
 docs/eval/sweep-*.md
 
+# And by `scripts/eval-scores.mjs`. Regenerate with `npm run eval:scores`.
+docs/eval/scores-*.json
+docs/eval/scores-*.md
+
 # And the same again for `scripts/eval-retrieval.mjs` (#77).
 docs/eval/retrieval-*.json
 docs/eval/retrieval-*.md

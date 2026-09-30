@@ -200,6 +200,9 @@ export async function runEvalCli(argv: readonly string[] = process.argv): Promis
       contextK: readNumberOption(argv, '--eval-context-k=', 3),
       threshold: readNumberOption(argv, '--eval-threshold=', 0.5),
       chunkOptions: readChunkOptions(argv),
+      // `--eval-scores` puts the per-rank retrieval scores in the report. Off by default:
+      // the committed baseline is a CI-diffed file and the series doubles it.
+      includeScores: readBoolOption(argv, '--eval-scores=', argv.includes('--eval-scores')),
       strategy: readRetrievalStrategy(argv)
     }
 

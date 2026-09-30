@@ -12,8 +12,21 @@ npm run eval            # offline and deterministic: run the harness, rewrite th
 npm run eval:retrieval  # strategy comparison (#77); validation selects, test reports
 npm run eval:threshold  # derive the similarity threshold on validation, report on test
 npm run eval:sweep      # bounded grid over strategy × candidateK × contextK, one dashboard
+npm run eval:scores     # dense score distribution: can one threshold separate relevant from not?
 npm run eval:blocks eval/corpus/foo.md   # print the block ordinals ground truth must use
 ```
+
+### `threshold` is not a cosine
+
+The vector store returns \`score = 1 - distance / 2\` and sqlite-vec's cosine distance is
+\`1 - cosine\`, so:
+
+```text
+score = (1 + cosine) / 2      score 0.5 == cosine 0.0
+```
+
+The shipped \`threshold = 0.5\` therefore means **cosine ≥ 0**, which is very permissive.
+\`npm run eval:scores\` reports both columns side by side so the two never get conflated.
 
 ### The harness runs the production configuration
 
