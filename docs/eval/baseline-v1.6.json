@@ -116,6 +116,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2074,
       "matchesByRank": [
         [
           0
@@ -147,6 +148,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2257,
       "matchesByRank": [
         [
           0
@@ -178,6 +180,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2558,
       "matchesByRank": [
         [
           0
@@ -209,6 +212,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2113,
       "matchesByRank": [
         [
           0
@@ -240,6 +244,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2113,
       "matchesByRank": [
         [
           0
@@ -271,6 +276,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 1775,
       "matchesByRank": [
         [
           0
@@ -302,6 +308,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2091,
       "matchesByRank": [
         [
           0
@@ -333,6 +340,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 1970,
       "matchesByRank": [
         [
           0
@@ -364,6 +372,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 1484,
       "matchesByRank": [
         [
           0
@@ -395,6 +404,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2682,
       "matchesByRank": [
         [
           0
@@ -426,6 +436,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2051,
       "matchesByRank": [
         [
           0
@@ -457,6 +468,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2007,
       "matchesByRank": [
         [
           0
@@ -488,6 +500,7 @@
       "firstRelevantRank": 3,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2007,
       "matchesByRank": [
         [],
         [],
@@ -519,6 +532,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2257,
       "matchesByRank": [
         [
           0
@@ -550,6 +564,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2621,
       "matchesByRank": [
         [
           0
@@ -581,6 +596,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2558,
       "matchesByRank": [
         [
           0
@@ -612,6 +628,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 1773,
       "matchesByRank": [
         [
           0
@@ -643,6 +660,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 1970,
       "matchesByRank": [
         [
           0
@@ -674,6 +692,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2556,
       "matchesByRank": [
         [
           0
@@ -705,6 +724,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2098,
       "matchesByRank": [
         [
           0
@@ -736,6 +756,7 @@
       "firstRelevantRank": 2,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2488,
       "matchesByRank": [
         [],
         [
@@ -767,6 +788,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2488,
       "matchesByRank": [
         [
           0
@@ -798,6 +820,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 2,
       "retrievedCount": 19,
+      "contextChars": 2257,
       "matchesByRank": [
         [
           1
@@ -831,6 +854,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 2,
       "retrievedCount": 19,
+      "contextChars": 1970,
       "matchesByRank": [
         [
           0
@@ -864,6 +888,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 2098,
       "matchesByRank": [
         [
           0
@@ -895,6 +920,7 @@
       "firstRelevantRank": 2,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 1867,
       "matchesByRank": [
         [],
         [
@@ -926,6 +952,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 1453,
       "matchesByRank": [
         [
           0
@@ -957,6 +984,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 1372,
       "matchesByRank": [
         [
           0
@@ -988,6 +1016,7 @@
       "firstRelevantRank": 1,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 1500,
       "matchesByRank": [
         [
           0
@@ -1019,6 +1048,7 @@
       "firstRelevantRank": 2,
       "relevantCount": 1,
       "retrievedCount": 19,
+      "contextChars": 1860,
       "matchesByRank": [
         [],
         [

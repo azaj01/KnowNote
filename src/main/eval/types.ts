@@ -112,6 +112,13 @@ export interface QuestionReport {
   firstRelevantRank: number
   relevantCount: number
   retrievedCount: number
+  /**
+   * 送进 context 窗口的前 `contextK` 条证据的字符数（#192 child 7）。
+   *
+   * 是字符数而不是 token 数：不同模型的分词器不同，而 harness 只固定了 embedding
+   * 模型。把它当 prompt 预算的代理看，不要当成某个模型的 token 数。
+   */
+  contextChars: number
   /** Ground-truth indices matched by each retrieved rank, in rank order. */
   matchesByRank: number[][]
 }

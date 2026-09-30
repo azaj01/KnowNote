@@ -43,8 +43,8 @@ The type comes from `type` in `questions.jsonl`; untagged questions report as
 | semantic | 18 | 1.0000 | 0.9312 | 1.0000 | 0.9074 |
 | zh | 3 | 1.0000 | 1.0000 | 1.0000 | 1.0000 |
 
-Timing is informational only and is **not** frozen: indexing 1499 ms, query
-p50 11.58 ms, p95 16.69 ms on the
+Timing is informational only and is **not** frozen: indexing 2015 ms, query
+p50 71.63 ms, p95 94.77 ms on the
 machine that produced this file. Timing and index size depend on hardware and on the
 corpus, so they must never be the reason two runs differ.
 

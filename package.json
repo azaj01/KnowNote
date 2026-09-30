@@ -42,7 +42,8 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "eval:retrieval": "npm run build && node --experimental-transform-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/eval-retrieval.mjs",
-    "eval:threshold": "npm run build && node scripts/eval-threshold.mjs"
+    "eval:threshold": "npm run build && node scripts/eval-threshold.mjs",
+    "eval:sweep": "npm run build && node scripts/eval-sweep.mjs"
   },
   "//test": [
     "`node --test` strips TypeScript types rather than compiling them, and strip-only",

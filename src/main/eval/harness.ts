@@ -265,6 +265,9 @@ export async function runEvalHarness(
       firstRelevantRank: firstRelevantRank(matchesByRank),
       relevantCount: groundTruth.length,
       retrievedCount: results.length,
+      contextChars: results
+        .slice(0, options.contextK)
+        .reduce((total, result) => total + result.content.length, 0),
       matchesByRank
     })
   }

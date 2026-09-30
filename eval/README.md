@@ -11,6 +11,7 @@ npm run eval:prepare    # one-time, networked: download the pinned embedding mod
 npm run eval            # offline and deterministic: run the harness, rewrite the baseline
 npm run eval:retrieval  # strategy comparison (#77)
 npm run eval:threshold  # derive the similarity threshold on validation, report on test
+npm run eval:sweep      # bounded grid over strategy × candidateK × contextK, one dashboard
 ```
 
 ### The harness runs the production configuration
@@ -38,6 +39,11 @@ A parameter picked on the same questions it is scored on is a fitted number, not
 result. `--eval-split=validation` selects roughly a third of the questions by a
 deterministic hash of the id; `test` is the rest. `npm run eval:threshold` uses this
 to pick a similarity threshold on `validation` and report it on `test`.
+
+`npm run eval:sweep` runs a bounded grid (`strategy × candidateK × contextK`) and
+writes one dashboard with quality, context precision/recall, prompt size, index size
+and latency side by side. Its grid maximum is labelled as **not** a recommendation:
+selecting on the same questions is how a benchmark becomes a lookup table.
 
 `eval:prepare` downloads the pinned `multilingual-e5-small` revision into the app's model
 cache and verifies it. `eval` never touches the network: if the model is missing it stops
