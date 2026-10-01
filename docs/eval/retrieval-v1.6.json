@@ -1,0 +1,93 @@
+{
+  "baseline": "v1.6",
+  "split": {
+    "selects": "validation",
+    "reports": "test",
+    "manifest": "eval/splits.json"
+  },
+  "decision": {
+    "primary": "recallAt5",
+    "saturated": [],
+    "winner": null
+  },
+  "validation": [
+    {
+      "id": "dense",
+      "label": "dense (vector)",
+      "split": "validation",
+      "questions": 34,
+      "answerableCount": 19,
+      "chunking": "1000/100",
+      "chunkCount": 53,
+      "recallAt1": 0.513158,
+      "recallAt5": 0.868421,
+      "recallAt10": 0.921053,
+      "mrr": 0.720175,
+      "ndcgAt10": 0.755611,
+      "hitRateAt5": 0.894737,
+      "mapAt10": 0.69386,
+      "contextPrecision": 0.315789,
+      "contextRecall": 0.802632,
+      "latencyP95Ms": 13.56
+    },
+    {
+      "id": "sparse",
+      "label": "sparse (BM25)",
+      "split": "validation",
+      "questions": 34,
+      "answerableCount": 19,
+      "chunking": "1000/100",
+      "chunkCount": 53,
+      "recallAt1": 0.460526,
+      "recallAt5": 0.671053,
+      "recallAt10": 0.684211,
+      "mrr": 0.600877,
+      "ndcgAt10": 0.610495,
+      "hitRateAt5": 0.684211,
+      "mapAt10": 0.576817,
+      "contextPrecision": 0.263158,
+      "contextRecall": 0.657895,
+      "latencyP95Ms": 4.25
+    },
+    {
+      "id": "hybrid",
+      "label": "hybrid (RRF of dense + BM25)",
+      "split": "validation",
+      "questions": 34,
+      "answerableCount": 19,
+      "chunking": "1000/100",
+      "chunkCount": 53,
+      "recallAt1": 0.513158,
+      "recallAt5": 0.868421,
+      "recallAt10": 0.894737,
+      "mrr": 0.732456,
+      "ndcgAt10": 0.760265,
+      "hitRateAt5": 0.894737,
+      "mapAt10": 0.707018,
+      "contextPrecision": 0.333333,
+      "contextRecall": 0.855263,
+      "latencyP95Ms": 15.87
+    }
+  ],
+  "test": [
+    {
+      "id": "dense",
+      "label": "dense (vector)",
+      "split": "test",
+      "questions": 44,
+      "answerableCount": 34,
+      "chunking": "1000/100",
+      "chunkCount": 53,
+      "recallAt1": 0.639706,
+      "recallAt5": 0.882353,
+      "recallAt10": 0.919118,
+      "mrr": 0.774079,
+      "ndcgAt10": 0.794329,
+      "hitRateAt5": 0.911765,
+      "mapAt10": 0.747141,
+      "contextPrecision": 0.303922,
+      "contextRecall": 0.823529,
+      "latencyP95Ms": 14.44
+    }
+  ]
+}

@@ -1,0 +1,342 @@
+{
+  "baseline": "v1.6",
+  "split": "validation",
+  "candidateK": 500,
+  "threshold": 0,
+  "indexSize": 53,
+  "counts": {
+    "answerable": 19,
+    "unanswerable": 15
+  },
+  "distributions": {
+    "bestRelevant": {
+      "p0": 0.880777,
+      "p10": 0.89056,
+      "p25": 0.912001,
+      "p50": 0.935891,
+      "p75": 0.942776,
+      "p90": 0.953038,
+      "p100": 0.953664
+    },
+    "worstRelevant": {
+      "p0": 0.880777,
+      "p10": 0.89056,
+      "p25": 0.908589,
+      "p50": 0.935467,
+      "p75": 0.942776,
+      "p90": 0.953038,
+      "p100": 0.953664
+    },
+    "bestNonRelevant": {
+      "p0": 0.890443,
+      "p10": 0.908132,
+      "p25": 0.917792,
+      "p50": 0.924346,
+      "p75": 0.933555,
+      "p90": 0.9386,
+      "p100": 0.945918
+    },
+    "margin": {
+      "p0": -0.02942099999999992,
+      "p10": -0.027232000000000034,
+      "p25": -0.00922400000000001,
+      "p50": 0.0026120000000000587,
+      "p75": 0.00807100000000005,
+      "p90": 0.032869999999999955,
+      "p100": 0.06226200000000004
+    },
+    "unanswerableMax": {
+      "p0": 0.897848,
+      "p10": 0.908616,
+      "p25": 0.914179,
+      "p50": 0.927896,
+      "p75": 0.936526,
+      "p90": 0.942441,
+      "p100": 0.943454
+    }
+  },
+  "byType": {
+    "exact": {
+      "questions": 4,
+      "bestRelevant": {
+        "p0": 0.912001,
+        "p10": 0.912001,
+        "p25": 0.912001,
+        "p50": 0.929376,
+        "p75": 0.936747,
+        "p90": 0.953038,
+        "p100": 0.953038
+      },
+      "worstRelevant": {
+        "p0": 0.912001,
+        "p10": 0.912001,
+        "p25": 0.912001,
+        "p50": 0.929376,
+        "p75": 0.936747,
+        "p90": 0.953038,
+        "p100": 0.953038
+      }
+    },
+    "semantic": {
+      "questions": 6,
+      "bestRelevant": {
+        "p0": 0.920784,
+        "p10": 0.920784,
+        "p25": 0.935467,
+        "p50": 0.939466,
+        "p75": 0.945637,
+        "p90": 0.953664,
+        "p100": 0.953664
+      },
+      "worstRelevant": {
+        "p0": 0.920784,
+        "p10": 0.920784,
+        "p25": 0.935467,
+        "p50": 0.939466,
+        "p75": 0.945637,
+        "p90": 0.953664,
+        "p100": 0.953664
+      }
+    },
+    "multi-hop": {
+      "questions": 2,
+      "bestRelevant": {
+        "p0": 0.924784,
+        "p10": 0.924784,
+        "p25": 0.924784,
+        "p50": 0.924784,
+        "p75": 0.93756,
+        "p90": 0.93756,
+        "p100": 0.93756
+      },
+      "worstRelevant": {
+        "p0": 0.903304,
+        "p10": 0.903304,
+        "p25": 0.903304,
+        "p50": 0.903304,
+        "p75": 0.933129,
+        "p90": 0.933129,
+        "p100": 0.933129
+      }
+    },
+    "zh": {
+      "questions": 1,
+      "bestRelevant": {
+        "p0": 0.952705,
+        "p10": 0.952705,
+        "p25": 0.952705,
+        "p50": 0.952705,
+        "p75": 0.952705,
+        "p90": 0.952705,
+        "p100": 0.952705
+      },
+      "worstRelevant": {
+        "p0": 0.952705,
+        "p10": 0.952705,
+        "p25": 0.952705,
+        "p50": 0.952705,
+        "p75": 0.952705,
+        "p90": 0.952705,
+        "p100": 0.952705
+      }
+    },
+    "cross-lingual": {
+      "questions": 4,
+      "bestRelevant": {
+        "p0": 0.880777,
+        "p10": 0.880777,
+        "p25": 0.880777,
+        "p50": 0.89056,
+        "p75": 0.904196,
+        "p90": 0.908589,
+        "p100": 0.908589
+      },
+      "worstRelevant": {
+        "p0": 0.880777,
+        "p10": 0.880777,
+        "p25": 0.880777,
+        "p50": 0.89056,
+        "p75": 0.904196,
+        "p90": 0.908589,
+        "p100": 0.908589
+      }
+    },
+    "hard-negative": {
+      "questions": 2,
+      "bestRelevant": {
+        "p0": 0.935891,
+        "p10": 0.935891,
+        "p25": 0.935891,
+        "p50": 0.935891,
+        "p75": 0.942776,
+        "p90": 0.942776,
+        "p100": 0.942776
+      },
+      "worstRelevant": {
+        "p0": 0.935891,
+        "p10": 0.935891,
+        "p25": 0.935891,
+        "p50": 0.935891,
+        "p75": 0.942776,
+        "p90": 0.942776,
+        "p100": 0.942776
+      }
+    }
+  },
+  "overlap": {
+    "worstRelevantP10": 0.89056,
+    "bestNonRelevantP90": 0.9386,
+    "unanswerableMaxP50": 0.927896,
+    "unanswerableMaxP90": 0.942441
+  },
+  "separable": false,
+  "curve": [
+    {
+      "threshold": 0.5,
+      "cosine": 0,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.525,
+      "cosine": 0.05,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.55,
+      "cosine": 0.1,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.575,
+      "cosine": 0.15,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.6,
+      "cosine": 0.2,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.625,
+      "cosine": 0.25,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.65,
+      "cosine": 0.3,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.675,
+      "cosine": 0.35,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.7,
+      "cosine": 0.4,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.725,
+      "cosine": 0.45,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.75,
+      "cosine": 0.5,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.775,
+      "cosine": 0.55,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.8,
+      "cosine": 0.6,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.825,
+      "cosine": 0.65,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.85,
+      "cosine": 0.7,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.875,
+      "cosine": 0.75,
+      "hitRate": 1,
+      "fullRecallRate": 1,
+      "abstentionRate": 0
+    },
+    {
+      "threshold": 0.9,
+      "cosine": 0.8,
+      "hitRate": 0.8947368421052632,
+      "fullRecallRate": 0.8947368421052632,
+      "abstentionRate": 0.06666666666666667
+    },
+    {
+      "threshold": 0.925,
+      "cosine": 0.85,
+      "hitRate": 0.631578947368421,
+      "fullRecallRate": 0.631578947368421,
+      "abstentionRate": 0.4
+    },
+    {
+      "threshold": 0.95,
+      "cosine": 0.9,
+      "hitRate": 0.15789473684210525,
+      "fullRecallRate": 0.15789473684210525,
+      "abstentionRate": 1
+    },
+    {
+      "threshold": 0.975,
+      "cosine": 0.95,
+      "hitRate": 0,
+      "fullRecallRate": 0,
+      "abstentionRate": 1
+    },
+    {
+      "threshold": 1,
+      "cosine": 1,
+      "hitRate": 0,
+      "fullRecallRate": 0,
+      "abstentionRate": 1
+    }
+  ]
+}

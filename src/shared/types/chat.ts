@@ -162,8 +162,16 @@ export interface RetrievalSnapshot {
    */
   candidateK: number
   topK: number
-  /** 缺省表示该策略没有阈值，不是「阈值等于 0」。 */
-  threshold?: number
+  /**
+   * 作用在 **dense 通道** 上的相似度下限。
+   *
+   * `hybrid` 也有这个值（它的 dense 那一路），所以缺省只表示 dense 通道没跑
+   * （`sparse`），不是「阈值等于 0」。
+   *
+   * #192 评审之前这个字段叫 `threshold`：那时 hybrid 的快照写的是 undefined，而它
+   * 实际跑了带 0.5 的 dense。旧记录里的值本来就是 dense 阈值，解析时按 dense 阈值读。
+   */
+  denseThreshold?: number
   durationMs: number
 }
 

@@ -7,9 +7,27 @@ every experiment (#77, #78) is reported as a delta against that file.
 ## Commands
 
 ```bash
-npm run eval:prepare   # one-time, networked: download the pinned embedding model
-npm run eval           # offline and deterministic: run the harness, rewrite the baseline
+npm run eval:prepare    # one-time, networked: download the pinned embedding model
+npm run eval            # offline and deterministic: run the harness, rewrite the baseline
+npm run eval:retrieval  # strategy comparison (#77); validation selects, test reports
+npm run eval:threshold  # derive the similarity threshold on validation, report on test
+npm run eval:sweep      # bounded grid over strategy × candidateK × contextK, one dashboard
+npm run eval:scores     # dense score distribution: can one threshold separate relevant from not?
+npm run eval:paired     # per-question dense ↔ hybrid deltas, by query type
+npm run eval:blocks eval/corpus/foo.md   # print the block ordinals ground truth must use
 ```
+
+### `threshold` is not a cosine
+
+The vector store returns \`score = 1 - distance / 2\` and sqlite-vec's cosine distance is
+\`1 - cosine\`, so:
+
+```text
+score = (1 + cosine) / 2      score 0.5 == cosine 0.0
+```
+
+The shipped \`threshold = 0.5\` therefore means **cosine ≥ 0**, which is very permissive.
+\`npm run eval:scores\` reports both columns side by side so the two never get conflated.
 
 ### The harness runs the production configuration
 
@@ -22,12 +40,43 @@ the product rather than a research setup. Two Ks, because they answer different 
 | `--eval-context-k=` | `3` | passages the chat prompt actually takes (`chatHandlers.ts`) |
 | `--eval-threshold=` | `0.5` | the similarity floor the app ships |
 | `--eval-retrieval=` | `dense` | `dense`, `sparse`, or `hybrid` |
+| `--eval-split=` | `all` | `all`, `validation`, or `test` — a deterministic id-based split |
 | `--eval-baseline=` | `v1.6` | name written into `docs/eval/baseline-<name>.{json,md}` |
 
 Ranking metrics are computed at `candidateK` depth, not at `contextK`: `Recall@10` needs
 at least ten results, and truncation only takes a prefix of the candidate list, so the
 truncation cannot change the ranking it is measured on. `contextK` is recorded so the
 report describes the whole online path.
+
+### Swept parameters are chosen on `validation`, reported on `test`
+
+A parameter picked on the same questions it is scored on is a fitted number, not a
+result. `eval/splits.json` is the committed assignment; `--eval-split=validation` selects
+from it and `test` is the rest.
+
+It is an explicit manifest rather than a hash of the question id. A hash
+(`hash(id) % 3`) is actually *stable* — it is computed per id, so adding a question does
+not move the existing ones. What it cannot do is express the experimental design:
+
+- it does not stratify a small corpus, so a rare type (`multi-hop`, `cross-lingual`) can
+  end up entirely on one side without anyone choosing that — which is what happened; and
+- a newly added question is assigned silently instead of deliberately, and `test` is the
+  side a choice must not be fitted to.
+
+With a manifest, a question with no entry is **refused** rather than defaulted, so every
+new question is assigned on purpose.
+
+`npm run eval:sweep` runs a bounded grid (`strategy × candidateK × contextK`) and
+writes one dashboard with quality, context precision/recall, prompt size, index size
+and latency side by side. Its grid maximum is labelled as **not** a recommendation:
+selecting on the same questions is how a benchmark becomes a lookup table.
+
+`contextK > candidateK` is not a cell in that grid. The harness fetches `candidateK`
+passages, so a wider window can never be filled; the sweep skips those combinations
+and names them in the report, and the harness refuses the same combination from the
+command line. Before this was enforced, `contextK=8` at `candidateK=5` was reported as
+identical to `contextK=5` — not because 8 assessed the same as 5, but because
+passages 6–8 did not exist.
 
 `eval:prepare` downloads the pinned `multilingual-e5-small` revision into the app's model
 cache and verifies it. `eval` never touches the network: if the model is missing it stops
@@ -47,6 +96,7 @@ does not mean "no download". The 134 MB of weights are not committed.
 eval/
   corpus/            first-party documents (markdown today)
   questions.jsonl    one question per line; committed with the corpus
+  splits.json        the committed validation/test assignment
 ```
 
 The corpus is authored for this repository and carries the repository's GPL-3.0 licence,
@@ -59,6 +109,8 @@ dataset needs a new question.
 {
   "id": "q001",
   "question": "Why is bedload harder to measure than suspended sediment?",
+  "type": "semantic",
+  "answerable": true,
   "relevant": [
     {
       "document": "river-monitoring.md",
@@ -71,13 +123,25 @@ dataset needs a new question.
 }
 ```
 
+An **unanswerable** question is the same shape with `"answerable": false` and `"relevant": []`.
+The harness refuses the reverse combination in either direction — an answerable question
+with no ground truth, or an unanswerable one carrying some — because both are silent: the
+first reads as a permanent miss, the second as a normal hit.
+
 Ground truth uses **corpus identity, never database identity**:
 
 - `document` is the corpus-relative path.
-- `block` is the block ordinal inside the document (`document_blocks.order`).
+- `block` is the **`document_blocks.order` the ingestion pipeline produced**, not a line
+  number and not a paragraph index a human counted. Use `npm run eval:blocks <file>` to
+  print the real ordinals through the same loader the harness uses — guessing them is how a
+  dataset drifts.
 - `page` is `null` for unpaginated sources.
 - `quote` is an optional excerpt. The runner fails if the referenced block no longer
   contains it, so a parser change cannot silently move the ground truth.
+- `type` is an optional query class; the report groups every metric by it. Values in use:
+  `exact` (number/name/detail), `semantic` (why/how), `multi-hop` (two or more blocks),
+  `cross-lingual` (question language differs from the source), `zh` (Chinese over a
+  Chinese source). Untagged questions report as `untagged`.
 
 Runtime `documentId`s are random and `blockId`s embed them, so neither may appear here.
 This is what lets #78 change chunking without invalidating the dataset: the ground truth
@@ -115,11 +179,32 @@ from unanswerable queries.
 - **Recall@1/5/10** — share of ground-truth blocks covered by the first k passages.
 - **MRR** — reciprocal rank of the first relevant passage.
 - **nDCG@10** — binary-gain discounted cumulative gain.
-- **Evidence precision@5** — of the first 5 retrieved passages, the share that cover a
-  ground-truth block. This is **retrieval precision, not answer citation recall**: the
-  harness runs no model and produces no answer. Answer-level citation correctness is
-  covered by the resolver (#70); a model-driven answer eval would be a separate
-  deliverable.
+- **Hit rate@5** — share of questions with at least one relevant passage in the first 5.
+  Deliberately blunt: it says the answer was *reachable*, where Recall@5 says the material
+  was *complete*. A two-passage question that finds one scores 1.0 and 0.5 respectively.
+- **MAP@10** — mean average precision. The one metric here that combines ranking position
+  with coverage, so pulling a second relevant passage from rank 9 to rank 2 moves it.
+- **Context precision@`contextK`** — of the first `contextK` retrieved passages, the share
+  that cover a ground-truth block. **Context recall@`contextK`** — the share of the needed
+  ground-truth blocks that made it into that same window. Both are deterministic: the
+  dataset says which blocks answer the question, so no model is needed to score the window.
+  Together they are the trade-off a `contextK` decision actually makes — a wider window
+  finds more and carries more noise.
+- This is **retrieval precision/recall, not answer citation recall**: the harness runs no
+  model and produces no answer. Answer-level citation correctness is covered by the
+  resolver (#70). Faithfulness, completeness and answer correctness need a generative model
+  and are **not evaluated here** — the harness runs offline with only the pinned embedding
+  model, the same constraint that keeps the reranker unmeasured (#170).
+- **By query type** — the same metrics per `type` in `questions.jsonl` (`exact`,
+  `semantic`, `multi-hop`, `cross-lingual`, `zh`). A single average hides a change that
+  helps one kind of question and hurts another; the current baseline already shows this,
+  with `cross-lingual` at nDCG 0.63 against 0.93–1.00 elsewhere.
+- **Unanswerable questions** — a separate group, never averaged in. They have no ground
+  truth, so `Recall` on them is 0/0 rather than 0, and the correct outcome is that
+  retrieval finds nothing. The reported **no-results** rate is the opposite of a miss:
+higher is better, and `mean passages retrieved` is how much irrelevant context was pulled
+  in anyway. This is the only metric a similarity-threshold decision should move, which is
+  why the threshold sweep reports it separately.
 - **Latency p50/p95** — informational only. Timing is **not** frozen, and the committed
   JSON excludes it so two runs diff cleanly.
 

@@ -110,6 +110,27 @@ export function effectiveCandidateK(request: {
   return Math.max(request.candidateK ?? DEFAULT_CANDIDATE_K, topK)
 }
 
+/** 没有指定时 dense 通道的相似度下限，与引入双 K 之前一致。 */
+export const DEFAULT_DENSE_THRESHOLD = 0.5
+
+/**
+ * 某个策略真正作用在 **dense 通道** 上的相似度下限。
+ *
+ * `hybrid` 也跑 dense，所以它同样有阈值；只有 `sparse` 没有，因为 BM25 没有「相似
+ * 度阈值」这个概念。
+ *
+ * 用 **一个** 函数产出这个值，是为了让「传给 dense 通道的值」和「写进 trace 的值」无法
+ * 再分开：#192 评审发现的 bug 就是它们各自有一个 `?? 0.5` —— hybrid 的 dense 腿用了
+ * 0.5，而 trace 写的 `threshold: undefined`，于是快照无法复现那次检索。
+ */
+export function denseChannelThreshold(
+  strategy: RetrievalStrategy,
+  requested?: number
+): number | undefined {
+  if (strategy === 'sparse') return undefined
+  return requested ?? DEFAULT_DENSE_THRESHOLD
+}
+
 /**
  * 一次检索实际生效的参数。
  *
@@ -127,7 +148,16 @@ export interface RetrievalTrace {
   candidateK: number
   /** 最终交付的证据条数。 */
   topK: number
-  threshold?: number
+  /**
+   * 真正作用在 **dense 通道** 上的相似度下限。
+   *
+   * 字段名不是 `threshold` 而是 `denseThreshold`，因为 `hybrid` 也在跑 dense：它不
+   * 是「没有阈值」，而是 dense 那一路有 0.5。叫 `threshold` 会让快照看上去说 hybrid
+   * 没有阈值，于是“这次检索是怎么发生的”就复现不出来了（#192 评审）。
+   *
+   * 缺省只表示 **dense 通道没跑**（`sparse`），不是「阈值等于 0」。
+   */
+  denseThreshold?: number
   durationMs: number
 }
 
