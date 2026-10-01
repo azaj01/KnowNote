@@ -171,7 +171,11 @@ export class SQLiteVectorStore implements VectorStore {
 
       // 转换结果
       const queryResults: QueryResult[] = results.map((row) => {
-        // cosine 距离转相似度（0-1）
+        // `score = 1 - distance / 2 = (1 + cosine) / 2`。
+        //
+        // **这不是 cosine 本身**，而是仿射映射：score 0.5 对应 cosine 0，score 0.6 对应
+        // cosine 0.2，score 1.0 才是 cosine 1.0。配置里的 `threshold` 就是这个 score，
+        // 把 0.5 读成“cosine ≥ 0.5”会把门槛高估很多（#192 评审）。
         const score = 1 - row.distance / 2
 
         return {

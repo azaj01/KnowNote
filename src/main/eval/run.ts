@@ -22,6 +22,7 @@ import { KnowledgeService } from '../services/KnowledgeService'
 import { isModelInstalled } from '../embedding/ModelRegistry'
 import { DEFAULT_CHUNK_OPTIONS, type ChunkOptions } from '../services/ChunkingService'
 import type { RetrievalStrategy } from '../services/retrieval'
+import type { EvalSplit } from './types'
 import {
   runEvalHarness,
   stabilize,
@@ -84,6 +85,17 @@ function readRetrievalStrategy(argv: readonly string[]): RetrievalStrategy {
 }
 
 /**
+ * 本次评估的切分（#192）。默认 `all`；阈值这类扫参要用 `validation` 选、`test` 报。
+ */
+function readSplit(argv: readonly string[]): EvalSplit {
+  const raw = readOption(argv, '--eval-split=', 'all')
+  if (raw !== 'all' && raw !== 'validation' && raw !== 'test') {
+    throw new Error(`--eval-split expects all, validation or test, got ${JSON.stringify(raw)}`)
+  }
+  return raw
+}
+
+/**
  * Chunking config for one run (#78). The defaults are the production defaults, so
  * `npm run eval` with no flags still measures what ships.
  */
@@ -129,6 +141,7 @@ export async function runEvalCli(argv: readonly string[] = process.argv): Promis
   const prepare = argv.includes(EVAL_PREPARE_FLAG)
   const corpusDir = resolve(readOption(argv, '--eval-corpus=', 'eval/corpus'))
   const questionsPath = resolve(readOption(argv, '--eval-questions=', 'eval/questions.jsonl'))
+  const splitsPath = resolve(readOption(argv, '--eval-splits=', 'eval/splits.json'))
   const outDir = resolve(readOption(argv, '--eval-out=', 'docs/eval'))
 
   // The real profile is captured before redirecting: the model cache lives under
@@ -178,14 +191,18 @@ export async function runEvalCli(argv: readonly string[] = process.argv): Promis
       // committed JSON is identical on every machine and checkout.
       corpusLabel: repoRelative(corpusDir) || 'eval/corpus',
       questionsPath,
+      splitsPath,
       baseline: readOption(argv, '--eval-baseline=', 'v1.6'),
+      split: readSplit(argv),
       // 默认就是生产配置（#77）：先取宽，融合，再把 contextK 条送进 prompt。一个不镜像
       // 线上参数的 benchmark 量的是用户永远不会跑的检索器。
       candidateK: readNumberOption(argv, '--eval-candidate-k=', 20),
       contextK: readNumberOption(argv, '--eval-context-k=', 3),
       threshold: readNumberOption(argv, '--eval-threshold=', 0.5),
-      evidenceK: 5,
       chunkOptions: readChunkOptions(argv),
+      // `--eval-scores` puts the per-rank retrieval scores in the report. Off by default:
+      // the committed baseline is a CI-diffed file and the series doubles it.
+      includeScores: readBoolOption(argv, '--eval-scores=', argv.includes('--eval-scores')),
       strategy: readRetrievalStrategy(argv)
     }
 

@@ -12,7 +12,7 @@
  */
 
 import { readdir, readFile } from 'fs/promises'
-import { join, posix } from 'path'
+import { join, posix, relative } from 'path'
 import { and, eq } from 'drizzle-orm'
 import { documentBlocks, notebooks, chunks } from '../db/schema'
 import type { getDatabase } from '../db'
@@ -21,8 +21,10 @@ import { DEFAULT_CHUNK_OPTIONS, type ChunkOptions } from '../services/ChunkingSe
 import type { RetrievalStrategy } from '../services/retrieval'
 import { LOCAL_EMBEDDING_MODEL } from '../embedding/localModel'
 import {
+  averagePrecisionAtK,
   evidencePrecisionAtK,
   firstRelevantRank,
+  hitRateAtK,
   mean,
   ndcgAtK,
   percentile,
@@ -31,12 +33,17 @@ import {
 } from './metrics'
 import type {
   EvalDeterministicReport,
+  EvalMetrics,
   EvalQuestion,
   EvalReport,
   EvalRelevantLocation,
+  EvalSplit,
+  EvalTypeBreakdown,
   QuestionReport,
-  ResolvedGroundTruth
+  ResolvedGroundTruth,
+  SplitAssignment
 } from './types'
+import { assertQuestionShape, parseSplitAssignment, selectSplit } from './types'
 
 type Db = ReturnType<typeof getDatabase>
 
@@ -46,7 +53,11 @@ export interface EvalHarnessOptions {
   /** Repo-relative label recorded in the report, so the JSON is machine-independent. */
   corpusLabel: string
   questionsPath: string
+  /** 切分清单（`eval/splits.json`）。`split: 'all'` 时不读。 */
+  splitsPath: string
   baseline: string
+  /** 本次只评这一份切分（#192）；缺省 `all`。 */
+  split: EvalSplit
   /**
    * 第一阶段每个通道的宽度，也是排名指标的评估深度（#77）。
    *
@@ -59,15 +70,49 @@ export interface EvalHarnessOptions {
   contextK: number
   /** Similarity floor; 0 keeps the ranking intact for ranking metrics. */
   threshold: number
-  /** How many retrieved passages the evidence-precision metric looks at. */
-  evidenceK: number
   /** 分块配置（#78）。实验变体通过它选择策略；缺省时用生产默认值。 */
   chunkOptions: ChunkOptions
+  /**
+   * 把每个 rank 的检索分数也写进报告（`--eval-scores`）。
+   *
+   * 缺省关闭：分数序列会让基线膨胀一倍，而基线是 CI 逐字节 diff 的文件。score
+   * diagnostics（#192）需要它，生产基线不需要。
+   */
+  includeScores?: boolean
   /** 检索策略（#77）：dense / sparse(BM25) / hybrid(RRF)。 */
   strategy: RetrievalStrategy
 }
 
 const NOTEBOOK_ID = 'eval-notebook'
+
+/** A question with no `type` is grouped here rather than dropped from the report. */
+const UNTAGGED = 'untagged'
+
+/**
+ * 同一套指标既算总平均，也算每个查询类别（#192）。用一个函数是因为分组平均必须与
+ * 总平均是同一个定义，否则两个数就不可比。
+ */
+function summarize(perQuestion: readonly QuestionReport[], contextK: number): EvalMetrics {
+  return {
+    recallAt1: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 1))),
+    recallAt5: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 5))),
+    recallAt10: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 10))),
+    mrr: mean(perQuestion.map((q) => reciprocalRank(q.matchesByRank))),
+    ndcgAt10: mean(perQuestion.map((q) => ndcgAtK(q.matchesByRank, q.relevantCount, 10))),
+    hitRateAt5: mean(perQuestion.map((q) => hitRateAtK(q.matchesByRank, 5))),
+    mapAt10: mean(
+      perQuestion.map((q) => averagePrecisionAtK(q.matchesByRank, q.relevantCount, 10))
+    ),
+    // 两个 context 指标共用同一个窗口，因为它们回答的是同一个问题的两面：送进 prompt
+    // 的那几条里有多少是相关的，以及需要的东西有多少真的进去了。
+    contextPrecision: mean(
+      perQuestion.map((q) => evidencePrecisionAtK(q.matchesByRank, contextK))
+    ),
+    contextRecall: mean(
+      perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, contextK))
+    )
+  }
+}
 
 /** Normalised comparison for the optional quote drift check. */
 const normalize = (text: string): string => text.toLowerCase().replace(/\s+/g, ' ').trim()
@@ -177,18 +222,59 @@ async function indexCorpus(
   return { documentIds, chunkCount, indexingMs: performance.now() - indexingStarted }
 }
 
+/**
+ * 读切分清单。`all` 不需要清单，所以 `all` 的运行不会因为缺清单而失败。
+ *
+ * JSON 解析错误会把文件路径带上：清单是提交在仓库里的，一份写坏的清单应该指向它自己。
+ */
+async function loadSplitAssignment(options: EvalHarnessOptions): Promise<SplitAssignment> {
+  if (options.split === 'all') return {}
+
+  const label = relative(process.cwd(), options.splitsPath).split(/[\\/]/).join('/')
+  let parsed: unknown
+  try {
+    parsed = JSON.parse(await readFile(options.splitsPath, 'utf-8'))
+  } catch (error) {
+    throw new Error(`${label} could not be read as JSON: ${String(error)}`)
+  }
+  return parseSplitAssignment(parsed, label)
+}
+
 export async function runEvalHarness(
   db: Db,
   knowledgeService: KnowledgeService,
   options: EvalHarnessOptions
 ): Promise<EvalReport> {
+  // A context window wider than the retrieval depth can never be filled: the harness
+  // fetches `candidateK` passages and the context metrics look at `contextK` of them.
+  //
+  // Without this check the sweep silently produced rows where `contextK=5` and
+  // `contextK=8` at `candidateK=5` were **identical**, not because 8 assessed the same
+  // as 5 but because passages 6-8 did not exist (#192 review). A wrong number that
+  // looks like a measurement is worse than a failure.
+  if (options.contextK > options.candidateK) {
+    throw new Error(
+      `contextK (${options.contextK}) cannot exceed candidateK (${options.candidateK}): ` +
+        'the harness retrieves candidateK passages, so a wider context window can never be filled.'
+    )
+  }
+
   const { documentIds, chunkCount, indexingMs } = await indexCorpus(
     db,
     knowledgeService,
     options.corpusDir,
     options.chunkOptions
   )
-  const questions = parseQuestions(await readFile(options.questionsPath, 'utf-8'))
+  const allQuestions = parseQuestions(await readFile(options.questionsPath, 'utf-8'))
+  // 数据集自身的契约先校验：可答必须有 ground truth，不可答必须没有。搞反时指标不会
+  // 报错，只会静静地失去意义。
+  for (const question of allQuestions) assertQuestionShape(question)
+
+  const assignment = await loadSplitAssignment(options)
+  const questions = selectSplit(allQuestions, options.split, assignment)
+  if (questions.length === 0) {
+    throw new Error(`eval split "${options.split}" selected no questions from ${options.questionsPath}`)
+  }
 
   const perQuestion: QuestionReport[] = []
   const latencies: number[] = []
@@ -219,24 +305,51 @@ export async function runEvalHarness(
         .filter((index) => index >= 0)
     })
 
-    perQuestion.push({
+    const questionReport: QuestionReport = {
       id: question.id,
       question: question.question,
+      type: question.type ?? UNTAGGED,
+      answerable: question.answerable ?? true,
       firstRelevantRank: firstRelevantRank(matchesByRank),
       relevantCount: groundTruth.length,
       retrievedCount: results.length,
+      contextChars: results
+        .slice(0, options.contextK)
+        .reduce((total, result) => total + result.content.length, 0),
       matchesByRank
-    })
+    }
+    // Only when asked: the score series doubles the size of the committed baseline.
+    if (options.includeScores) questionReport.retrievedScores = results.map((r) => r.score)
+    perQuestion.push(questionReport)
   }
 
-  const metrics = {
-    recallAt1: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 1))),
-    recallAt5: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 5))),
-    recallAt10: mean(perQuestion.map((q) => recallAtK(q.matchesByRank, q.relevantCount, 10))),
-    mrr: mean(perQuestion.map((q) => reciprocalRank(q.matchesByRank))),
-    ndcgAt10: mean(perQuestion.map((q) => ndcgAtK(q.matchesByRank, q.relevantCount, 10))),
-    evidencePrecisionAt5: mean(
-      perQuestion.map((q) => evidencePrecisionAtK(q.matchesByRank, options.evidenceK))
+  // 不可答的问题不进排名指标：它们没有 ground truth，`recallAtK` 对它们返回的是 0/0
+  // 而不是 0，把“该拒答”算成“漏报”会让整张表失真。它们自成一组。
+  const answerable = perQuestion.filter((q) => q.answerable)
+  const unanswerableQuestions = perQuestion.filter((q) => !q.answerable)
+
+  const metrics = summarize(answerable, options.contextK)
+
+  // 每个类别一行，按类别名排序，所以同一个 JSON 在两次运行之间可 diff。
+  const byType: EvalTypeBreakdown[] = [...new Set(answerable.map((q) => q.type))]
+    .sort()
+    .map((type) => {
+      const group = answerable.filter((q) => q.type === type)
+      return { type, questions: group.length, metrics: summarize(group, options.contextK) }
+    })
+
+  const abstentionCount = unanswerableQuestions.filter((q) => q.retrievedCount === 0).length
+  const unanswerable = {
+    questions: unanswerableQuestions.length,
+    abstentionCount,
+    // 方向与其它指标相反：没有相关资料时，检索层返回空才是对的。
+    retrievalAbstentionRate:
+      unanswerableQuestions.length === 0 ? 0 : abstentionCount / unanswerableQuestions.length,
+    // 通过 threshold 的候选数，不是送进 prompt 的条数：harness 为了算 Recall@10 取满了
+    // candidateK，把这个数当成 prompt 宽度会把问题说大。
+    meanCandidatesRetrieved: mean(unanswerableQuestions.map((q) => q.retrievedCount)),
+    meanContextPassages: mean(
+      unanswerableQuestions.map((q) => Math.min(q.retrievedCount, options.contextK))
     )
   }
 
@@ -254,16 +367,18 @@ export async function runEvalHarness(
         respectHeadings: chunking.respectHeadings
       },
       retrieval: options.strategy,
+      split: options.split,
       candidateK: options.candidateK,
       contextK: options.contextK,
       threshold: options.threshold,
-      evidenceK: options.evidenceK,
       corpus: options.corpusLabel,
       documents: documentIds.size,
       questions: questions.length,
       chunkCount
     },
     metrics,
+    byType,
+    unanswerable,
     timing: {
       latencyP50Ms: percentile(latencies, 50),
       latencyP95Ms: percentile(latencies, 95),
@@ -274,26 +389,43 @@ export async function runEvalHarness(
 }
 
 /** Round metrics to a stable number of decimals so the JSON diffs cleanly. */
+const roundMetric = (value: number): number => Number(value.toFixed(6))
+
+function roundMetrics(metrics: EvalMetrics): EvalMetrics {
+  return {
+    recallAt1: roundMetric(metrics.recallAt1),
+    recallAt5: roundMetric(metrics.recallAt5),
+    recallAt10: roundMetric(metrics.recallAt10),
+    mrr: roundMetric(metrics.mrr),
+    ndcgAt10: roundMetric(metrics.ndcgAt10),
+    hitRateAt5: roundMetric(metrics.hitRateAt5),
+    mapAt10: roundMetric(metrics.mapAt10),
+    contextPrecision: roundMetric(metrics.contextPrecision),
+    contextRecall: roundMetric(metrics.contextRecall)
+  }
+}
+
 export function stabilize(report: EvalReport): EvalReport {
-  const round = (value: number): number => Number(value.toFixed(6))
+  // Scores are extra data, not metrics; they are rounded the same way so two runs of the
+  // same diagnostic diff cleanly.
+  const perQuestion = report.perQuestion.map((question) =>
+    question.retrievedScores
+      ? { ...question, retrievedScores: question.retrievedScores.map(roundMetric) }
+      : question
+  )
+
   return {
     ...report,
-    metrics: {
-      recallAt1: round(report.metrics.recallAt1),
-      recallAt5: round(report.metrics.recallAt5),
-      recallAt10: round(report.metrics.recallAt10),
-      mrr: round(report.metrics.mrr),
-      ndcgAt10: round(report.metrics.ndcgAt10),
-      evidencePrecisionAt5: round(report.metrics.evidencePrecisionAt5)
-    },
+    metrics: roundMetrics(report.metrics),
+    byType: report.byType.map((entry) => ({ ...entry, metrics: roundMetrics(entry.metrics) })),
     timing: {
-      latencyP50Ms: round(report.timing.latencyP50Ms),
-      latencyP95Ms: round(report.timing.latencyP95Ms),
+      latencyP50Ms: roundMetric(report.timing.latencyP50Ms),
+      latencyP95Ms: roundMetric(report.timing.latencyP95Ms),
       // Throughput is informational and excluded from the deterministic report; the
       // full report keeps it for the #78 comparison.
       indexingMs: Math.round(report.timing.indexingMs)
     },
-    perQuestion: report.perQuestion
+    perQuestion
   }
 }
 
@@ -304,6 +436,8 @@ export function toDeterministicReport(report: EvalReport): EvalDeterministicRepo
     generatedBy: report.generatedBy,
     config: report.config,
     metrics: report.metrics,
+    byType: report.byType,
+    unanswerable: report.unanswerable,
     perQuestion: report.perQuestion
   }
 }

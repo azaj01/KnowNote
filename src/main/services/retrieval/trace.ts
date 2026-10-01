@@ -5,7 +5,7 @@ export interface RetrievalTraceInput {
   filter?: RetrievalFilter
   candidateK: number
   topK: number
-  threshold?: number
+  denseThreshold?: number
   durationMs: number
 }
 
@@ -30,7 +30,7 @@ export function buildRetrievalTrace(input: RetrievalTraceInput): RetrievalTrace 
     durationMs: input.durationMs
   }
 
-  if (input.threshold !== undefined) trace.threshold = input.threshold
+  if (input.denseThreshold !== undefined) trace.denseThreshold = input.denseThreshold
 
   return trace
 }

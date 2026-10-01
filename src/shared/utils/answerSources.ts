@@ -115,8 +115,12 @@ export const parseRetrievalSnapshot = (metadata: unknown): RetrievalSnapshot | n
     }
   }
 
-  const threshold = toFiniteNumber(candidate.threshold)
-  if (threshold !== undefined) snapshot.threshold = threshold
+  // Written as `threshold` before the #192 review established that `hybrid` also runs a
+  // dense leg. A legacy value is a dense threshold and is read as one; the backfill says
+  // what that retrieval actually did.
+  const denseThreshold =
+    toFiniteNumber(candidate.denseThreshold) ?? toFiniteNumber(candidate.threshold)
+  if (denseThreshold !== undefined) snapshot.denseThreshold = denseThreshold
 
   return snapshot
 }

@@ -12,7 +12,7 @@ import type { EmbeddingService } from '../EmbeddingService'
 import type { CandidateHit } from './candidates'
 import { hydrateEvidence } from './evidence'
 import { buildRetrievalTrace } from './trace'
-import { effectiveCandidateK, DEFAULT_TOP_K } from './types'
+import { denseChannelThreshold, effectiveCandidateK, DEFAULT_TOP_K } from './types'
 import type { RetrievalRequest, RetrievalResult, Retriever } from './types'
 
 const STRATEGY = 'dense'
@@ -31,7 +31,7 @@ export class DenseRetriever implements Retriever {
     // 第一阶段按 `candidateK` 取宽；`topK` 的截断由调用方决定，因为 hybrid 需要的是
     // 比最终交付更宽的一池子候选。
     const candidateK = effectiveCandidateK(request)
-    const threshold = request.threshold ?? 0.5
+    const threshold = denseChannelThreshold('dense', request.threshold)
 
     // E5 要求 query 前缀，与索引时的 document 前缀区分
     await this.embeddingService.ensureReady()
@@ -51,7 +51,7 @@ export class DenseRetriever implements Retriever {
   async search(request: RetrievalRequest): Promise<RetrievalResult> {
     const topK = request.topK ?? DEFAULT_TOP_K
     const candidateK = effectiveCandidateK(request)
-    const threshold = request.threshold ?? 0.5
+    const threshold = denseChannelThreshold('dense', request.threshold)
     const startedAt = performance.now()
 
     // 单策略没有可精排的下游，取宽再截到 `topK` 与直接按 `topK` 查 KNN 等价；
@@ -66,7 +66,7 @@ export class DenseRetriever implements Retriever {
         filter: request.filter,
         candidateK,
         topK,
-        threshold,
+        denseThreshold: threshold,
         durationMs: performance.now() - startedAt
       })
     }

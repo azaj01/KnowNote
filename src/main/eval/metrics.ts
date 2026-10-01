@@ -33,6 +33,56 @@ export function reciprocalRank(matchesByRank: MatchMatrix): number {
 }
 
 /**
+ * Hit rate@k: 1 when any of the first `k` ranks covers ground truth, else 0.
+ *
+ * Deliberately the bluntest metric here. Recall@k says *how much* of the ground
+ * truth was found; hit rate says only whether the answer was findable at all. When
+ * a question needs two passages, a run that finds one scores 0.5 recall and 1.0 hit
+ * rate — and the second number is the one that says "the model had a chance".
+ */
+export function hitRateAtK(matchesByRank: MatchMatrix, k: number): number {
+  return matchesByRank.slice(0, k).some((matches) => matches.length > 0) ? 1 : 0
+}
+
+/**
+ * Average precision@k, averaged over the ground-truth locations.
+ *
+ * Precision is measured at each rank that recovers a *fresh* ground-truth location
+ * (the same rule nDCG uses), then normalised by the total number of ground-truth
+ * locations. That makes AP the one metric here that combines ranking position with
+ * coverage: pulling a second relevant passage from rank 9 to rank 2 moves it, while
+ * recall@5 sits still.
+ */
+export function averagePrecisionAtK(
+  matchesByRank: MatchMatrix,
+  groundTruthCount: number,
+  k: number
+): number {
+  if (groundTruthCount === 0) return 0
+
+  const covered = new Set<number>()
+  let found = 0
+  let sum = 0
+  const limit = Math.min(matchesByRank.length, k)
+
+  for (let i = 0; i < limit; i++) {
+    let fresh = false
+    for (const match of matchesByRank[i]) {
+      if (match < groundTruthCount && !covered.has(match)) {
+        covered.add(match)
+        fresh = true
+      }
+    }
+    if (fresh) {
+      found += 1
+      sum += found / (i + 1)
+    }
+  }
+
+  return sum / groundTruthCount
+}
+
+/**
  * nDCG@k with binary gains. The ideal ranking puts every ground-truth location
  * first, so the discount is a plain log base 2.
  *
